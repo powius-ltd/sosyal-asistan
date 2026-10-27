@@ -1,0 +1,320 @@
+[
+  {
+    "id": "7500000000000000001",
+    "text": "Örnek açıklama 1 #ipucu #Verimlilik",
+    "textLanguage": "tr",
+    "createTime": 1790086400,
+    "createTimeISO": "2026-09-22T14:13:20.000Z",
+    "isAd": false,
+    "authorMeta": {
+      "id": "6900000000000000001",
+      "name": "ornek.hesap",
+      "profileUrl": "https://www.tiktok.com/@ornek.hesap",
+      "nickName": "Örnek Hesap",
+      "verified": false,
+      "signature": "Örnek biyografi metni. Her gün kısa ipuçları.",
+      "bioLink": "https://ornek.example/baglanti",
+      "originalAvatarUrl": "https://p16-sign.example-cdn.test/avatar-kisaltildi",
+      "avatar": "https://p16-sign.example-cdn.test/avatar-kisaltildi",
+      "commerceUserInfo": {
+        "commerceUser": true,
+        "category": "Education"
+      },
+      "privateAccount": false,
+      "region": "TR",
+      "roomId": "",
+      "ttSeller": false,
+      "following": 212,
+      "friends": 40,
+      "fans": 18400,
+      "heart": 905000,
+      "video": 148,
+      "digg": 3100
+    },
+    "musicMeta": {
+      "musicName": "original sound",
+      "musicAuthor": "Örnek Hesap",
+      "musicOriginal": true,
+      "playUrl": "https://sf16-ies-music.example-cdn.test/ses-kisaltildi",
+      "coverMediumUrl": "",
+      "originalCoverMediumUrl": "",
+      "musicId": "7500000000000000001"
+    },
+    "webVideoUrl": "https://www.tiktok.com/@ornek.hesap/video/7500000000000000001",
+    "mediaUrls": [],
+    "videoMeta": {
+      "height": 1024,
+      "width": 576,
+      "duration": 21,
+      "coverUrl": "https://p16-sign.example-cdn.test/kapak-kisaltildi",
+      "originalCoverUrl": "https://p16-sign.example-cdn.test/kapak-kisaltildi",
+      "definition": "540p",
+      "format": "mp4",
+      "subtitleLinks": []
+    },
+    "diggCount": 1200,
+    "shareCount": 40,
+    "playCount": 25000,
+    "collectCount": 90,
+    "commentCount": 15,
+    "repostCount": 0,
+    "mentions": [],
+    "detailedMentions": [],
+    "hashtags": [
+      {
+        "id": "1001",
+        "name": "ipucu",
+        "title": "",
+        "cover": ""
+      },
+      {
+        "id": "1002",
+        "name": "Verimlilik",
+        "title": "",
+        "cover": ""
+      }
+    ],
+    "effectStickers": [],
+    "isSlideshow": false,
+    "isPinned": false,
+    "isSponsored": false,
+    "input": "ornek.hesap",
+    "fromProfileSection": "videos"
+  },
+  {
+    "id": "7500000000000000002",
+    "text": "Örnek açıklama 2 #ipucu #Verimlilik",
+    "textLanguage": "tr",
+    "createTime": 1790172800,
+    "createTimeISO": "2026-09-23T14:13:20.000Z",
+    "isAd": false,
+    "authorMeta": {
+      "id": "6900000000000000001",
+      "name": "ornek.hesap",
+      "profileUrl": "https://www.tiktok.com/@ornek.hesap",
+      "nickName": "Örnek Hesap",
+      "verified": false,
+      "signature": "Örnek biyografi metni. Her gün kısa ipuçları.",
+      "bioLink": "https://ornek.example/baglanti",
+      "originalAvatarUrl": "https://p16-sign.example-cdn.test/avatar-kisaltildi",
+      "avatar": "https://p16-sign.example-cdn.test/avatar-kisaltildi",
+      "commerceUserInfo": {
+        "commerceUser": true,
+        "category": "Education"
+      },
+      "privateAccount": false,
+      "region": "TR",
+      "roomId": "",
+      "ttSeller": false,
+      "following": 212,
+      "friends": 40,
+      "fans": 18400,
+      "heart": 905000,
+      "video": 148,
+      "digg": 3100
+    },
+    "musicMeta": {
+      "musicName": "original sound",
+      "musicAuthor": "Örnek Hesap",
+      "musicOriginal": true,
+      "playUrl": "https://sf16-ies-music.example-cdn.test/ses-kisaltildi",
+      "coverMediumUrl": "",
+      "originalCoverMediumUrl": "",
+      "musicId": "7500000000000000001"
+    },
+    "webVideoUrl": "https://www.tiktok.com/@ornek.hesap/video/7500000000000000002",
+    "mediaUrls": [],
+    "videoMeta": {
+      "height": 1024,
+      "width": 576,
+      "duration": 22,
+      "coverUrl": "https://p16-sign.example-cdn.test/kapak-kisaltildi",
+      "originalCoverUrl": "https://p16-sign.example-cdn.test/kapak-kisaltildi",
+      "definition": "540p",
+      "format": "mp4",
+      "subtitleLinks": []
+    },
+    "diggCount": 2400,
+    "shareCount": 80,
+    "playCount": 50000,
+    "collectCount": 180,
+    "commentCount": 30,
+    "repostCount": 0,
+    "mentions": [],
+    "detailedMentions": [],
+    "hashtags": [
+      {
+        "id": "1001",
+        "name": "ipucu",
+        "title": "",
+        "cover": ""
+      },
+      {
+        "id": "1002",
+        "name": "Verimlilik",
+        "title": "",
+        "cover": ""
+      }
+    ],
+    "effectStickers": [],
+    "isSlideshow": false,
+    "isPinned": true,
+    "isSponsored": true,
+    "input": "ornek.hesap",
+    "fromProfileSection": "videos"
+  },
+  {
+    "id": "7500000000000000003",
+    "text": "Örnek açıklama 3 #ipucu #Verimlilik",
+    "textLanguage": "tr",
+    "createTime": 1790259200,
+    "createTimeISO": "2026-09-24T14:13:20.000Z",
+    "isAd": false,
+    "authorMeta": {
+      "id": "6900000000000000001",
+      "name": "ornek.hesap",
+      "profileUrl": "https://www.tiktok.com/@ornek.hesap",
+      "nickName": "Örnek Hesap",
+      "verified": false,
+      "signature": "Örnek biyografi metni. Her gün kısa ipuçları.",
+      "bioLink": "https://ornek.example/baglanti",
+      "originalAvatarUrl": "https://p16-sign.example-cdn.test/avatar-kisaltildi",
+      "avatar": "https://p16-sign.example-cdn.test/avatar-kisaltildi",
+      "commerceUserInfo": {
+        "commerceUser": true,
+        "category": "Education"
+      },
+      "privateAccount": false,
+      "region": "TR",
+      "roomId": "",
+      "ttSeller": false,
+      "following": 212,
+      "friends": 40,
+      "fans": 18400,
+      "heart": 905000,
+      "video": 148,
+      "digg": 3100
+    },
+    "musicMeta": {
+      "musicName": "original sound",
+      "musicAuthor": "Örnek Hesap",
+      "musicOriginal": true,
+      "playUrl": "https://sf16-ies-music.example-cdn.test/ses-kisaltildi",
+      "coverMediumUrl": "",
+      "originalCoverMediumUrl": "",
+      "musicId": "7500000000000000001"
+    },
+    "webVideoUrl": "https://www.tiktok.com/@ornek.hesap/video/7500000000000000003",
+    "mediaUrls": [],
+    "videoMeta": {
+      "height": 0,
+      "width": 0,
+      "duration": 0,
+      "coverUrl": "https://p16-sign.example-cdn.test/kapak-kisaltildi",
+      "originalCoverUrl": "",
+      "definition": "",
+      "format": ""
+    },
+    "diggCount": 3600,
+    "shareCount": 120,
+    "playCount": 75000,
+    "collectCount": 270,
+    "commentCount": 45,
+    "repostCount": 0,
+    "mentions": [],
+    "detailedMentions": [],
+    "hashtags": [
+      {
+        "id": "1001",
+        "name": "ipucu",
+        "title": "",
+        "cover": ""
+      },
+      {
+        "id": "1002",
+        "name": "Verimlilik",
+        "title": "",
+        "cover": ""
+      }
+    ],
+    "effectStickers": [],
+    "isSlideshow": true,
+    "isPinned": false,
+    "isSponsored": false,
+    "input": "ornek.hesap",
+    "fromProfileSection": "videos",
+    "slideshowImageLinks": [
+      {
+        "tiktokLink": "https://p16-sign.example-cdn.test/slayt-kisaltildi",
+        "downloadLink": "https://p16-sign.example-cdn.test/slayt-kisaltildi"
+      }
+    ]
+  },
+  {
+    "id": "7500000000000000004",
+    "text": "Uzun video: etiket açıklamada #UzunAnlatım",
+    "textLanguage": "tr",
+    "createTime": 1790345600,
+    "createTimeISO": "2026-09-25T14:13:20.000Z",
+    "isAd": false,
+    "authorMeta": {
+      "id": "6900000000000000001",
+      "name": "ornek.hesap",
+      "profileUrl": "https://www.tiktok.com/@ornek.hesap",
+      "nickName": "Örnek Hesap",
+      "verified": false,
+      "signature": "Örnek biyografi metni. Her gün kısa ipuçları.",
+      "bioLink": "https://ornek.example/baglanti",
+      "originalAvatarUrl": "https://p16-sign.example-cdn.test/avatar-kisaltildi",
+      "avatar": "https://p16-sign.example-cdn.test/avatar-kisaltildi",
+      "commerceUserInfo": {
+        "commerceUser": true,
+        "category": "Education"
+      },
+      "privateAccount": false,
+      "region": "TR",
+      "roomId": "",
+      "ttSeller": false,
+      "following": 212,
+      "friends": 40,
+      "fans": 18400,
+      "heart": 905000,
+      "video": 148,
+      "digg": 3100
+    },
+    "musicMeta": {
+      "musicName": "original sound",
+      "musicAuthor": "Örnek Hesap",
+      "musicOriginal": true,
+      "playUrl": "https://sf16-ies-music.example-cdn.test/ses-kisaltildi",
+      "coverMediumUrl": "",
+      "originalCoverMediumUrl": "",
+      "musicId": "7500000000000000001"
+    },
+    "webVideoUrl": "https://www.tiktok.com/@ornek.hesap/video/7500000000000000004",
+    "mediaUrls": [],
+    "videoMeta": {
+      "height": 1920,
+      "width": 1080,
+      "duration": 412,
+      "coverUrl": "",
+      "originalCoverUrl": "",
+      "definition": "1080p",
+      "format": "mp4"
+    },
+    "diggCount": 4800,
+    "shareCount": null,
+    "playCount": 100000,
+    "commentCount": 60,
+    "repostCount": 0,
+    "mentions": [],
+    "detailedMentions": [],
+    "hashtags": [],
+    "effectStickers": [],
+    "isSlideshow": false,
+    "isPinned": false,
+    "isSponsored": false,
+    "input": "ornek.hesap",
+    "fromProfileSection": "videos"
+  }
+]

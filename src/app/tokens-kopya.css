@@ -1,0 +1,79 @@
+/*
+  Müşteri kopyası (`PANEL_EDITION=kopya`) renk değerleri: kök `<html data-edition="kopya">` iken `tokens-light.css`'teki belirteçlerin
+  DEĞERİNİ ezer (sıcak krem zemin + koyu yeşil-petrol eylem rengi). Yeni anlam AÇILMAZ: yalnız var olan adların değeri değişir
+  (koruma `src/lib/theme-tokens.test.ts`). Kopyada koyu tema yoktur (tema betiği `dark` sınıfı eklemez). Sarı (`--attention`) aynen kalır.
+  Bu dosya `tokens-light.css`'ten SONRA yüklenir (eşit özgüllükte sıra kazanır).
+*/
+
+[data-edition="kopya"] {
+  color-scheme: light;
+  /* Zemin basamakları: sıcak krem (çukur) < yüzey < kart. */
+  --background: oklch(0.955 0.022 85);
+  --surface: oklch(0.973 0.016 85);
+  --card: oklch(0.99 0.008 85);
+  --popover: oklch(0.99 0.008 85);
+  --foreground: oklch(0.27 0.02 60);
+  --card-foreground: oklch(0.27 0.02 60);
+  --popover-foreground: oklch(0.27 0.02 60);
+  /* Eylem rengi: koyu yeşil-petrol. */
+  --brand: oklch(0.42 0.07 190);
+  --brand-soft: oklch(0.925 0.03 190);
+  --brand-soft-foreground: oklch(0.38 0.07 190);
+  --secondary: oklch(0.925 0.022 85);
+  --secondary-foreground: oklch(0.27 0.02 60);
+  --muted: oklch(0.925 0.022 85);
+  --muted-foreground: oklch(0.44 0.025 65);
+  --accent: oklch(0.915 0.03 100);
+  --accent-foreground: oklch(0.27 0.02 60);
+  /* Kenarlık: sıcak kahve tonu. */
+  --border: color-mix(in oklab, oklch(0.35 0.04 70) 16%, transparent);
+  --input: color-mix(in oklab, oklch(0.35 0.04 70) 26%, transparent);
+  --ring: oklch(0.52 0.07 190);
+  --chart-1: oklch(0.42 0.07 190);
+  --chart-3: oklch(0.55 0.07 190);
+  --sidebar: oklch(0.973 0.016 85);
+  --sidebar-foreground: oklch(0.27 0.02 60);
+  --sidebar-accent: oklch(0.925 0.03 150);
+  --sidebar-accent-foreground: oklch(0.33 0.07 190);
+  --sidebar-border: color-mix(in oklab, oklch(0.35 0.04 70) 16%, transparent);
+  --sidebar-ring: oklch(0.52 0.07 190);
+  --ai-surface: oklch(0.973 0.016 85);
+  --ai-surface-foreground: oklch(0.27 0.02 60);
+  --ai-rule: oklch(0.42 0.05 190);
+  --ai-meta: oklch(0.44 0.025 65);
+  --awaiting-soft: oklch(0.925 0.03 190);
+  --awaiting-soft-foreground: oklch(0.38 0.07 190);
+  --awaiting-border: color-mix(in oklab, oklch(0.42 0.07 190) 38%, transparent);
+  --confidence-fill: oklch(0.27 0.02 60);
+  --confidence-track: oklch(0.86 0.02 85);
+  --evidence-surface: oklch(0.965 0.014 85);
+  --evidence-border: oklch(0.89 0.02 85);
+  --unmeasured: oklch(0.5 0.025 65);
+  --unmeasured-hatch: color-mix(in oklab, oklch(0.27 0.02 60) 8%, transparent);
+  /* Baskın karar bloğu: gece mavisi yerine koyu yeşil-petrol. */
+  --focus-surface: oklch(0.3 0.055 195);
+  --focus-surface-raised: oklch(0.37 0.06 195);
+  --focus-ink: oklch(0.975 0.012 90);
+  --focus-ink-muted: oklch(0.85 0.03 150);
+  --focus-line: color-mix(in oklab, oklch(0.975 0.012 90) 17%, transparent);
+  --nav-current: oklch(0.38 0.07 190);
+  --nav-current-foreground: oklch(0.985 0.008 90);
+  --mascot-body: oklch(0.38 0.07 190);
+  --mascot-part: oklch(0.6 0.06 190);
+  --trend: oklch(0.42 0.07 190);
+  --bar-track: oklch(0.9 0.02 85);
+  --funnel-1: oklch(0.36 0.07 190);
+  --funnel-2: oklch(0.5 0.07 190);
+  --funnel-3: oklch(0.64 0.06 190);
+  --funnel-4: oklch(0.78 0.05 190);
+  --player-surface: oklch(0.3 0.055 195);
+  --player-ink: oklch(0.975 0.012 90);
+  --player-control: color-mix(in oklab, oklch(0.975 0.012 90) 16%, transparent);
+  --elevation-focus: 0 1px 2px color-mix(in oklab, oklch(0.27 0.02 60) 10%, transparent),
+    0 22px 40px -24px color-mix(in oklab, oklch(0.42 0.07 190) 62%, transparent);
+  --elevation-control: 0 1px 2px color-mix(in oklab, oklch(0.27 0.02 60) 13%, transparent);
+  --elevation-sheet: 0 -12px 40px -16px color-mix(in oklab, oklch(0.27 0.02 60) 40%, transparent);
+  --elevation-float: 0 1px 3px color-mix(in oklab, oklch(0.27 0.02 60) 22%, transparent),
+    0 10px 24px -8px color-mix(in oklab, oklch(0.42 0.07 190) 60%, transparent);
+  --overlay: color-mix(in oklab, oklch(0.27 0.02 60) 45%, transparent);
+}

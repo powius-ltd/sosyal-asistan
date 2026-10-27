@@ -1,0 +1,20 @@
+[
+  {
+    "url": "https://www.tiktok.com/@ornek.gizli",
+    "input": "ornek.gizli",
+    "error": "Profile is private",
+    "errorCode": "PROFILE_PRIVATE"
+  },
+  {
+    "url": "https://www.tiktok.com/@ornek.bulunmayan",
+    "input": "ornek.bulunmayan",
+    "error": "Profile not found",
+    "errorCode": "NOT_FOUND"
+  },
+  {
+    "url": "https://www.tiktok.com/@ornek.bos",
+    "input": "ornek.bos",
+    "error": "Profile has no videos",
+    "errorCode": "PROFILE_EMPTY"
+  }
+]

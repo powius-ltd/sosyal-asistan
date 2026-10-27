@@ -1,0 +1,204 @@
+/*
+  Tailwind eşlemesi: belirteç dosyalarındaki anlam değişkenlerini (`--success`, `--brand`…) sınıf adına (`bg-success`, `text-brand`)
+  bağlar. Burada RENK DEĞERİ yazılmaz (renk yalnız `tokens-light.css` / `tokens-dark.css`'te); yeni anlam önce orada `:root` + `.dark`'a,
+  sonra buraya eklenir. Renk olmayan ölçüler (köşe, dokunma boyu, yazı ailesi) burada tanımlanır. `globals.css` bu dosyayı içe aktarır;
+  koruma testi `src/lib/theme-tokens.test.ts` hepsini birlikte okur.
+*/
+
+@theme inline {
+  --font-sans: var(--font-instrument-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+  /* AI metninin yazı ailesi (`font-voice`): serif gördüğün cümleyi AI yazdı. Başlıklar da aynı aileyi kullanır. */
+  --font-voice: var(--font-newsreader), ui-serif, Georgia, serif;
+  --font-heading: var(--font-voice);
+  /* Başlık, rakam ve dev saat (`font-figure`): Bricolage Grotesque. */
+  --font-figure: var(--font-bricolage), var(--font-instrument-sans), ui-sans-serif, system-ui, sans-serif;
+
+  /* Hareket: `duration-fast|base|slow`, `ease-out`, `animate-arrive` (geliş), `animate-progress` (belirsiz ilerleme çizgisi). */
+  --transition-duration-fast: var(--duration-fast);
+  --transition-duration-base: var(--duration-base);
+  --transition-duration-slow: var(--duration-slow);
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --animate-arrive: arrive var(--duration-slow) cubic-bezier(0.16, 1, 0.3, 1) both;
+  --animate-progress: progress-slide 1.6s ease-in-out infinite;
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+
+  /* Vurgu, AI yüzeyi, onay, güven ölçeği, kanıt katmanı, ölçülemeyen */
+  --color-brand: var(--brand);
+  --color-brand-foreground: var(--brand-foreground);
+  --color-brand-soft: var(--brand-soft);
+  --color-brand-soft-foreground: var(--brand-soft-foreground);
+  --color-ai-surface: var(--ai-surface);
+  --color-ai-surface-foreground: var(--ai-surface-foreground);
+  --color-ai-rule: var(--ai-rule);
+  --color-ai-meta: var(--ai-meta);
+  --color-awaiting-soft: var(--awaiting-soft);
+  --color-awaiting-soft-foreground: var(--awaiting-soft-foreground);
+  --color-awaiting-border: var(--awaiting-border);
+  --color-approved-soft: var(--approved-soft);
+  --color-approved-soft-foreground: var(--approved-soft-foreground);
+  --color-confidence-fill: var(--confidence-fill);
+  --color-confidence-track: var(--confidence-track);
+  --color-evidence-surface: var(--evidence-surface);
+  --color-evidence-border: var(--evidence-border);
+  --color-unmeasured: var(--unmeasured);
+
+  /* Durum: metin/ikon (düz zeminde), dolu zemin, rozet */
+  --color-success: var(--success);
+  --color-success-strong: var(--success-strong);
+  --color-success-solid: var(--success-solid);
+  --color-success-soft: var(--success-soft);
+  --color-success-soft-foreground: var(--success-soft-foreground);
+  --color-warning: var(--warning);
+  --color-warning-strong: var(--warning-strong);
+  --color-warning-detail: var(--warning-detail);
+  --color-warning-solid: var(--warning-solid);
+  --color-warning-soft: var(--warning-soft);
+  --color-warning-soft-foreground: var(--warning-soft-foreground);
+  --color-danger: var(--danger);
+  --color-danger-soft: var(--danger-soft);
+  --color-danger-soft-foreground: var(--danger-soft-foreground);
+  --color-info-soft: var(--info-soft);
+  --color-info-soft-foreground: var(--info-soft-foreground);
+  /* Uyarı kutusu/rozeti (notice) ve metin vurgusu (highlight) */
+  --color-notice: var(--notice);
+  --color-notice-quiet: var(--notice-quiet);
+  --color-notice-border: var(--notice-border);
+  --color-notice-badge-border: var(--notice-badge-border);
+  --color-notice-foreground: var(--notice-foreground);
+  --color-notice-foreground-strong: var(--notice-foreground-strong);
+  --color-notice-code: var(--notice-code);
+  --color-highlight: var(--highlight);
+  --color-highlight-foreground: var(--highlight-foreground);
+  /* Süreç aşamaları (yayın durumu, koşu durumu, plan rozeti): rozet zemini + metin */
+  --color-plan-soft: var(--plan-soft);
+  --color-plan-soft-foreground: var(--plan-soft-foreground);
+  --color-preparing-soft: var(--preparing-soft);
+  --color-preparing-soft-foreground: var(--preparing-soft-foreground);
+  --color-ready-soft: var(--ready-soft);
+  --color-ready-soft-foreground: var(--ready-soft-foreground);
+  --color-publishing-soft: var(--publishing-soft);
+  --color-publishing-soft-foreground: var(--publishing-soft-foreground);
+  --color-expired-soft: var(--expired-soft);
+  --color-expired-soft-foreground: var(--expired-soft-foreground);
+  /* Lift kademeleri 1-4 (0 = muted): rozet zemini + metin, grafik/lejant noktası */
+  --color-tier-1-soft: var(--tier-1-soft);
+  --color-tier-1-soft-foreground: var(--tier-1-soft-foreground);
+  --color-tier-1-solid: var(--tier-1-solid);
+  --color-tier-2-soft: var(--tier-2-soft);
+  --color-tier-2-soft-foreground: var(--tier-2-soft-foreground);
+  --color-tier-2-solid: var(--tier-2-solid);
+  --color-tier-3-soft: var(--tier-3-soft);
+  --color-tier-3-soft-foreground: var(--tier-3-soft-foreground);
+  --color-tier-3-solid: var(--tier-3-solid);
+  --color-tier-4-soft: var(--tier-4-soft);
+  --color-tier-4-soft-foreground: var(--tier-4-soft-foreground);
+  --color-tier-4-solid: var(--tier-4-solid);
+  /* Platform noktası, anatomi evresi çubuğu, çubuk üstü metin */
+  --color-platform-instagram: var(--platform-instagram);
+  --color-platform-tiktok: var(--platform-tiktok);
+  --color-platform-youtube: var(--platform-youtube);
+  --color-phase-hook: var(--phase-hook);
+  --color-phase-intro: var(--phase-intro);
+  --color-phase-body: var(--phase-body);
+  --color-phase-cta: var(--phase-cta);
+  --color-solid-foreground: var(--solid-foreground);
+  /* Matris hücre durumu (fırsat / denendi / zayıf) */
+  --color-cell-opportunity: var(--cell-opportunity);
+  --color-cell-opportunity-border: var(--cell-opportunity-border);
+  --color-cell-opportunity-foreground: var(--cell-opportunity-foreground);
+  --color-cell-tried: var(--cell-tried);
+  --color-cell-tried-border: var(--cell-tried-border);
+  --color-cell-weak: var(--cell-weak);
+  --color-cell-weak-border: var(--cell-weak-border);
+  /* Modal/çekmece arka perdesi */
+  --color-overlay: var(--overlay);
+
+  /* Zemin basamağı: çukur (`background`) < `surface` < yükselmiş (`card`) */
+  --color-surface: var(--surface);
+  /* Sıra sende (sarı): ana düğme, işaret noktası, sıradaki kart */
+  --color-attention: var(--attention);
+  --color-attention-ink: var(--attention-ink);
+  --color-attention-pressed: var(--attention-pressed);
+  --color-attention-soft: var(--attention-soft);
+  --color-attention-soft-ink: var(--attention-soft-ink);
+  --color-attention-soft-edge: var(--attention-soft-edge);
+  /* Bugünün baskın işi: ekranın tek gece yüzeyi */
+  --color-focus-surface: var(--focus-surface);
+  --color-focus-surface-raised: var(--focus-surface-raised);
+  --color-focus-ink: var(--focus-ink);
+  --color-focus-ink-muted: var(--focus-ink-muted);
+  --color-focus-line: var(--focus-line);
+  --color-focus-edge: var(--focus-edge);
+  /* Seçili gezinme */
+  --color-nav-current: var(--nav-current);
+  --color-nav-current-foreground: var(--nav-current-foreground);
+  /* Maskot (Demirkazık) */
+  --color-mascot-body: var(--mascot-body);
+  --color-mascot-part: var(--mascot-part);
+  --color-mascot-signal: var(--mascot-signal);
+  /* Grafik ve ilerleme */
+  --color-trend: var(--trend);
+  --color-bar-track: var(--bar-track);
+  --color-funnel-1: var(--funnel-1);
+  --color-funnel-2: var(--funnel-2);
+  --color-funnel-3: var(--funnel-3);
+  --color-funnel-4: var(--funnel-4);
+  --color-unmeasured-hatch: var(--unmeasured-hatch);
+  /* Oynatıcı */
+  --color-player-surface: var(--player-surface);
+  --color-player-ink: var(--player-ink);
+  --color-player-control: var(--player-control);
+  --color-player-edge: var(--player-edge);
+
+  /* Gölge (`shadow-focus|control|sheet|float`), müşteri ekranı köşeleri ve dokunma boyu (`min-h-tap`) */
+  --shadow-focus: var(--elevation-focus);
+  --shadow-control: var(--elevation-control);
+  --shadow-sheet: var(--elevation-sheet);
+  --shadow-float: var(--elevation-float);
+  --radius-card: 16px;
+  --radius-inner: 11px;
+  --radius-control: 10px;
+  --radius-sheet: 22px;
+  --radius-pill: 99px;
+  --spacing-tap: 48px;
+
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) + 8px);
+  --radius-3xl: calc(var(--radius) + 12px);
+  --radius-4xl: calc(var(--radius) + 16px);
+}

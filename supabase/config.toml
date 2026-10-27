@@ -1,0 +1,113 @@
+# panel — lokal Supabase yapılandırması (CLI 2.118.0)
+# Ayrıntılı başvuru: https://supabase.com/docs/guides/local-development/cli/config
+#
+# Lokal Docker yalnız geliştirme oturumunda açılır (npm run db:start / db:stop). Kullanılmayan servisler
+# KAPALI tutulur (realtime, edge runtime, analytics, storage, mailpit, studio) → ~1-1,5 GB RAM.
+# Açık: db (Postgres 17), api (PostgREST), auth (RLS `auth.uid()` şeması için gerekli).
+# Anahtar/URL değerleri: `npm run db:status` (ya da `npx supabase@2.118.0 status`); hiçbir dosyaya yazılmaz.
+
+project_id = "panel"
+
+[api]
+enabled = true
+port = 54321
+schemas = ["public", "graphql_public"]
+extra_search_path = ["public", "extensions"]
+# Tek yanıtta dönecek en çok satır (yanlışlıkla/kötü niyetle büyük yük çekilmesin).
+max_rows = 1000
+
+[api.tls]
+enabled = false
+
+[db]
+port = 54322
+shadow_port = 54320
+health_timeout = "2m"
+major_version = 17
+
+[db.pooler]
+enabled = false
+
+[db.migrations]
+enabled = true
+
+[db.seed]
+enabled = true
+sql_paths = ["./seed.sql"]
+
+[db.network_restrictions]
+enabled = false
+
+# ---- KAPALI servisler -------------------------------------------------------
+
+[realtime]
+enabled = false
+
+# Studio (web arayüzü) isteğe bağlı: açmak için `enabled = true` yap, sonra
+# `npm run db:stop && npm run db:start`. Adres: http://127.0.0.1:54323
+[studio]
+enabled = false
+port = 54323
+api_url = "http://127.0.0.1"
+
+# Mailpit (eski adıyla inbucket): giden e-posta yakalayıcı. Faz 1'de e-posta akışı yok.
+[local_smtp]
+enabled = false
+port = 54324
+
+# Storage (video/görsel) Faz 3'e kadar yok: bucket oluşturma yok. Faz 3'te `enabled = true` yap ve
+# `[storage.buckets.publish-media]` (public = false) ekle.
+[storage]
+enabled = false
+file_size_limit = "50MiB"
+
+[storage.s3_protocol]
+enabled = false
+
+[storage.image_transformation]
+enabled = false
+
+[storage.analytics]
+enabled = false
+
+[storage.vector]
+enabled = false
+
+[edge_runtime]
+enabled = false
+
+[analytics]
+enabled = false
+port = 54327
+backend = "postgres"
+
+# ---- AÇIK: auth ---------------------------------------------------------------
+# Faz 1'de giriş ekranı yok (sunucu service role ile çalışır); şema RLS politikaları için gerekli.
+# Giriş Vercel'e çıkıştan (F3.5) önce eklenecek: o zaman `site_url`/yönlendirmeleri güncelle,
+# `enable_signup`'ı kapatıp kullanıcıyı davetle/admin API ile oluşturmayı düşün.
+
+[auth]
+enabled = true
+site_url = "http://127.0.0.1:3100"
+additional_redirect_urls = ["http://localhost:3100", "http://127.0.0.1:3100"]
+jwt_expiry = 3600
+enable_refresh_token_rotation = true
+refresh_token_reuse_interval = 10
+enable_signup = true
+enable_anonymous_sign_ins = false
+enable_manual_linking = false
+minimum_password_length = 8
+password_requirements = ""
+
+[auth.email]
+enable_signup = true
+double_confirm_changes = true
+enable_confirmations = false
+secure_password_change = false
+max_frequency = "1s"
+otp_length = 6
+otp_expiry = 3600
+
+[auth.sms]
+enable_signup = false
+enable_confirmations = false

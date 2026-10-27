@@ -1,0 +1,195 @@
+[
+  {
+    "id": "7300000000000000001",
+    "text": "Kahve demleme ipucu 1 #kahve #demleme",
+    "createTime": 1760260000,
+    "createTimeISO": "2026-10-12T09:30:00.000Z",
+    "webVideoUrl": "https://www.tiktok.com/@kucuk_yazar_1/video/7300000000000000001",
+    "isAd": false,
+    "isPinned": false,
+    "isSlideshow": false,
+    "videoMeta": {
+      "duration": 24
+    },
+    "hashtags": [
+      {
+        "name": "kahve"
+      },
+      {
+        "name": "demleme"
+      }
+    ],
+    "playCount": 90000,
+    "diggCount": 6100,
+    "commentCount": 140,
+    "shareCount": 210,
+    "collectCount": 380,
+    "authorMeta": {
+      "name": "kucuk_yazar_1",
+      "fans": 2000,
+      "video": 40
+    },
+    "input": "kahvedemleme"
+  },
+  {
+    "id": "7300000000000000002",
+    "text": "Kahve demleme ipucu 2 #kahve #demleme",
+    "createTime": 1760260000,
+    "createTimeISO": "2026-10-12T09:30:00.000Z",
+    "webVideoUrl": "https://www.tiktok.com/@kucuk_yazar_2/video/7300000000000000002",
+    "isAd": false,
+    "isPinned": false,
+    "isSlideshow": false,
+    "videoMeta": {
+      "duration": 24
+    },
+    "hashtags": [
+      {
+        "name": "kahve"
+      },
+      {
+        "name": "demleme"
+      }
+    ],
+    "playCount": 50000,
+    "diggCount": 6100,
+    "commentCount": 140,
+    "shareCount": 210,
+    "collectCount": 380,
+    "authorMeta": {
+      "name": "buyuk_hesap",
+      "fans": 1000000
+    },
+    "input": "kahvedemleme"
+  },
+  {
+    "id": "7300000000000000003",
+    "text": "Kahve demleme ipucu 3 #kahve #demleme",
+    "createTime": 1760260000,
+    "createTimeISO": "2026-10-12T09:30:00.000Z",
+    "webVideoUrl": "https://www.tiktok.com/@kucuk_yazar_3/video/7300000000000000003",
+    "isAd": false,
+    "isPinned": false,
+    "isSlideshow": false,
+    "videoMeta": {
+      "duration": 24
+    },
+    "hashtags": [
+      {
+        "name": "kahve"
+      },
+      {
+        "name": "demleme"
+      }
+    ],
+    "playCount": 90000,
+    "diggCount": 6100,
+    "commentCount": 140,
+    "shareCount": 210,
+    "collectCount": 380,
+    "authorMeta": {
+      "name": "takipcisi_yok"
+    },
+    "input": "kahvedemleme"
+  },
+  {
+    "id": "7300000000000000004",
+    "text": "Kahve demleme ipucu 4 #kahve #demleme",
+    "createTime": 1760260000,
+    "createTimeISO": "2026-10-12T09:30:00.000Z",
+    "webVideoUrl": "https://www.tiktok.com/@kucuk_yazar_4/video/7300000000000000004",
+    "isAd": false,
+    "isPinned": false,
+    "isSlideshow": true,
+    "videoMeta": {
+      "duration": 24
+    },
+    "hashtags": [
+      {
+        "name": "kahve"
+      },
+      {
+        "name": "demleme"
+      }
+    ],
+    "playCount": 90000,
+    "diggCount": 6100,
+    "commentCount": 140,
+    "shareCount": 210,
+    "collectCount": 380,
+    "authorMeta": {
+      "name": "kucuk_yazar_4",
+      "fans": 2000,
+      "video": 40
+    },
+    "input": "kahvedemleme"
+  },
+  {
+    "id": "7300000000000000005",
+    "text": "Kahve demleme ipucu 5 #kahve #demleme",
+    "createTime": 1751362200,
+    "createTimeISO": "2026-07-01T09:30:00.000Z",
+    "webVideoUrl": "https://www.tiktok.com/@kucuk_yazar_5/video/7300000000000000005",
+    "isAd": false,
+    "isPinned": false,
+    "isSlideshow": false,
+    "videoMeta": {
+      "duration": 24
+    },
+    "hashtags": [
+      {
+        "name": "kahve"
+      },
+      {
+        "name": "demleme"
+      }
+    ],
+    "playCount": 90000,
+    "diggCount": 6100,
+    "commentCount": 140,
+    "shareCount": 210,
+    "collectCount": 380,
+    "authorMeta": {
+      "name": "kucuk_yazar_5",
+      "fans": 2000,
+      "video": 40
+    },
+    "input": "kahvedemleme"
+  },
+  {
+    "error": "no_items",
+    "errorDescription": "Sonuç yok"
+  },
+  {
+    "id": "7300000000000000007",
+    "text": "Temiz yazar satırı #kahve",
+    "createTime": 1760260000,
+    "createTimeISO": "2026-10-12T09:30:00.000Z",
+    "webVideoUrl": "https://www.tiktok.com/@kucuk_yazar_7/video/7300000000000000007",
+    "isAd": false,
+    "isPinned": false,
+    "isSlideshow": false,
+    "videoMeta": {
+      "duration": 24
+    },
+    "hashtags": [
+      {
+        "name": "kahve"
+      },
+      {
+        "name": "demleme"
+      }
+    ],
+    "playCount": 90000,
+    "diggCount": 6100,
+    "commentCount": 140,
+    "shareCount": 210,
+    "collectCount": 380,
+    "authorMeta": {
+      "name": "temiz_yazar",
+      "fans": 3000,
+      "video": 40
+    },
+    "input": "kahvedemleme"
+  }
+]

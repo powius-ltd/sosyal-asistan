@@ -1,0 +1,103 @@
+[
+  {
+    "inputUrl": "https://www.instagram.com/explore/search/keyword/?q=kahve%20demleme",
+    "id": "3700000000000000001",
+    "type": "Video",
+    "productType": "clips",
+    "shortCode": "VR0001",
+    "url": "https://www.instagram.com/reel/VR0001/",
+    "caption": "Evde kahve demlemenin 3 ince ayarı #kahve #demleme #evde",
+    "hashtags": [
+      "kahve",
+      "demleme",
+      "evde"
+    ],
+    "commentsCount": 90,
+    "likesCount": 4200,
+    "videoPlayCount": 120000,
+    "igPlayCount": 120000,
+    "sharesCount": 30,
+    "timestamp": "2026-10-12T09:30:00.000Z",
+    "videoDuration": 21.5,
+    "ownerUsername": "kucuk_hesap_a"
+  },
+  {
+    "id": "3700000000000000002",
+    "type": "Video",
+    "productType": "clips",
+    "shortCode": "VR0002",
+    "url": "https://www.instagram.com/reel/VR0002/",
+    "caption": "Düşük izlenmeli",
+    "hashtags": [],
+    "commentsCount": 3,
+    "likesCount": 40,
+    "videoPlayCount": 8000,
+    "timestamp": "2026-10-14T09:30:00.000Z",
+    "videoDuration": 14,
+    "ownerUsername": "kucuk_hesap_b"
+  },
+  {
+    "id": "3700000000000000003",
+    "type": "Video",
+    "productType": "clips",
+    "shortCode": "VR0003",
+    "url": "https://www.instagram.com/reel/VR0003/",
+    "caption": "Eski ama patlamış",
+    "hashtags": [
+      "kahve"
+    ],
+    "commentsCount": 500,
+    "likesCount": 9000,
+    "videoPlayCount": 900000,
+    "timestamp": "2026-08-01T09:30:00.000Z",
+    "videoDuration": 30,
+    "ownerUsername": "kucuk_hesap_c"
+  },
+  {
+    "id": "3700000000000000004",
+    "type": "Video",
+    "productType": "clips",
+    "shortCode": "VR0004",
+    "url": "https://www.instagram.com/reel/VR0004/",
+    "caption": "Gizli beğeni, kapalı yorum #kahve",
+    "commentsCount": 0,
+    "isCommentsDisabled": true,
+    "likesCount": -1,
+    "videoViewCount": 55000,
+    "timestamp": "2026-10-15T18:00:00.000Z",
+    "videoDuration": 9,
+    "ownerUsername": "Kucuk.Hesap_D"
+  },
+  {
+    "error": "no_items",
+    "errorDescription": "Sonuç yok"
+  },
+  {
+    "id": "3700000000000000006",
+    "type": "Video",
+    "productType": "clips",
+    "shortCode": "VR0006",
+    "url": "https://www.instagram.com/reel/VR0006/",
+    "caption": "Yazarı olmayan satır",
+    "videoPlayCount": 70000,
+    "timestamp": "2026-10-15T18:00:00.000Z"
+  },
+  {
+    "id": "3700000000000000007",
+    "type": "Video",
+    "productType": "clips",
+    "shortCode": "VR0007",
+    "url": "https://www.instagram.com/reel/VR0007/",
+    "caption": "Temiz yazar satırı #kahve",
+    "hashtags": [
+      "kahve"
+    ],
+    "commentsCount": 12,
+    "likesCount": 800,
+    "videoPlayCount": 60000,
+    "sharesCount": 5,
+    "timestamp": "2026-10-16T08:00:00.000Z",
+    "videoDuration": 18,
+    "ownerUsername": "temiz_yazar"
+  }
+]

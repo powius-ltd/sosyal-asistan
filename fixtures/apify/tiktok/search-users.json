@@ -1,0 +1,37 @@
+[
+  {
+    "id": "7510000000000000001",
+    "text": "Örnek arama sonucu 1 #ipucu",
+    "createTimeISO": "2026-10-01T10:00:00.000Z",
+    "authorMeta": { "id": "6910000000000000001", "name": "ornek.bir", "nickName": "Görünen Ad Bir", "avatar": "https://p16-sign.example-cdn.test/avatar-bir", "verified": false, "privateAccount": false, "fans": 52000, "following": 10, "video": 90 },
+    "searchQuery": "verimlilik"
+  },
+  {
+    "id": "7510000000000000002",
+    "text": "Aynı yazarın ikinci videosu",
+    "authorMeta": { "id": "6910000000000000001", "name": "ornek.bir", "nickName": "Görünen Ad Bir", "fans": 52000, "privateAccount": false },
+    "searchQuery": "verimlilik"
+  },
+  {
+    "id": "7510000000000000003",
+    "text": "Takipçi sayısı olmayan yazar",
+    "authorMeta": { "id": "6910000000000000003", "name": "ornek.iki", "privateAccount": false },
+    "searchQuery": "verimlilik"
+  },
+  {
+    "id": "7510000000000000004",
+    "text": "Gizli hesap",
+    "authorMeta": { "id": "6910000000000000004", "name": "ornek.gizli", "privateAccount": true, "fans": 700 }
+  },
+  {
+    "id": "7510000000000000005",
+    "text": "Üçüncü kişi verisi enjekte edilmiş satır",
+    "authorMeta": { "id": "6910000000000000005", "name": "ornek.uc", "nickName": "Gizli Ad Uc", "avatar": "https://p16-sign.example-cdn.test/avatar-gizli-uc", "fans": 8100, "privateAccount": false },
+    "latestComments": [{ "uniqueId": "yorumcu.arama_9", "text": "gizli arama yorumu 4d2b" }],
+    "firstComment": "gizli arama yorumu 4d2b",
+    "mentions": ["@anilan.arama"],
+    "detailedMentions": [{ "name": "anilan.arama", "id": "6919" }],
+    "musicMeta": { "musicName": "x", "musicAuthor": "muzik.arama_sahibi" },
+    "collaborators": [{ "name": "ortak.arama_kisi" }]
+  }
+]

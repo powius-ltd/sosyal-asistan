@@ -1,0 +1,31 @@
+{
+  "posts": [
+    {
+      "_id": "post_pub_1",
+      "status": "published",
+      "scheduledFor": "2026-10-20T15:00:00.000Z",
+      "publishedAt": "2026-10-20T15:00:08.000Z",
+      "content": "Örnek açıklama (sentetik).",
+      "platforms": [
+        { "platform": "instagram", "platformPostUrl": "https://www.instagram.com/reel/EXAMPLE1/", "status": "published" }
+      ]
+    },
+    {
+      "_id": "post_sched_2",
+      "status": "scheduled",
+      "scheduledFor": "2026-10-23T15:00:00.000Z",
+      "content": "Örnek açıklama 2 (sentetik).",
+      "platforms": [
+        { "platform": "instagram", "status": "scheduled" }
+      ]
+    },
+    {
+      "_id": "post_odd_3",
+      "status": "partial_sync",
+      "content": "Örnek açıklama 3 (sentetik).",
+      "platforms": [
+        { "platform": "instagram", "status": "quarantined" }
+      ]
+    }
+  ]
+}

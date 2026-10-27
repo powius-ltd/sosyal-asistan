@@ -1,0 +1,150 @@
+/*
+  Karanlık tema değerleri (`.dark`, `<html>` üstünde). Aydınlık eşi `tokens-light.css`; burada yalnız karanlıkta FARKLI olanlar yazılır
+  (yazılmayan belirteç iki temada aynıdır). Türetilenler (`--primary`…) burada yeniden yazılır: `.dark` kökten aşağıda bir öğedeyse
+  `var()` kökte çözülmüş (açık) değeri miras alırdı. Karanlıkta sarı yumuşak yüzey zeytine kayar: yüzey gece tonunda kalır, sarı
+  yalnız kenar + nokta olur.
+*/
+
+.dark {
+  color-scheme: dark;
+  --background: oklch(0.165 0.035 266);
+  --surface: oklch(0.205 0.04 266);
+  --foreground: oklch(0.95 0.012 250);
+  --card: oklch(0.25 0.045 266);
+  --card-foreground: oklch(0.95 0.012 250);
+  --popover: oklch(0.25 0.045 266);
+  --popover-foreground: oklch(0.95 0.012 250);
+  --brand: oklch(0.82 0.085 255);
+  --brand-foreground: oklch(0.165 0.035 266);
+  --brand-soft: oklch(0.31 0.075 264);
+  --brand-soft-foreground: oklch(0.88 0.06 255);
+  --primary: var(--brand);
+  --primary-foreground: var(--brand-foreground);
+  --secondary: oklch(0.29 0.045 266);
+  --secondary-foreground: oklch(0.95 0.012 250);
+  --muted: oklch(0.29 0.045 266);
+  --muted-foreground: oklch(0.77 0.035 258);
+  --accent: oklch(0.29 0.045 266);
+  --accent-foreground: oklch(0.95 0.012 250);
+  --destructive: oklch(0.704 0.191 22.216);
+  --border: color-mix(in oklab, oklch(0.95 0.012 250) 13%, transparent);
+  --input: color-mix(in oklab, oklch(0.95 0.012 250) 20%, transparent);
+  --ring: oklch(0.65 0.09 258);
+  --chart-1: oklch(0.78 0.1 255);
+  --chart-2: oklch(0.78 0.12 165);
+  --chart-3: oklch(0.68 0.12 262);
+  --chart-4: oklch(0.78 0.15 60);
+  --chart-5: oklch(0.72 0.17 17);
+  --sidebar: oklch(0.205 0.04 266);
+  --sidebar-foreground: oklch(0.95 0.012 250);
+  --sidebar-primary: var(--brand);
+  --sidebar-primary-foreground: var(--brand-foreground);
+  --sidebar-accent: oklch(0.31 0.075 264);
+  --sidebar-accent-foreground: oklch(0.97 0.01 250);
+  --sidebar-border: color-mix(in oklab, oklch(0.95 0.012 250) 13%, transparent);
+  --sidebar-ring: oklch(0.65 0.09 258);
+
+  /* AI yüzeyi */
+  --ai-surface: oklch(0.205 0.04 266);
+  --ai-surface-foreground: oklch(0.95 0.012 250);
+  --ai-rule: oklch(0.7 0.05 258);
+  --ai-meta: oklch(0.77 0.035 258);
+  /* Onay bekleyen / onaylanan */
+  --awaiting-soft: oklch(0.31 0.075 264);
+  --awaiting-soft-foreground: oklch(0.88 0.06 255);
+  --awaiting-border: color-mix(in oklab, oklch(0.82 0.085 255) 45%, transparent);
+  --approved-soft: var(--success-soft);
+  --approved-soft-foreground: var(--success-soft-foreground);
+  /* Güven ölçeği, kanıt katmanı, ölçülemeyen */
+  --confidence-fill: oklch(0.95 0.012 250);
+  --confidence-track: oklch(0.4 0.04 264);
+  --evidence-surface: oklch(0.205 0.04 266);
+  --evidence-border: oklch(0.36 0.05 266);
+  --unmeasured: oklch(0.72 0.03 258);
+  --unmeasured-hatch: color-mix(in oklab, oklch(0.95 0.012 250) 11%, transparent);
+
+  /* Sıra sende: karanlıkta yumuşak yüzey gece tonundadır, sarı kenar + nokta kalır. */
+  --attention-pressed: oklch(0.62 0.13 88);
+  --attention-soft: oklch(0.27 0.055 264);
+  --attention-soft-ink: oklch(0.95 0.012 250);
+  --attention-soft-edge: color-mix(in oklab, oklch(0.86 0.16 95) 70%, transparent);
+  /* Gece bloğu koyu zeminde kaybolmasın: karanlıkta ekranın en aydınlık mavi yüzeyi. */
+  --focus-surface: oklch(0.43 0.165 264);
+  --focus-surface-raised: oklch(0.5 0.16 264);
+  --focus-ink: oklch(0.985 0.006 250);
+  --focus-ink-muted: oklch(0.9 0.04 255);
+  --focus-line: color-mix(in oklab, oklch(0.985 0.006 250) 24%, transparent);
+  --focus-edge: color-mix(in oklab, oklch(0.985 0.006 250) 26%, transparent);
+  /* Etkin gezinme hapı: yükselmiş yüzeyin (`--card`) üstünde açıkça seçilsin diye ondan belirgin aydınlık. */
+  --nav-current: oklch(0.38 0.1 264);
+  --nav-current-foreground: oklch(0.97 0.01 250);
+  --mascot-body: oklch(0.95 0.012 250);
+  --mascot-part: oklch(0.64 0.09 258);
+  --trend: oklch(0.78 0.1 255);
+  --bar-track: oklch(0.29 0.045 266);
+  --funnel-1: oklch(0.8 0.09 255);
+  --funnel-2: oklch(0.67 0.11 258);
+  --funnel-3: oklch(0.54 0.12 262);
+  --funnel-4: oklch(0.42 0.11 264);
+  --player-surface: oklch(0.12 0.03 266);
+  --player-edge: color-mix(in oklab, oklch(0.95 0.012 250) 16%, transparent);
+  --elevation-focus: 0 0 0 1px var(--focus-edge), 0 20px 48px -20px oklch(0.55 0.2 264);
+  --elevation-control: 0 1px 2px oklch(0.1 0.03 266);
+  --elevation-sheet: 0 -12px 40px -16px oklch(0.05 0.02 266);
+  --elevation-float: 0 0 0 1px var(--focus-edge), 0 12px 28px -10px oklch(0.05 0.02 266);
+
+  /* Durum */
+  --success: oklch(76.5% 0.177 163.223); /* emerald-400 */
+  --success-strong: oklch(76.5% 0.177 163.223); /* emerald-400 */
+  --success-soft: oklch(26.2% 0.051 172.552); /* emerald-950 */
+  --success-soft-foreground: oklch(84.5% 0.143 164.978); /* emerald-300 */
+  --warning: oklch(0.78 0.15 60);
+  --warning-strong: oklch(0.78 0.15 60);
+  --warning-detail: oklch(0.85 0.12 65);
+  --warning-soft: oklch(0.3 0.06 50);
+  --warning-soft-foreground: oklch(0.87 0.1 65);
+  --danger: oklch(71.2% 0.194 13.428); /* rose-400 */
+  --danger-soft: oklch(27.1% 0.105 12.094); /* rose-950 */
+  --danger-soft-foreground: oklch(81% 0.117 11.638); /* rose-300 */
+  --info-soft: oklch(29.3% 0.066 243.157); /* sky-950 */
+  --info-soft-foreground: oklch(82.8% 0.111 230.318); /* sky-300 */
+  /* Uyarı kutusu/rozeti */
+  --notice: oklch(0.28 0.06 50);
+  --notice-quiet: color-mix(in oklab, oklch(0.28 0.06 50) 40%, transparent);
+  --notice-border: oklch(0.42 0.09 50);
+  --notice-badge-border: oklch(0.48 0.1 50);
+  --notice-foreground: oklch(0.9 0.08 70);
+  --notice-foreground-strong: oklch(0.96 0.04 70);
+  --notice-code: color-mix(in oklab, oklch(0.42 0.09 50) 60%, transparent);
+  --highlight: color-mix(in oklab, oklch(0.42 0.09 50) 50%, transparent);
+  --highlight-foreground: oklch(0.96 0.04 70);
+  /* Süreç aşamaları */
+  --plan-soft: oklch(28.3% 0.141 291.089); /* violet-950 */
+  --plan-soft-foreground: oklch(81.1% 0.111 293.571); /* violet-300 */
+  --preparing-soft: oklch(28.3% 0.141 291.089); /* violet-950 */
+  --preparing-soft-foreground: oklch(81.1% 0.111 293.571); /* violet-300 */
+  --ready-soft: oklch(27.7% 0.046 192.524); /* teal-950 */
+  --ready-soft-foreground: oklch(85.5% 0.138 181.071); /* teal-300 */
+  --publishing-soft: oklch(25.7% 0.09 281.288); /* indigo-950 */
+  --publishing-soft-foreground: oklch(78.5% 0.115 274.713); /* indigo-300 */
+  --expired-soft: oklch(26.6% 0.079 36.259); /* orange-950 */
+  --expired-soft-foreground: oklch(83.7% 0.128 66.29); /* orange-300 */
+  /* Lift kademeleri 1-4 */
+  --tier-1-soft: oklch(29.3% 0.066 243.157); /* sky-950 */
+  --tier-1-soft-foreground: oklch(82.8% 0.111 230.318); /* sky-300 */
+  --tier-2-soft: oklch(26.2% 0.051 172.552); /* emerald-950 */
+  --tier-2-soft-foreground: oklch(84.5% 0.143 164.978); /* emerald-300 */
+  --tier-3-soft: oklch(0.3 0.06 50);
+  --tier-3-soft-foreground: oklch(0.87 0.1 65);
+  --tier-4-soft: oklch(27.1% 0.105 12.094); /* rose-950 */
+  --tier-4-soft-foreground: oklch(81% 0.117 11.638); /* rose-300 */
+  /* Matris hücre durumu */
+  --cell-opportunity: color-mix(in oklab, oklch(26.2% 0.051 172.552) 50%, transparent); /* emerald-950/50 */
+  --cell-opportunity-border: oklch(50.8% 0.118 165.612); /* emerald-700 */
+  --cell-opportunity-foreground: oklch(95% 0.052 163.051); /* emerald-100 */
+  --cell-tried: color-mix(in oklab, oklch(29.3% 0.066 243.157) 40%, transparent); /* sky-950/40 */
+  --cell-tried-border: oklch(44.3% 0.11 240.79); /* sky-800 */
+  --cell-weak: color-mix(in oklab, oklch(0.28 0.06 50) 30%, transparent);
+  --cell-weak-border: oklch(0.48 0.1 50);
+  --overlay: oklch(0.08 0.02 266 / 0.7);
+}

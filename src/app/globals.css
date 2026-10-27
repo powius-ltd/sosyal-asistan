@@ -1,0 +1,129 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+@import "./theme.css";
+@import "./tokens-light.css";
+@import "./tokens-dark.css";
+@import "./tokens-kopya.css";
+
+@custom-variant dark (&:is(.dark *));
+
+/*
+  panel — görsel dil: gece mavisi, iki tema (aydınlık/karanlık), Demirkazık (Maskot). Renk DEĞERLERİ yalnız
+  `tokens-light.css` (`:root`) ve `tokens-dark.css` (`.dark`) dosyalarındadır; Tailwind eşlemesi `theme.css`'te. Bu dosya yalnız
+  temel katmanı ve hareketi taşır.
+
+  Anlam renkleri (durum, kademe, platform, evre, hücre...) da belirteçtir: bileşenler Tailwind palet sınıfı (ton numaralı) yazmaz,
+  anlam belirteci yazar (`bg-warning-soft text-warning-soft-foreground`). Tema/marka değişimi yalnız belirteç dosyalarında yapılır.
+  Yeni anlam: `:root` + `.dark` + `@theme inline` (`theme.css`) üçlüsüne ekle; koruma testi `src/lib/theme-tokens.test.ts`.
+*/
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  html {
+    @apply font-sans;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+  /*
+    Alt gezinme boyu: dar ekranda alt çubuğun yüksekliği (64 px), geniş ekranda 0 (çubuk yok). Çubuk (`bottom-tabs.tsx`) ve sağ
+    alttaki sohbet düğmesi (`chat-launcher.tsx`) AYNI değişkeni kullanır: alt gezinme değişirse yalnız bu değer değişir.
+  */
+  :root {
+    --shell-bottom-nav: 4rem;
+  }
+  @media (min-width: 48rem) {
+    :root {
+      --shell-bottom-nav: 0px;
+    }
+  }
+  /* Rakamlar güncellenirken kaymasın. */
+  .tabular,
+  .font-mono {
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+/* Geliş: opaklık + birkaç piksel yukarı. Belirsiz ilerleme: ince çizgi soldan sağa kayar. */
+@keyframes arrive {
+  from {
+    opacity: 0;
+    transform: translateY(var(--arrive-shift));
+  }
+}
+@keyframes progress-slide {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(300%);
+  }
+}
+
+/* Hareket azaltma TEK yerde: geliş yalnız opaklık (120 ms), ilerleme çizgisi durur; metin yine değişir. */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --duration-base: 120ms;
+    --duration-slow: 120ms;
+    --arrive-shift: 0px;
+  }
+  .animate-progress {
+    animation: none;
+  }
+}
+
+/* Demirkazık (Maskot) hareketi: yalnız transform/opaklık. Dönen halka (düşünüyor), yayılan halka (anlatıyor), nefes (bekliyor), işaret noktası (sıra sende). */
+.mk-turn,
+.mk-wave,
+.mk-breathe {
+  transform-origin: 24px 24px;
+}
+.mk-turn {
+  animation: mk-turn 9s linear infinite;
+}
+.mk-wave {
+  animation: mk-wave 2.4s ease-out infinite;
+}
+.mk-breathe {
+  animation: mk-breathe 3.6s ease-in-out infinite;
+}
+.mk-pulse {
+  transform-origin: 37.4px 10.6px;
+  animation: mk-pulse 1.8s ease-in-out infinite;
+}
+@keyframes mk-turn {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes mk-wave {
+  from {
+    transform: scale(0.72);
+    opacity: 0.9;
+  }
+  to {
+    transform: scale(1.04);
+    opacity: 0.25;
+  }
+}
+@keyframes mk-breathe {
+  50% {
+    opacity: 0.55;
+  }
+}
+@keyframes mk-pulse {
+  50% {
+    transform: scale(1.16);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .mk-turn,
+  .mk-wave,
+  .mk-breathe,
+  .mk-pulse {
+    animation: none;
+  }
+}

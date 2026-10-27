@@ -1,0 +1,56 @@
+# dependencies
+/node_modules
+/.pnp
+.pnp.*
+
+# testing
+/coverage
+
+# next.js
+/.next/
+/out/
+next-env.d.ts
+
+# production
+/build
+
+# misc
+.DS_Store
+*.pem
+npm-debug.log*
+
+# env dosyaları (yalnız .env.example takip edilir)
+.env*
+!.env.example
+
+# paralel ajanların git worktree dizini
+.claude/worktrees
+
+# typescript
+*.tsbuildinfo
+tsconfig.tsbuildinfo
+
+# vercel / supabase CLI geçici
+.vercel
+supabase/.temp/
+
+# Playwright MCP çıktıları (ekran görüntüsü, konsol logu)
+.playwright-mcp/
+
+# plan:week yerel cikti (rakip alintilari icerir; commit edilmez)
+/docs/haftalik-plan/
+
+# rutin yerel raporlari (docs/rutin/<tarih>.md; rakip alintilari/harcama icerebilir; commit edilmez)
+/docs/rutin/
+
+# panel iscisi yerel gunlukleri (docs/isler/; rakip metni/harcama icerebilir; commit edilmez)
+/docs/isler/*.log
+
+# studyo deneme medyasi (docs/studyo-ornek; buyuk, bilerek commit edilmez; dosyalar yerinde durur)
+docs/studyo-ornek/*.mp4
+docs/studyo-ornek/*.mp3
+
+# müşteri kopyası: yerel çıktılar
+/siparisler/
+/yedek/
+/.venv/

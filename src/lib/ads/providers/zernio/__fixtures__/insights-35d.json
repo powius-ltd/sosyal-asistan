@@ -1,0 +1,1300 @@
+{
+ "objectId": "act_1000000001",
+ "data": [
+  {
+   "ad_id": "ad1",
+   "date_start": "2026-09-16",
+   "spend": "10.00",
+   "impressions": "1000",
+   "clicks": "20",
+   "reach": "900",
+   "frequency": "1.0",
+   "actions": [
+    {
+     "action_type": "purchase",
+     "value": "0"
+    },
+    {
+     "action_type": "link_click",
+     "value": "20"
+    }
+   ],
+   "action_values": [
+    {
+     "action_type": "purchase",
+     "value": "0"
+    }
+   ],
+   "video_3_sec_watched_actions": [
+    {
+     "action_type": "video_view",
+     "value": "400"
+    }
+   ],
+   "video_thruplay_watched_actions": [
+    {
+     "action_type": "video_view",
+     "value": "120"
+    }
+   ]
+  },
+  {
+   "ad_id": "ad1",
+   "date_start": "2026-09-17",
+   "spend": "11.00",
+   "impressions": "1010",
+   "clicks": "21",
+   "reach": "900",
+   "frequency": "1.1",
+   "actions": [
+    {
+     "action_type": "purchase",
+     "value": "1"
+    },
+    {
+     "action_type": "link_click",
+     "value": "20"
+    }
+   ],
+   "action_values": [
+    {
+     "action_type": "purchase",
+     "value": "100"
+    }
+   ],
+   "video_3_sec_watched_actions": [
+    {
+     "action_type": "video_view",
+     "value": "400"
+    }
+   ],
+   "video_thruplay_watched_actions": [
+    {
+     "action_type": "video_view",
+     "value": "120"
+    }
+   ]
+  },
+  {
+   "ad_id": "ad1",
+   "date_start": "2026-09-18",
+   "spend": "12.00",
+   "impressions": "1020",
+   "clicks": "22",
+   "reach": "900",
+   "frequency": "1.2",
+   "actions": [
+    {
+     "action_type": "purchase",
+     "value": "2"
+    },
+    {
+     "action_type": "link_click",
+     "value": "20"
+    }
+   ],
+   "action_values": [
+    {
+     "action_type": "purchase",
+     "value": "200"
+    }
+   ],
+   "video_3_sec_watched_actions": [
+    {
+     "action_type": "video_view",
+     "value": "400"
+    }
+   ],
+   "video_thruplay_watched_actions": [
+    {
+     "action_type": "video_view",
+     "value": "120"
+    }
+   ]
+  },
+  {
+   "ad_id": "ad1",
+   "date_start": "2026-09-19",
+   "spend": "13.00",
+   "impressions": "1030",
+   "reach": "900",
+   "frequency": "1.3",
+   "actions": [
+    {
+     "action_type": "purchase",
+     "value": "0"
+    },
+    {
+     "action_type": "link_click",
+     "value": "20"
+    }
+   ],
+   "action_values": [
+    {
+     "action_type": "purchase",
+     "value": "0"
+    }
+   ],
+   "video_3_sec_watched_actions": [
+    {
+     "action_type": "video_view",
+     "value": "400"
+    }
+   ],
+   "video_thruplay_watched_actions": [
+    {
+     "action_type": "video_view",
+     "value": "120"
+    }
+   ]
+  },
+  {
+   "ad_id": "ad1",
+   "date_start": "2026-09-20",
+   "spend": "14.00",
+   "impressions": "1040",
+   "clicks": "24",
+   "reach": "900",
+   "frequency": "1.4",
+   "actions": [
+    {
+     "action_type": "purchase",
+     "value": "1"
+    },
+    {
+     "action_type": "link_click",
+     "value": "20"
+    }
+   ],
+   "action_values": [
+    {
+     "action_type": "purchase",
+     "value": "100"
+    }
+   ],
+   "video_3_sec_watched_actions": [
+    {
+     "action_type": "video_view",
+     "value": "400"
+    }
+   ],
+   "video_thruplay_watched_actions": [
+    {
+     "action_type": "video_view",
+     "value": "120"
+    }
+   ]
+  },
+  {
+   "ad_id": "ad1",
+   "date_start": "2026-09-21",
+   "spend": "10.00",
+   "impressions": "1050",
+   "clicks": "25",
+   "reach": "900",
+   "frequency": "1.5",
+   "actions": [
+    {
+     "action_type": "purchase",
+     "value": "2"
+    },
+    {
+     "action_type": "link_click",
+     "value": "20"
+    }
+   ],
+   "action_values": [
+    {
+     "action_type": "purchase",
+     "value": "200"
+    }
+   ],
+   "video_3_sec_watched_actions": [
+    {
+     "action_type": "video_view",
+     "value": "400"
+    }
+   ],
+   "video_thruplay_watched_actions": [
+    {
+     "action_type": "video_view",
+     "value": "120"
+    }
+   ]
+  },
+  {
+   "ad_id": "ad1",
+   "date_start": "2026-09-22",
+   "spend": "11.00",
+   "impressions": "1060",
+   "clicks": "26",
+   "reach": "900",
+   "frequency": "1.6",
+   "actions": [
+    {
+     "action_type": "purchase",
+     "value": "0"
+    },
+    {
+     "action_type": "link_click",
+     "value": "20"
+    }
+   ],
+   "action_values": [
+    {
+     "action_type": "purchase",
+     "value": "0"
+    }
+   ],
+   "video_3_sec_watched_actions": [
+    {
+     "action_type": "video_view",
+     "value": "400"
+    }
+   ],
+   "video_thruplay_watched_actions": [
+    {
+     "action_type": "video_view",
+     "value": "120"
+    }
+   ]
+  },
+  {
+   "ad_id": "ad1",
+   "date_start": "2026-09-23",
+   "spend": "12.00",
+   "impressions": "1070",
+   "clicks": "20",
+   "reach": "900",
+   "frequency": "1.7",
+   "actions": [
+    {
+     "action_type": "purchase",
+     "value": "1"
+    },
+    {
+     "action_type": "link_click",
+     "value": "20"
+    }
+   ],
+   "action_values": [
+    {
+     "action_type": "purchase",
+     "value": "100"
+    }
+   ],
+   "video_3_sec_watched_actions": [
+    {
+     "action_type": "video_view",
+     "value": "400"
+    }
+   ],
+   "video_thruplay_watched_actions": [
+    {
+     "action_type": "video_view",
+     "value": "120"
+    }
+   ]
+  },
+  {
+   "ad_id": "ad1",
+   "date_start": "2026-09-24",
+   "spend": "13.00",
+   "impressions": "1080",
+   "clicks": "21",
+   "reach": "900",
+   "frequency": "1.8",
+   "actions": [
+    {
+     "action_type": "purchase",
+     "value": "2"
+    },
+    {
+     "action_type": "link_click",
+     "value": "20"
+    }
+   ],
+   "action_values": [
+    {
+     "action_type": "purchase",
+     "value": "200"
+    }
+   ],
+   "video_3_sec_watched_actions": [
+    {
+     "action_type": "video_view",
+     "value": "400"
+    }
+   ],
+   "video_thruplay_watched_actions": [
+    {
+     "action_type": "video_view",
+     "value": "120"
+    }
+   ]
+  },
+  {
+   "ad_id": "ad1",
+   "date_start": "2026-09-25",
+   "spend": "14.00",
+   "impressions": "1090",
+   "clicks": "22",
+   "reach": "900",
+   "frequency": "1.0",
+   "actions": [
+    {
+     "action_type": "purchase",
+     "value": "0"
+    },
+    {
+     "action_type": "link_click",
+     "value": "20"
+    }
+   ],
+   "action_values": [
+    {
+     "action_type": "purchase",
+     "value": "0"
+    }
+   ],
+   "video_3_sec_watched_actions": [
+    {
+     "action_type": "video_view",
+     "value": "400"
+    }
+   ],
+   "video_thruplay_watched_actions": [
+    {
+     "action_type": "video_view",
+     "value": "120"
+    }
+   ]
+  },
+  {
+   "ad_id": "ad1",
+   "date_start": "2026-09-26",
+   "spend": "10.00",
+   "impressions": "1100",
+   "clicks": "23",
+   "reach": "900",
+   "frequency": "1.1",
+   "actions": [
+    {
+     "action_type": "purchase",
+     "value": "1"
+    },
+    {
+     "action_type": "link_click",
+     "value": "20"
+    }
+   ],
+   "action_values": [
+    {
+     "action_type": "purchase",
+     "value": "100"
+    }
+   ],
+   "video_3_sec_watched_actions": [
+    {
+     "action_type": "video_view",
+     "value": "400"
+    }
+   ],
+   "video_thruplay_watched_actions": [
+    {
+     "action_type": "video_view",
+     "value": "120"
+    }
+   ]
+  },
+  {
+   "ad_id": "ad1",
+   "date_start": "2026-09-27",
+   "spend": "11.00",
+   "impressions": "1110",
+   "clicks": "24",
+   "reach": "900",
+   "frequency": "1.2",
+   "actions": [
+    {
+     "action_type": "purchase",
+     "value": "2"
+    },
+    {
+     "action_type": "link_click",
+     "value": "20"
+    }
+   ],
+   "action_values": [
+    {
+     "action_type": "purchase",
+     "value": "200"
+    }
+   ],
+   "video_3_sec_watched_actions": [
+    {
+     "action_type": "video_view",
+     "value": "400"
+    }
+   ],
+   "video_thruplay_watched_actions": [
+    {
+     "action_type": "video_view",
+     "value": "120"
+    }
+   ]
+  },
+  {
+   "ad_id": "ad1",
+   "date_start": "2026-09-28",
+   "spend": "12.00",
+   "impressions": "1120",
+   "clicks": "25",
+   "reach": "900",
+   "frequency": "1.3",
+   "actions": [
+    {
+     "action_type": "purchase",
+     "value": "0"
+    },
+    {
+     "action_type": "link_click",
+     "value": "20"
+    }
+   ],
+   "action_values": [
+    {
+     "action_type": "purchase",
+     "value": "0"
+    }
+   ],
+   "video_3_sec_watched_actions": [
+    {
+     "action_type": "video_view",
+     "value": "400"
+    }
+   ],
+   "video_thruplay_watched_actions": [
+    {
+     "action_type": "video_view",
+     "value": "120"
+    }
+   ]
+  },
+  {
+   "ad_id": "ad1",
+   "date_start": "2026-09-29",
+   "spend": "13.00",
+   "impressions": "1130",
+   "clicks": "26",
+   "reach": "900",
+   "frequency": "1.4",
+   "actions": [
+    {
+     "action_type": "purchase",
+     "value": "1"
+    },
+    {
+     "action_type": "link_click",
+     "value": "20"
+    }
+   ],
+   "action_values": [
+    {
+     "action_type": "purchase",
+     "value": "100"
+    }
+   ],
+   "video_3_sec_watched_actions": [
+    {
+     "action_type": "video_view",
+     "value": "400"
+    }
+   ],
+   "video_thruplay_watched_actions": [
+    {
+     "action_type": "video_view",
+     "value": "120"
+    }
+   ]
+  },
+  {
+   "ad_id": "ad1",
+   "date_start": "2026-09-30",
+   "spend": "14.00",
+   "impressions": "1140",
+   "clicks": "20",
+   "reach": "900",
+   "frequency": "1.5",
+   "actions": [
+    {
+     "action_type": "purchase",
+     "value": "2"
+    },
+    {
+     "action_type": "link_click",
+     "value": "20"
+    }
+   ],
+   "action_values": [
+    {
+     "action_type": "purchase",
+     "value": "200"
+    }
+   ],
+   "video_3_sec_watched_actions": [
+    {
+     "action_type": "video_view",
+     "value": "400"
+    }
+   ],
+   "video_thruplay_watched_actions": [
+    {
+     "action_type": "video_view",
+     "value": "120"
+    }
+   ]
+  },
+  {
+   "ad_id": "ad1",
+   "date_start": "2026-10-01",
+   "spend": "10.00",
+   "impressions": "1150",
+   "clicks": "21",
+   "reach": "900",
+   "frequency": "1.6",
+   "actions": [
+    {
+     "action_type": "purchase",
+     "value": "0"
+    },
+    {
+     "action_type": "link_click",
+     "value": "20"
+    }
+   ],
+   "action_values": [
+    {
+     "action_type": "purchase",
+     "value": "0"
+    }
+   ],
+   "video_3_sec_watched_actions": [
+    {
+     "action_type": "video_view",
+     "value": "400"
+    }
+   ],
+   "video_thruplay_watched_actions": [
+    {
+     "action_type": "video_view",
+     "value": "120"
+    }
+   ]
+  },
+  {
+   "ad_id": "ad1",
+   "date_start": "2026-10-02",
+   "spend": "11.00",
+   "impressions": "1160",
+   "clicks": "22",
+   "reach": "900",
+   "frequency": "1.7",
+   "actions": [
+    {
+     "action_type": "purchase",
+     "value": "1"
+    },
+    {
+     "action_type": "link_click",
+     "value": "20"
+    }
+   ],
+   "action_values": [
+    {
+     "action_type": "purchase",
+     "value": "100"
+    }
+   ],
+   "video_3_sec_watched_actions": [
+    {
+     "action_type": "video_view",
+     "value": "400"
+    }
+   ],
+   "video_thruplay_watched_actions": [
+    {
+     "action_type": "video_view",
+     "value": "120"
+    }
+   ]
+  },
+  {
+   "ad_id": "ad1",
+   "date_start": "2026-10-03",
+   "spend": "12.00",
+   "impressions": "1170",
+   "clicks": "23",
+   "reach": "900",
+   "frequency": "1.8",
+   "actions": [
+    {
+     "action_type": "purchase",
+     "value": "2"
+    },
+    {
+     "action_type": "link_click",
+     "value": "20"
+    }
+   ],
+   "action_values": [
+    {
+     "action_type": "purchase",
+     "value": "200"
+    }
+   ],
+   "video_3_sec_watched_actions": [
+    {
+     "action_type": "video_view",
+     "value": "400"
+    }
+   ],
+   "video_thruplay_watched_actions": [
+    {
+     "action_type": "video_view",
+     "value": "120"
+    }
+   ]
+  },
+  {
+   "ad_id": "ad1",
+   "date_start": "2026-10-04",
+   "spend": "13.00",
+   "impressions": "1180",
+   "clicks": "24",
+   "reach": "900",
+   "frequency": "1.0",
+   "actions": [
+    {
+     "action_type": "purchase",
+     "value": "0"
+    },
+    {
+     "action_type": "link_click",
+     "value": "20"
+    }
+   ],
+   "action_values": [
+    {
+     "action_type": "purchase",
+     "value": "0"
+    }
+   ],
+   "video_3_sec_watched_actions": [
+    {
+     "action_type": "video_view",
+     "value": "400"
+    }
+   ],
+   "video_thruplay_watched_actions": [
+    {
+     "action_type": "video_view",
+     "value": "120"
+    }
+   ]
+  },
+  {
+   "ad_id": "ad1",
+   "date_start": "2026-10-05",
+   "spend": "14.00",
+   "impressions": "1190",
+   "clicks": "25",
+   "reach": "900",
+   "frequency": "1.1",
+   "actions": [
+    {
+     "action_type": "purchase",
+     "value": "1"
+    },
+    {
+     "action_type": "link_click",
+     "value": "20"
+    }
+   ],
+   "action_values": [
+    {
+     "action_type": "purchase",
+     "value": "100"
+    }
+   ],
+   "video_3_sec_watched_actions": [
+    {
+     "action_type": "video_view",
+     "value": "400"
+    }
+   ],
+   "video_thruplay_watched_actions": [
+    {
+     "action_type": "video_view",
+     "value": "120"
+    }
+   ]
+  },
+  {
+   "ad_id": "ad1",
+   "date_start": "2026-10-06",
+   "spend": "10.00",
+   "impressions": "1200",
+   "clicks": "26",
+   "reach": "900",
+   "frequency": "1.2",
+   "actions": [
+    {
+     "action_type": "purchase",
+     "value": "2"
+    },
+    {
+     "action_type": "link_click",
+     "value": "20"
+    }
+   ],
+   "action_values": [
+    {
+     "action_type": "purchase",
+     "value": "200"
+    }
+   ],
+   "video_3_sec_watched_actions": [
+    {
+     "action_type": "video_view",
+     "value": "400"
+    }
+   ],
+   "video_thruplay_watched_actions": [
+    {
+     "action_type": "video_view",
+     "value": "120"
+    }
+   ]
+  },
+  {
+   "ad_id": "ad1",
+   "date_start": "2026-10-07",
+   "spend": "11.00",
+   "impressions": "1210",
+   "clicks": "20",
+   "reach": "900",
+   "frequency": "1.3",
+   "actions": [
+    {
+     "action_type": "purchase",
+     "value": "0"
+    },
+    {
+     "action_type": "link_click",
+     "value": "20"
+    }
+   ],
+   "action_values": [
+    {
+     "action_type": "purchase",
+     "value": "0"
+    }
+   ],
+   "video_3_sec_watched_actions": [
+    {
+     "action_type": "video_view",
+     "value": "400"
+    }
+   ],
+   "video_thruplay_watched_actions": [
+    {
+     "action_type": "video_view",
+     "value": "120"
+    }
+   ]
+  },
+  {
+   "ad_id": "ad1",
+   "date_start": "2026-10-08",
+   "spend": "12.00",
+   "impressions": "1220",
+   "clicks": "21",
+   "reach": "900",
+   "frequency": "1.4",
+   "actions": [
+    {
+     "action_type": "purchase",
+     "value": "1"
+    },
+    {
+     "action_type": "link_click",
+     "value": "20"
+    }
+   ],
+   "action_values": [
+    {
+     "action_type": "purchase",
+     "value": "100"
+    }
+   ],
+   "video_3_sec_watched_actions": [
+    {
+     "action_type": "video_view",
+     "value": "400"
+    }
+   ],
+   "video_thruplay_watched_actions": [
+    {
+     "action_type": "video_view",
+     "value": "120"
+    }
+   ]
+  },
+  {
+   "ad_id": "ad1",
+   "date_start": "2026-10-09",
+   "spend": "13.00",
+   "impressions": "1230",
+   "clicks": "22",
+   "reach": "900",
+   "frequency": "1.5",
+   "actions": [
+    {
+     "action_type": "purchase",
+     "value": "2"
+    },
+    {
+     "action_type": "link_click",
+     "value": "20"
+    }
+   ],
+   "action_values": [
+    {
+     "action_type": "purchase",
+     "value": "200"
+    }
+   ],
+   "video_3_sec_watched_actions": [
+    {
+     "action_type": "video_view",
+     "value": "400"
+    }
+   ],
+   "video_thruplay_watched_actions": [
+    {
+     "action_type": "video_view",
+     "value": "120"
+    }
+   ]
+  },
+  {
+   "ad_id": "ad1",
+   "date_start": "2026-10-10",
+   "spend": "14.00",
+   "impressions": "1240",
+   "clicks": "23",
+   "reach": "900",
+   "frequency": "1.6",
+   "actions": [
+    {
+     "action_type": "purchase",
+     "value": "0"
+    },
+    {
+     "action_type": "link_click",
+     "value": "20"
+    }
+   ],
+   "action_values": [
+    {
+     "action_type": "purchase",
+     "value": "0"
+    }
+   ],
+   "video_3_sec_watched_actions": [
+    {
+     "action_type": "video_view",
+     "value": "400"
+    }
+   ],
+   "video_thruplay_watched_actions": [
+    {
+     "action_type": "video_view",
+     "value": "120"
+    }
+   ]
+  },
+  {
+   "ad_id": "ad1",
+   "date_start": "2026-10-11",
+   "spend": "10.00",
+   "impressions": "1250",
+   "clicks": "24",
+   "reach": "900",
+   "frequency": "1.7",
+   "actions": [
+    {
+     "action_type": "purchase",
+     "value": "1"
+    },
+    {
+     "action_type": "link_click",
+     "value": "20"
+    }
+   ],
+   "action_values": [
+    {
+     "action_type": "purchase",
+     "value": "100"
+    }
+   ],
+   "video_3_sec_watched_actions": [
+    {
+     "action_type": "video_view",
+     "value": "400"
+    }
+   ],
+   "video_thruplay_watched_actions": [
+    {
+     "action_type": "video_view",
+     "value": "120"
+    }
+   ]
+  },
+  {
+   "ad_id": "ad1",
+   "date_start": "2026-10-12",
+   "spend": "11.00",
+   "impressions": "1260",
+   "clicks": "25",
+   "reach": "900",
+   "frequency": "1.8",
+   "actions": [
+    {
+     "action_type": "purchase",
+     "value": "2"
+    },
+    {
+     "action_type": "link_click",
+     "value": "20"
+    }
+   ],
+   "action_values": [
+    {
+     "action_type": "purchase",
+     "value": "200"
+    }
+   ],
+   "video_3_sec_watched_actions": [
+    {
+     "action_type": "video_view",
+     "value": "400"
+    }
+   ],
+   "video_thruplay_watched_actions": [
+    {
+     "action_type": "video_view",
+     "value": "120"
+    }
+   ]
+  },
+  {
+   "ad_id": "ad1",
+   "date_start": "2026-10-13",
+   "spend": "12.00",
+   "impressions": "1270",
+   "clicks": "26",
+   "reach": "900",
+   "frequency": "1.0",
+   "actions": [
+    {
+     "action_type": "purchase",
+     "value": "0"
+    },
+    {
+     "action_type": "link_click",
+     "value": "20"
+    }
+   ],
+   "action_values": [
+    {
+     "action_type": "purchase",
+     "value": "0"
+    }
+   ],
+   "video_3_sec_watched_actions": [
+    {
+     "action_type": "video_view",
+     "value": "400"
+    }
+   ],
+   "video_thruplay_watched_actions": [
+    {
+     "action_type": "video_view",
+     "value": "120"
+    }
+   ]
+  },
+  {
+   "ad_id": "ad1",
+   "date_start": "2026-10-14",
+   "spend": "13.00",
+   "impressions": "1280",
+   "clicks": "20",
+   "reach": "900",
+   "frequency": "1.1",
+   "actions": [
+    {
+     "action_type": "purchase",
+     "value": "1"
+    },
+    {
+     "action_type": "link_click",
+     "value": "20"
+    }
+   ],
+   "action_values": [
+    {
+     "action_type": "purchase",
+     "value": "100"
+    }
+   ],
+   "video_3_sec_watched_actions": [
+    {
+     "action_type": "video_view",
+     "value": "400"
+    }
+   ],
+   "video_thruplay_watched_actions": [
+    {
+     "action_type": "video_view",
+     "value": "120"
+    }
+   ]
+  },
+  {
+   "ad_id": "ad1",
+   "date_start": "2026-10-15",
+   "spend": "14.00",
+   "impressions": "1290",
+   "clicks": "21",
+   "reach": "900",
+   "frequency": "1.2",
+   "actions": [
+    {
+     "action_type": "purchase",
+     "value": "2"
+    },
+    {
+     "action_type": "link_click",
+     "value": "20"
+    }
+   ],
+   "action_values": [
+    {
+     "action_type": "purchase",
+     "value": "200"
+    }
+   ],
+   "video_3_sec_watched_actions": [
+    {
+     "action_type": "video_view",
+     "value": "400"
+    }
+   ],
+   "video_thruplay_watched_actions": [
+    {
+     "action_type": "video_view",
+     "value": "120"
+    }
+   ]
+  },
+  {
+   "ad_id": "ad1",
+   "date_start": "2026-10-16",
+   "spend": "10.00",
+   "impressions": "1300",
+   "clicks": "22",
+   "reach": "900",
+   "frequency": "1.3",
+   "actions": [
+    {
+     "action_type": "purchase",
+     "value": "0"
+    },
+    {
+     "action_type": "link_click",
+     "value": "20"
+    }
+   ],
+   "action_values": [
+    {
+     "action_type": "purchase",
+     "value": "0"
+    }
+   ],
+   "video_3_sec_watched_actions": [
+    {
+     "action_type": "video_view",
+     "value": "400"
+    }
+   ],
+   "video_thruplay_watched_actions": [
+    {
+     "action_type": "video_view",
+     "value": "120"
+    }
+   ]
+  },
+  {
+   "ad_id": "ad1",
+   "date_start": "2026-10-17",
+   "spend": "11.00",
+   "impressions": "1310",
+   "clicks": "23",
+   "reach": "900",
+   "frequency": "1.4",
+   "actions": [
+    {
+     "action_type": "purchase",
+     "value": "1"
+    },
+    {
+     "action_type": "link_click",
+     "value": "20"
+    }
+   ],
+   "action_values": [
+    {
+     "action_type": "purchase",
+     "value": "100"
+    }
+   ],
+   "video_3_sec_watched_actions": [
+    {
+     "action_type": "video_view",
+     "value": "400"
+    }
+   ],
+   "video_thruplay_watched_actions": [
+    {
+     "action_type": "video_view",
+     "value": "120"
+    }
+   ]
+  },
+  {
+   "ad_id": "ad1",
+   "date_start": "2026-10-18",
+   "spend": "12.00",
+   "impressions": "1320",
+   "clicks": "24",
+   "reach": "900",
+   "frequency": "1.5",
+   "actions": [
+    {
+     "action_type": "purchase",
+     "value": "2"
+    },
+    {
+     "action_type": "link_click",
+     "value": "20"
+    }
+   ],
+   "action_values": [
+    {
+     "action_type": "purchase",
+     "value": "200"
+    }
+   ],
+   "video_3_sec_watched_actions": [
+    {
+     "action_type": "video_view",
+     "value": "400"
+    }
+   ],
+   "video_thruplay_watched_actions": [
+    {
+     "action_type": "video_view",
+     "value": "120"
+    }
+   ]
+  },
+  {
+   "ad_id": "ad1",
+   "date_start": "2026-10-19",
+   "spend": "13.00",
+   "impressions": "1330",
+   "clicks": "25",
+   "reach": "900",
+   "frequency": "1.6",
+   "actions": [
+    {
+     "action_type": "purchase",
+     "value": "0"
+    },
+    {
+     "action_type": "link_click",
+     "value": "20"
+    }
+   ],
+   "action_values": [
+    {
+     "action_type": "purchase",
+     "value": "0"
+    }
+   ],
+   "video_3_sec_watched_actions": [
+    {
+     "action_type": "video_view",
+     "value": "400"
+    }
+   ],
+   "video_thruplay_watched_actions": [
+    {
+     "action_type": "video_view",
+     "value": "120"
+    }
+   ]
+  },
+  {
+   "ad_id": "ad1",
+   "date_start": "2026-10-20",
+   "spend": "14.00",
+   "impressions": "1340",
+   "clicks": "26",
+   "reach": "900",
+   "frequency": "1.7",
+   "actions": [
+    {
+     "action_type": "purchase",
+     "value": "1"
+    },
+    {
+     "action_type": "link_click",
+     "value": "20"
+    }
+   ],
+   "action_values": [
+    {
+     "action_type": "purchase",
+     "value": "100"
+    }
+   ],
+   "video_3_sec_watched_actions": [
+    {
+     "action_type": "video_view",
+     "value": "400"
+    }
+   ],
+   "video_thruplay_watched_actions": [
+    {
+     "action_type": "video_view",
+     "value": "120"
+    }
+   ]
+  }
+ ],
+ "paging": {}
+}

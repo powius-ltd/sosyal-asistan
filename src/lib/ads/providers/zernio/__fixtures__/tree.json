@@ -1,0 +1,44 @@
+{
+ "campaigns": [
+  {
+   "platformCampaignId": "c1",
+   "campaignName": "Kampanya A",
+   "status": "active",
+   "platformCampaignStatus": "ACTIVE",
+   "currency": "TRY",
+   "campaignBudget": null,
+   "metrics": {
+    "spend": 493.39,
+    "impressions": 12000,
+    "clicks": 240,
+    "roas": 2.1
+   },
+   "adSets": [
+    {
+     "platformAdSetId": "s1",
+     "adSetName": "Set 1",
+     "status": "active",
+     "adSetBudget": {
+      "amount": 150,
+      "type": "daily"
+     },
+     "ads": [
+      {
+       "_id": "z1",
+       "platformAdId": "ad1",
+       "name": "Reklam 1",
+       "status": "active",
+       "configuredStatus": "ACTIVE"
+      }
+     ]
+    }
+   ]
+  }
+ ],
+ "pagination": {
+  "page": 1,
+  "limit": 50,
+  "total": 1,
+  "pages": 1
+ }
+}

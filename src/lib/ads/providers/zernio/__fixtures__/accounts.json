@@ -1,0 +1,10 @@
+{
+ "accounts": [
+  {
+   "adAccountId": "act_1000000001",
+   "name": "Deneme Hesabı",
+   "currency": "TRY",
+   "status": "ACTIVE"
+  }
+ ]
+}
