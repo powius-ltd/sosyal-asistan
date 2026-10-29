@@ -20,6 +20,15 @@ const SCRIPT_REVIEW = z.object({
   promptVersion: z.string(),
 });
 
+const REVISION = z.object({
+  at: z.string(),
+  request: z.string(),
+  hooks: z.array(z.string()),
+  hookTypes: z.array(z.string()).optional(),
+  scriptOutline: z.array(z.string()),
+  script: z.string().optional(),
+});
+
 const FIELDS = {
   topic: z.string(),
   frame: z.enum(IDEA_FRAMES),
@@ -36,6 +45,7 @@ const FIELDS = {
   ownTried: z.boolean(),
   maxSharedWords: z.number().int().nonnegative(),
   scriptReview: SCRIPT_REVIEW,
+  revisions: z.array(REVISION),
 } as const;
 
 /** Derleme zamanı denetim: alan şemaları `IdeaDetails` ile uyumlu kalır (biri değişirse burada kırılır). */

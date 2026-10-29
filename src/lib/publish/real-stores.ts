@@ -5,6 +5,7 @@
  */
 import "server-only";
 
+import { RepositoryError } from "@/lib/data/repository";
 import type { IntelContext } from "@/lib/intel/context";
 import { insertCycleNotice } from "@/lib/cycle/notify";
 import { ORDER_MEDIA_PREFIX } from "@/lib/order-media-path";
@@ -33,6 +34,17 @@ export function createOrderReturnStore(ctx: IntelContext): OrderReturnStore {
       await ctx.repo.createPublishJob(ctx.workspaceId, input);
     },
     notify: (draft) => insertCycleNotice(ctx.client, ctx.workspaceId, draft),
+    async markPanelOrder(update) {
+      const order = (await ctx.repo.listStudioOrders(ctx.workspaceId)).find((o) => o.ticket.siparis_id === update.orderId);
+      if (order === undefined) return; // panelde karşılığı yok (elle yazılmış fiş)
+      const patch = update.status === "uretildi" ? { status: "uretildi" as const, video: update.video, ...(update.cover !== undefined ? { cover: update.cover } : {}) } : { status: "hata" as const, errorNote: update.errorNote };
+      try {
+        await ctx.repo.advanceStudioOrder(ctx.workspaceId, order.id, patch, ctx.now);
+      } catch (error) {
+        // Paylaşılmış / başka durumdaki fiş geri çekilmez; yalnız geçiş kuralı reddi sessizce geçilir.
+        if (!(error instanceof RepositoryError && error.code === "invalid_state")) throw error;
+      }
+    },
   };
 }
 

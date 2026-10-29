@@ -2,6 +2,8 @@
  * Fikir kartları: liste (kanıt özetiyle, N+1 yok), durum sayıları ve durum geçişi. Üretimi sunucu yapar (F2);
  * kullanıcı yalnız durumu değiştirir. Geçiş kuralları `canTransitionIdea` (tek yer); DB yalnız durum değerini denetler.
  */
+import { applyIdeaRevision, parseIdeaRevision } from "@/lib/data/idea-revision-input";
+import type { Json } from "@/lib/supabase/database.types";
 import { canTransitionIdea, IDEA_STATUSES, type Idea, type IdeaEvidence, type IdeaPlanLink, type IdeaStatus } from "@/lib/domain/intel";
 import type { IdeaFilter } from "@/lib/data/queries";
 import { RepositoryError } from "@/lib/data/repository";
@@ -167,5 +169,30 @@ export async function updateIdeaStatus(ctx: SupabaseContext, wsId: string, ideaI
     await ctx.db.from("ideas").update({ status }).eq("workspace_id", wsId).eq("id", ideaId).eq("status", current.status).select(IDEA_COLUMNS).maybeSingle(),
   );
   if (!updated) throw new RepositoryError("invalid_state", "Fikir durumu bu sırada başka biri tarafından değiştirildi; yenile.");
+  return (await hydrateIdeas(ctx, wsId, [updated]))[0];
+}
+
+/** Hook / taslak / senaryo değişikliği (SPN-35): kural ve birleştirme `applyIdeaRevision` (mock ile AYNI); jsonb'de bilinmeyen alanlar korunur. */
+export async function reviseIdea(ctx: SupabaseContext, wsId: string, ideaId: string, input: unknown, now: Date): Promise<Idea> {
+  await requireWorkspace(ctx, wsId);
+  const value = parseIdeaRevision(input);
+  const current = await readIdeaRow(ctx, wsId, ideaId);
+  if (!current) throw new RepositoryError("not_found", `Fikir bulunamadı: ${ideaId}`);
+  const idea = (await hydrateIdeas(ctx, wsId, [current]))[0];
+  const parts = applyIdeaRevision(idea, value, now);
+  const raw = typeof current.details === "object" && current.details !== null && !Array.isArray(current.details) ? current.details : {};
+  const details = { ...raw, hookTypes: parts.details.hookTypes, revisions: parts.details.revisions, ...(parts.details.script === undefined ? {} : { script: parts.details.script }) };
+  // İyimser eşzamanlılık: okunan sürüm hâlâ güncelse yazılır (başka biri araya girdiyse yenile).
+  const updated = unwrap(
+    await ctx.db
+      .from("ideas")
+      .update({ hooks: parts.hooks, script_outline: parts.scriptOutline, details: details as { [key: string]: Json | undefined } })
+      .eq("workspace_id", wsId)
+      .eq("id", ideaId)
+      .eq("updated_at", current.updated_at)
+      .select(IDEA_COLUMNS)
+      .maybeSingle(),
+  );
+  if (!updated) throw new RepositoryError("invalid_state", "Fikir bu sırada başka biri tarafından değiştirildi; yenile.");
   return (await hydrateIdeas(ctx, wsId, [updated]))[0];
 }

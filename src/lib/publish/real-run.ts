@@ -22,10 +22,10 @@ export type PublishRun = { outcome: "not_studio" } | { outcome: "key_missing" } 
 const studioSlugOf = (ctx: IntelContext): string | undefined =>
   ctx.workspaceSlug !== undefined && listStudioPanelSlugs().includes(ctx.workspaceSlug) ? studioAccountOf(ctx.workspaceSlug).studioSlug : undefined;
 
-export async function runOrderReturnReal(ctx: IntelContext, options: { env?: Readonly<Record<string, string | undefined>> } = {}): Promise<OrderReturnRun> {
+export async function runOrderReturnReal(ctx: IntelContext, options: { env?: Readonly<Record<string, string | undefined>>; onlyOrderId?: string } = {}): Promise<OrderReturnRun> {
   const studioSlug = studioSlugOf(ctx);
   if (!studioSlug) return { outcome: "not_studio" };
-  return { outcome: "done", result: await returnOrders({ root: ordersRootOf(options.env), studioSlug, now: ctx.now, store: createOrderReturnStore(ctx) }) };
+  return { outcome: "done", result: await returnOrders({ root: ordersRootOf(options.env), studioSlug, now: ctx.now, store: createOrderReturnStore(ctx), ...(options.onlyOrderId === undefined ? {} : { onlyOrderId: options.onlyOrderId }) }) };
 }
 
 export async function runPublishReal(ctx: IntelContext, options: { env?: Readonly<Record<string, string | undefined>>; log: (line: string) => void }): Promise<PublishRun> {

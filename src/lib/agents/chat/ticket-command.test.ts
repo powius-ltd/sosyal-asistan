@@ -118,6 +118,6 @@ describe("olgu paketi ve istem sürümü", () => {
   });
 
   it("istem sürümü artmıştır", () => {
-    expect(CHAT_PROMPT_VERSION).toBe("chat-v7");
+    expect(CHAT_PROMPT_VERSION).toBe("chat-v8");
   });
 });

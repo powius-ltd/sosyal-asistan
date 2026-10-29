@@ -22,6 +22,7 @@ export const JOB_KIND_ABOUT: Record<JobKind, string> = {
   publish: "Onayladığın videoyu planlanan saatte yayına zamanlar. Para harcamaz; yalnız onayladığın videoya dokunur.",
   order: "Plan öğesinden stüdyo için sipariş fişi yazar. Para harcamaz; fiş onayını sen verirsin.",
   ads_sync: "Reklam hesabındaki harcama ve sonuçları okur. Para harcamaz; reklam hesabına yazmaz.",
+  produce: "Fişteki videoyu stüdyoda üretir. Para harcar (ses): önce ne kadar tutabileceğini gösteririm. Paylaşmadan önce yine onayını isterim.",
   discover: "Benzer hesapları arar ve aday olarak ekler. Para harcar: önce ne kadar tutacağını gösteririm.",
 };
 

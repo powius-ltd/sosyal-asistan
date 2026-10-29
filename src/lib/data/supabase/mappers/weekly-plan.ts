@@ -11,7 +11,7 @@ import { iso, isoOpt, opt } from "@/lib/data/supabase/mappers/common";
 import { confidenceOf, weeklyPlanStatusOf } from "@/lib/data/supabase/mappers/enums";
 
 export const WEEKLY_PLAN_COLUMNS =
-  "id, workspace_id, social_account_id, platform, week_start, status, summary, confidence, sections, brief, taxonomy_version, prompt_version, model, run_ids, generated_at, created_at, updated_at" as const;
+  "id, workspace_id, social_account_id, platform, week_start, status, summary, confidence, sections, brief, approved_at, taxonomy_version, prompt_version, model, run_ids, generated_at, created_at, updated_at" as const;
 
 export type WeeklyPlanRow = Pick<
   Tables<"weekly_plans">,
@@ -25,6 +25,7 @@ export type WeeklyPlanRow = Pick<
   | "confidence"
   | "sections"
   | "brief"
+  | "approved_at"
   | "taxonomy_version"
   | "prompt_version"
   | "model"
@@ -65,6 +66,7 @@ export function toWeeklyPlan(row: WeeklyPlanRow, itemRows: readonly PlanItemRow[
     confidence: row.confidence === null ? undefined : confidenceOf(row.confidence),
     sections: parsePlanSections(row.sections),
     brief: parsePlanBrief(row.brief),
+    approvedAt: isoOpt(row.approved_at),
     items,
     alternatives,
     taxonomyVersion: row.taxonomy_version,

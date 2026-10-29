@@ -5,6 +5,7 @@ import { afterEach, beforeEach, describe, expect, it } from "vitest";
 
 import type { CreatePublishJobInput } from "@/lib/data/queries";
 import { ComplianceFailedError, RepositoryError } from "@/lib/data/repository";
+import { AI_DISCLOSURE_LINE } from "@/lib/publish/ai-disclosure-line";
 import { handledOrderIds, isActiveOrderStatus, isHandledOrderStatus } from "@/lib/publish/order-rows";
 import { returnOrders, type OrderReturnStore } from "@/lib/publish/order-return";
 
@@ -131,6 +132,13 @@ describe("order_return", () => {
     expect(jobs).toHaveLength(0);
   });
 
+  it("stüdyo açıklamasında YZ beyanı yoksa sona eklenir (video onay kartına düşer)", async () => {
+    addOrder("b1", {}, "Para kuralların kimin?");
+    const { store, jobs } = fakeStore();
+    expect((await run(store)).opened).toEqual(["b1"]);
+    expect(jobs[0]?.caption).toBe(`Para kuralların kimin?\n\n${AI_DISCLOSURE_LINE}`);
+  });
+
   it("uyum fail → draft + nedenini söyleyen bildirim", async () => {
     addOrder();
     const { store, jobs, notices } = fakeStore({ complianceFails: true });
@@ -168,5 +176,53 @@ describe("order_return", () => {
     const r = await run(store);
     expect(jobs).toHaveLength(0);
     expect(r.skipped.map((s) => s.reason)).toEqual(["media_outside_root", "media_outside_root", "media_outside_root"]);
+  });
+  describe("SPN-33: tek sipariş ve panel fişi", () => {
+    const withPanel = (store: OrderReturnStore) => {
+      const updates: unknown[] = [];
+      store.markPanelOrder = async (u) => void updates.push(u);
+      return updates;
+    };
+
+    it("onlyOrderId yalnız o siparişi işler; panel fişine uretildi + video yazılır", async () => {
+      addOrder("a");
+      addOrder("b");
+      const { store, jobs } = fakeStore();
+      const updates = withPanel(store);
+      const r = await returnOrders({ root, studioSlug: "ornek-studyo", now: NOW, store, onlyOrderId: "b" });
+      expect(r.opened).toEqual(["b"]);
+      expect(jobs.map((j) => j.orderId)).toEqual(["b"]);
+      expect(updates).toEqual([{ orderId: "b", status: "uretildi", video: "b/final.mp4" }]);
+    });
+
+    it("stüdyo hata yazdıysa panel fişi hata + not olur, yayın satırı açılmaz", async () => {
+      addOrder("h", { durum: "hata", hata_notu: "Ses üretilemedi." });
+      const { store, jobs } = fakeStore();
+      const updates = withPanel(store);
+      const r = await returnOrders({ root, studioSlug: "ornek-studyo", now: NOW, store, onlyOrderId: "h" });
+      expect(jobs).toHaveLength(0);
+      expect(r.opened).toEqual([]);
+      expect(updates).toEqual([{ orderId: "h", status: "hata", errorNote: "Ses üretilemedi." }]);
+    });
+
+    it("ikinci tarama panel fişini yine eşitler, ikinci satır açmaz (idempotent)", async () => {
+      addOrder("c");
+      const { store, jobs } = fakeStore();
+      const updates = withPanel(store);
+      await returnOrders({ root, studioSlug: "ornek-studyo", now: NOW, store });
+      const again = await returnOrders({ root, studioSlug: "ornek-studyo", now: NOW, store });
+      expect(again.alreadyHandled).toBe(1);
+      expect(jobs).toHaveLength(1);
+      expect(updates).toHaveLength(2);
+    });
+
+    it("onay yoksa (onay: hayir) ya da stüdyo hâlâ üretiyorsa panel fişine dokunulmaz", async () => {
+      addOrder("n", { onay: "hayir", durum: "hata" });
+      addOrder("u", { durum: "uretiliyor" });
+      const { store } = fakeStore();
+      const updates = withPanel(store);
+      await returnOrders({ root, studioSlug: "ornek-studyo", now: NOW, store });
+      expect(updates).toEqual([]);
+    });
   });
 });

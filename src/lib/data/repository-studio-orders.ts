@@ -3,7 +3,7 @@
  * `PanelRepository` bu arayüzü genişletir (sözleşme tektir). Fiş uygulama içinde kalıcıdır (`studio_orders`); dosyaya yazma yoktur.
  * Her metot `wsId` alır; zaman `now` ile verilir. Bu dosya yalnız sıralı ajanlar tarafından değiştirilir.
  */
-import type { CreateStudioOrderInput, StudioOrderQuery, UpdateStudioOrderInput } from "@/lib/data/studio-order-input";
+import type { AdvanceStudioOrderInput, CreateStudioOrderInput, StudioOrderQuery, UpdateStudioOrderInput } from "@/lib/data/studio-order-input";
 import type { StudioOrder } from "@/lib/domain/studio-order";
 
 export interface StudioOrdersRepository {
@@ -21,4 +21,10 @@ export interface StudioOrdersRepository {
    * hiçbir alan verilmezse ya da tür bilinmiyorsa `invalid_input`. Güncel fişi döner.
    */
   updateStudioOrder(wsId: string, id: string, patch: UpdateStudioOrderInput, now: Date): Promise<StudioOrder>;
+  /**
+   * SPN-33: fişin durumunu ilerletir (`uretiliyor` = üretime gönderildi + onaylı, `uretildi` + video, `hata` + not). Geçersiz girdi
+   * `invalid_input`, fiş yoksa `not_found`, uygun olmayan geçiş (örn. `hata` / `paylasildi` fiş) `invalid_state`. Aynı duruma tekrar yazmak
+   * değişiklik yapmaz (güncel fişi döner). Çağıran yalnız sunucu işidir (gönderme ve dönüş); ekrandan doğrudan çağrılmaz.
+   */
+  advanceStudioOrder(wsId: string, id: string, patch: AdvanceStudioOrderInput, now: Date): Promise<StudioOrder>;
 }

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
 import { PageHeader } from "@/components/common/page-header";
+import { ProduceAction } from "@/components/studio-order/produce-action";
 import { PrintTicketButton } from "@/components/studio-order/print-button";
 import { TicketView } from "@/components/studio-order/ticket-view";
 import { WhyBlock } from "@/components/studio-order/why-block";
@@ -12,6 +13,7 @@ import { PLATFORM_LABEL } from "@/lib/domain/platform";
 import { focusDirectionIndex } from "@/lib/domain/weekly-plan";
 import { getPlatformModule, hasPlatformModule } from "@/lib/platforms/registry";
 import { ROUTES } from "@/lib/routes";
+import { listWorkspaces } from "@/lib/workspace/registry";
 
 export const metadata: Metadata = { title: "Çekim fişi" };
 
@@ -42,6 +44,7 @@ export default async function TicketPage({ params }: { params: Promise<{ id: str
   const platform = idea?.platform;
   const platformLabel = platform ? PLATFORM_LABEL[platform] : "";
   const embedUrl = platform && hasPlatformModule(platform) ? getPlatformModule(platform).embedUrl(order.ticket.ornek_video?.url) : undefined;
+  const panelSlug = (await listWorkspaces()).find((w) => w.id === wsId)?.slug;
   const title = idea?.title ?? order.ticket.konu ?? order.ticket.sutun;
 
   return (
@@ -54,7 +57,12 @@ export default async function TicketPage({ params }: { params: Promise<{ id: str
         actions={<PrintTicketButton />}
       />
       <div className="grid items-start gap-4 lg:grid-cols-[minmax(0,3fr)_minmax(0,2fr)]">
-        <TicketView order={order} title={title} embedUrl={embedUrl} platformLabel={platformLabel} />
+        <div className="flex flex-col gap-4">
+          <div className="print:hidden">
+            <ProduceAction order={order} panelSlug={panelSlug} />
+          </div>
+          <TicketView order={order} title={title} embedUrl={embedUrl} platformLabel={platformLabel} />
+        </div>
         <WhyBlock idea={idea} direction={direction} />
       </div>
     </div>

@@ -3,6 +3,7 @@
  * durumu değişince plana yansır; Supabase'de fikirler `ideas` tablosundan okunur). İçgörü hesabı Supabase ile AYNI
  * fonksiyondur (`views/insights`). Plan yalnız sunucu tarafından üretilir: depo yazma metodu yoktur.
  */
+import { RepositoryError } from "@/lib/data/repository";
 import { DEFAULT_PAGE_LIMIT } from "@/lib/data/queries";
 import type { PanelRepository } from "@/lib/data/repository";
 import { parseWeekStart } from "@/lib/data/weekly-plan-input";
@@ -12,7 +13,7 @@ import type { WeeklyPlan, WeeklyPlanItem, WeeklyPlanSummary } from "@/lib/domain
 import type { StoredWeeklyPlan } from "@/lib/data/mock/generators/weekly-plan";
 import type { MockContext } from "@/lib/data/mock/repos/context";
 
-export type WeeklyPlanMethods = Pick<PanelRepository, "getWeeklyPlan" | "listWeeklyPlans" | "getVoiceProfile" | "getInsights">;
+export type WeeklyPlanMethods = Pick<PanelRepository, "getWeeklyPlan" | "approveWeeklyPlan" | "listWeeklyPlans" | "getVoiceProfile" | "getInsights">;
 
 function toPlan(stored: StoredWeeklyPlan, ideas: readonly Idea[]): WeeklyPlan {
   const { itemRefs, ...plan } = stored;
@@ -37,6 +38,26 @@ export function createWeeklyPlanMethods(ctx: MockContext): WeeklyPlanMethods {
       if (!inWs(wsId)) return null;
       const stored = state.weeklyPlans.find((p) => p.weekStart === week);
       return stored ? out(toPlan(stored, state.ideas)) : null;
+    },
+
+    async approveWeeklyPlan(wsId, weekStart, now) {
+      const week = parseWeekStart(weekStart);
+      requireWs(wsId);
+      const stored = state.weeklyPlans.find((p) => p.weekStart === week);
+      if (!stored) throw new RepositoryError("not_found", `Bu hafta için plan yok: ${week}`);
+      if (stored.status !== "ready") throw new RepositoryError("invalid_state", "Plan hazır değil; onaylanamaz.");
+      if (stored.approvedAt === undefined) {
+        // Tek işlem: plana giren (sırası olan) yeni fikirler seçilir; bırakılmış / ilerlemiş fikirlere dokunulmaz.
+        const inPlan = new Set(stored.itemRefs.filter((r) => r.position !== undefined).map((r) => r.ideaId));
+        for (const idea of state.ideas) {
+          if (inPlan.has(idea.id) && idea.status === "new") {
+            idea.status = "saved";
+            idea.updatedAt = clock.tick();
+          }
+        }
+        stored.approvedAt = now.toISOString();
+      }
+      return out(toPlan(stored, state.ideas));
     },
 
     async listWeeklyPlans(wsId, query = {}) {

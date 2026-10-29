@@ -29,7 +29,7 @@ export interface WeeklyFlowInput {
   /** İçinde bulunulan haftanın Pazartesi'si (YYYY-AA-GG). */
   currentWeekStart: string;
   /** Son plan: `null` = hiç plan yok, `undefined` = okunamadı. Yalnız plana girenler (adaylar değil). */
-  plan?: { weekStart: string; ideas: readonly WeeklyFlowPlanIdea[] } | null;
+  plan?: { weekStart: string; ideas: readonly WeeklyFlowPlanIdea[]; /** Müşteri planı onayladı (SPN-35): Seç adımı tamam. */ approved?: boolean } | null;
   /** Fişi olan fikirlerin kimlikleri; `undefined` = okunamadı / fiş kaydı yok. */
   ticketIdeaIds?: ReadonlySet<string> | readonly string[];
 }

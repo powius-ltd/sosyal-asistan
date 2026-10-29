@@ -41,6 +41,7 @@ import type { TopicHookMatrix } from "@/lib/domain/topic-hook-matrix";
 import type { VoiceProfile } from "@/lib/domain/voice-profile";
 import type { WeeklyPlan, WeeklyPlanSummary } from "@/lib/domain/weekly-plan";
 import type { CreditEntryFilter, ReserveCreditsInput } from "@/lib/data/credit-input";
+import type { IdeaRevisionInput } from "@/lib/data/idea-revision-input";
 import type { ManualIdeaInput } from "@/lib/data/manual-idea-input";
 import type { AdsRepository } from "@/lib/data/repository-ads";
 import type { OnboardingRepository } from "@/lib/data/repository-onboarding";
@@ -156,13 +157,12 @@ export interface PanelRepository extends OnboardingRepository, AdsRepository, St
 
   // ---- Fikirler
   listIdeas(wsId: string, filter?: IdeaFilter): Promise<Idea[]>;
-  /**
-   * Durum başına fikir sayısı (Fikirler sekme sayıları): tüm `IdeaStatus` anahtarları vardır (0 dahil). Sayı liste
-   * limitinden ya da sayfadan bağımsızdır; sekme sayısı için fikir listesi çekilip sayılmaz.
-   */
+  /** Durum başına fikir sayısı (Fikirler sekme sayıları): tüm `IdeaStatus` anahtarları vardır (0 dahil), liste limitinden bağımsız. */
   countIdeasByStatus(wsId: string): Promise<Record<IdeaStatus, number>>;
   getIdea(wsId: string, ideaId: string): Promise<Idea | null>;
   updateIdeaStatus(wsId: string, ideaId: string, status: IdeaStatus): Promise<Idea>;
+  /** Hook / taslak / senaryoyu yeniden yazar, eski hâli `details.revisions`'a koyar (SPN-35); yalnız new / saved / scripted fikir (`invalid_state`). */
+  reviseIdea(wsId: string, ideaId: string, input: IdeaRevisionInput, now: Date): Promise<Idea>;
   /**
    * Hesap sahibinin kendi fikrini kaydeder (sohbetten): `source = manual`, `status = new`, çalışma alanının kendi hesap platformu,
    * boş hook / senaryo, kanıtsız. Girdi `manualIdeaSchema` ile doğrulanır (`invalid_input`); kendi hesap yoksa `invalid_state`;
@@ -268,6 +268,8 @@ export interface PanelRepository extends OnboardingRepository, AdsRepository, St
    * `invalid_input`. Plan yoksa ya da bilinmeyen workspace → null. Plan yalnız sunucu tarafından yazılır (`save_weekly_plan`).
    */
   getWeeklyPlan(wsId: string, weekStart: string): Promise<WeeklyPlan | null>;
+  /** Planı onaylar (SPN-35): plana giren `new` fikirler `saved`, `approvedAt = now` (tek işlem; onaylıysa değişmez). Plan yok → `not_found`; `ready` değil → `invalid_state`. */
+  approveWeeklyPlan(wsId: string, weekStart: string, now: Date): Promise<WeeklyPlan>;
   /** Geçmiş planlar, yeniden eskiye (`weekStart` azalan); fikirleri yüklemeden özet satırları. Bilinmeyen workspace → boş liste. */
   listWeeklyPlans(wsId: string, query?: WeeklyPlanListQuery): Promise<WeeklyPlanSummary[]>;
   /**

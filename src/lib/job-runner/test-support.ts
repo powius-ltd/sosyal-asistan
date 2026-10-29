@@ -233,6 +233,11 @@ export function fakeDeps(overrides: Partial<JobRunnerDeps> = {}): FakeDeps {
     writeOrders: async () => ({ written: [], skipped: [], planFound: false }),
     returnOrders: async () => ({ outcome: "not_studio" }),
     publishOrders: async () => ({ outcome: "not_studio" }),
+    sendOrder: async () => {
+      throw new Error("sendOrder verilmedi");
+    },
+    runStudio: async () => ({ exitCode: null, timedOut: false, tail: "", spawnFailed: true }),
+    orderRoot: () => "/tmp/spn33-yok",
     draftNiche: async () => ({ draft: "Örnek konu taslağı." }),
     settleSpend: async () => ({ reservedUsd: 0, pending: 0 }),
     ...overrides,

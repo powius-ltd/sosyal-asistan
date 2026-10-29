@@ -1103,13 +1103,13 @@ isOneToOne: false
                   ]
                 },"weekly_plans": {
                   Row: {
-                    "brief": Json | null,"confidence": string | null,"created_at": string,"generated_at": string,"id": string,"model": string | null,"platform": Database["public"]['Enums']["platform"],"prompt_version": string,"run_ids": (string)[],"sections": NonNullable<Json>,"social_account_id": string | null,"status": string,"summary": string | null,"taxonomy_version": string,"updated_at": string,"week_start": string,"workspace_id": string
+                    "approved_at": string | null,"approved_by": string | null,"brief": Json | null,"confidence": string | null,"created_at": string,"generated_at": string,"id": string,"model": string | null,"platform": Database["public"]['Enums']["platform"],"prompt_version": string,"run_ids": (string)[],"sections": NonNullable<Json>,"social_account_id": string | null,"status": string,"summary": string | null,"taxonomy_version": string,"updated_at": string,"week_start": string,"workspace_id": string
                   }
                   Insert: {
-                    "brief"?: Json | null,"confidence"?: string | null,"created_at"?: string,"generated_at"?: string,"id"?: string,"model"?: string | null,"platform"?: Database["public"]['Enums']["platform"],"prompt_version": string,"run_ids"?: (string)[],"sections"?: NonNullable<Json>,"social_account_id"?: string | null,"status"?: string,"summary"?: string | null,"taxonomy_version": string,"updated_at"?: string,"week_start": string,"workspace_id": string
+                    "approved_at"?: string | null,"approved_by"?: string | null,"brief"?: Json | null,"confidence"?: string | null,"created_at"?: string,"generated_at"?: string,"id"?: string,"model"?: string | null,"platform"?: Database["public"]['Enums']["platform"],"prompt_version": string,"run_ids"?: (string)[],"sections"?: NonNullable<Json>,"social_account_id"?: string | null,"status"?: string,"summary"?: string | null,"taxonomy_version": string,"updated_at"?: string,"week_start": string,"workspace_id": string
                   }
                   Update: {
-                    "brief"?: Json | null,"confidence"?: string | null,"created_at"?: string,"generated_at"?: string,"id"?: string,"model"?: string | null,"platform"?: Database["public"]['Enums']["platform"],"prompt_version"?: string,"run_ids"?: (string)[],"sections"?: NonNullable<Json>,"social_account_id"?: string | null,"status"?: string,"summary"?: string | null,"taxonomy_version"?: string,"updated_at"?: string,"week_start"?: string,"workspace_id"?: string
+                    "approved_at"?: string | null,"approved_by"?: string | null,"brief"?: Json | null,"confidence"?: string | null,"created_at"?: string,"generated_at"?: string,"id"?: string,"model"?: string | null,"platform"?: Database["public"]['Enums']["platform"],"prompt_version"?: string,"run_ids"?: (string)[],"sections"?: NonNullable<Json>,"social_account_id"?: string | null,"status"?: string,"summary"?: string | null,"taxonomy_version"?: string,"updated_at"?: string,"week_start"?: string,"workspace_id"?: string
                   }
                   Relationships: [
                     {
@@ -1190,7 +1190,35 @@ isOneToOne: false
                 }
           }
           Functions: {
-            "cancel_panel_job":
+            "approve_weekly_plan":
+{ Args: { "p_by": string,"p_now": string,"p_week": string,"p_ws": string }; Returns: {
+              "approved_at": string | null,
+"approved_by": string | null,
+"brief": Json | null,
+"confidence": string | null,
+"created_at": string,
+"generated_at": string,
+"id": string,
+"model": string | null,
+"platform": Database["public"]['Enums']["platform"],
+"prompt_version": string,
+"run_ids": (string)[],
+"sections": NonNullable<Json>,
+"social_account_id": string | null,
+"status": string,
+"summary": string | null,
+"taxonomy_version": string,
+"updated_at": string,
+"week_start": string,
+"workspace_id": string
+            }
+                          SetofOptions: {
+        from: "*"
+        to: "weekly_plans"
+        isOneToOne: true
+        isSetofReturn: false
+      } },
+"cancel_panel_job":
 { Args: { "p_job": string,"p_ws": string }; Returns: {
               "approval_basis": string | null,
 "approved_at": string | null,
@@ -1534,7 +1562,9 @@ isOneToOne: false
       } },
 "save_weekly_plan":
 { Args: { "p_payload": Json,"p_week": string,"p_ws": string }; Returns: {
-              "brief": Json | null,
+              "approved_at": string | null,
+"approved_by": string | null,
+"brief": Json | null,
 "confidence": string | null,
 "created_at": string,
 "generated_at": string,

@@ -22,6 +22,8 @@ import { settleJobSpend } from "@/lib/job-runner/run-onboarding-settle";
 import { createRoutineDeps, savePlanMarkdown } from "@/lib/orchestrator/steps";
 import { measureOnce } from "@/lib/outcomes/measure-run";
 import { runOrderReturnReal, runPublishReal } from "@/lib/publish/real-run";
+import { createStudioRunner } from "@/lib/job-runner/studio-process";
+import { sendOrderToStudio } from "@/lib/studio-order/send-to-studio";
 import { orderRootOf } from "@/lib/studio-order/order-root";
 import { runOrderWrite } from "@/lib/studio-order/run";
 import { runZernioMeasure } from "@/lib/outcomes/zernio-job";
@@ -56,7 +58,10 @@ export function createRealDeps(rootDir: string = process.cwd()): JobRunnerDeps {
       runZernioMeasure({ client: ctx.client, workspaceId: ctx.workspaceId, workspaceSlug: ctx.workspaceSlug, now: ctx.now, dryRun: options.dryRun, env: process.env, log: options.log }),
     writeOrders: (ctx, options) =>
       runOrderWrite({ repo: ctx.repo, workspaceId: ctx.workspaceId, workspaceSlug: ctx.workspaceSlug, week: options.week, ordersDir: orderRootOf(), log: options.log, ...(options.slot === undefined ? {} : { slot: options.slot }), ...(options.ideaId === undefined ? {} : { ideaId: options.ideaId }) }),
-    returnOrders: (ctx) => runOrderReturnReal(ctx),
+    returnOrders: (ctx, options) => runOrderReturnReal(ctx, options.onlyOrderId === undefined ? {} : { onlyOrderId: options.onlyOrderId }),
+    sendOrder: (ctx, orderId) => sendOrderToStudio({ repo: ctx.repo, wsId: ctx.workspaceId, orderId, panelSlug: ctx.workspaceSlug, now: ctx.now, root: orderRootOf() }),
+    runStudio: createStudioRunner(),
+    orderRoot: () => orderRootOf(),
     publishOrders: (ctx, options) => runPublishReal(ctx, { log: options.log }),
     draftNiche: (ctx, profile, log) => draftNicheForAccount(ctx, profile, log),
     settleSpend: (ctx, jobId, options) => settleJobSpend({ client: ctx.client, workspaceId: ctx.workspaceId, jobId, ...options }),

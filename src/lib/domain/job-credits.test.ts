@@ -31,7 +31,7 @@ describe("iş kredi tavanı (güvenli üst sınır)", () => {
 
   it("tavanlar ayırma üst sınırının içinde; kredi harcamayanlar label, measure_zernio ve order", () => {
     for (const kind of JOB_KINDS) expect(jobCreditCeiling(kind, { collects: true }), kind).toBeLessThanOrEqual(CREDIT_HOLD_MAX);
-    expect(JOB_KINDS.filter((kind) => !jobSpendsCredits(kind))).toEqual(["label", "measure_zernio", "order", "order_return", "publish", "ads_sync"]);
+    expect(JOB_KINDS.filter((kind) => !jobSpendsCredits(kind))).toEqual(["label", "measure_zernio", "order", "order_return", "publish", "ads_sync", "produce"]);
   });
 
   it("ayrılacak kredi: onaylanan tutar tavanı AŞAMAZ; kredi harcamayan türde ayırma yok", () => {

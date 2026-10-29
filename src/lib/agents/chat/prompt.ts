@@ -31,8 +31,9 @@ import {
  * v6: kullanıcı kendi video fikrini söylerse `command: "save_idea"` + `idea` ile kaydettirilir (kaydı sunucu yapar; fikir metni kullanıcının kendi sözü, belirteç yok).
  * v4: yayın tarihi olgu olarak pakette (`ago`, `latest`, `own_best_window`): "son videom" cevaplanır, "en iyi video" cümlesi pencere söyler; tarih yalnız belirteçle.
  * v7: plan fikri seçme ve fiş yazma/değiştirme komutları (`select_idea`, `write_ticket`, `update_ticket`; kimlikler `<workflow>` bloğundan).
+ * v8: plan fikrini sohbetle düzeltme (`revise_idea` + `revision`; yeniden yazımı ayrı görev yapar); sohbet planı ONAYLAMAZ.
  */
-export const CHAT_PROMPT_VERSION = "chat-v7";
+export const CHAT_PROMPT_VERSION = "chat-v8";
 
 function purposeLines(type: AccountType): string[] {
   const profile = accountTypeProfile(type);
@@ -67,6 +68,8 @@ export function buildChatSystemPrompt(accountType: AccountType = DEFAULT_ACCOUNT
     'SAVE_IDEA: if the creator states a video idea of their own ("şöyle bir video fikrim var…", "şunu çekmeyi düşünüyorum…") or asks you to note one, answer kind out_of_scope with command "save_idea" and idea { title, note, format? }. text = one short Turkish sentence saying you are noting it (the system adds the confirmation). title = short title in the creator\'s own words and language (do not translate). note = the creator\'s own idea in their own words, condensed faithfully; add nothing the creator did not say, no figures, no facts from <facts>, no tokens. format only if the creator names one (short_video, long_video, image, carousel, story). Never use save_idea for questions, for opinions on existing videos, or when the creator asks YOU to invent ideas.',
     "",
     'TICKETS: <workflow> lists this week\'s plan ideas (id, title, status) and the tickets (id, ideaId, kind, status). Ids are copied ONLY from there, never invented. If the creator wants to pick a plan idea ("bunu çekeyim", "şunu seçtim"): kind out_of_scope, command "select_idea", ticket { ideaId }. If they want the shooting ticket written ("fişini yaz", "çekim fişi hazırla"): command "write_ticket", ticket { ideaId, kind?, note? }. If they want to change a ticket that is a draft ("UGC olsun", "animasyon da olsun", "şunu nota ekle"): command "update_ticket", ticket { orderId (or ideaId), kind? and/or note? }. Mapping to kind: UGC → ugc · animasyon → animasyon · B-roll / görüntü / çekim görüntüleri → broll · anlatım / konuşma / kameraya konuşma → anlatim · karışık → karisik; set kind only when the creator said it. note = the creator\'s own words, nothing added. If the idea is not clear from the message and <workflow>, ask which one in a plain out_of_scope answer without a command. text = one short Turkish sentence (the system adds the result and the link); no tokens, no ids in text.',
+    "",
+    'REVISE: if the creator wants to change a plan idea\'s openings, outline or script ("açılışı daha sert yap", "şu fikrin senaryosunu kısalt"): kind out_of_scope, command "revise_idea", revision { ideaId (copied ONLY from <workflow>.ideas), request (their change request in their own words) }. A separate step rewrites it and the system adds the result. If it is not clear which idea or what to change, ask in one plain out_of_scope sentence without a command. You can NEVER approve the plan: if asked, say in one sentence that the plan is approved with the "Planı onayla" button on the plan page. text = one short Turkish sentence; no tokens, no ids.',
     "",
     "NUMBERS: you never write a number yourself. Wherever a figure belongs, write a token and the system fills it in.",
     "- General figure: {g:KEY} where KEY is a key of numbers, e.g. {g:followers}.",

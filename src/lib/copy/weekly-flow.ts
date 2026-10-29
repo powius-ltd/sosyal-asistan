@@ -41,6 +41,7 @@ export const WEEKLY_FLOW_COPY = {
     },
     select: {
       done: (count: number) => (count === 1 ? "1 fikir seçildi." : `${count} fikir seçildi.`),
+      approved: "Planı onayladın; fikirler seçildi.",
       missing: "Bu hafta hangi fikri çekeceğini seç.",
       waiting: "Önce plan hazır olsun.",
     },

@@ -23,6 +23,8 @@ import type { RoutineWiring } from "@/lib/orchestrator/steps";
 import type { MeasureOptions, MeasureResult } from "@/lib/outcomes/measure-run";
 import type { OrderReturnRun, PublishRun } from "@/lib/publish/real-run";
 import type { OrderRunResult } from "@/lib/studio-order/run";
+import type { SendOrderResult } from "@/lib/studio-order/send-to-studio";
+import type { StudioRunner } from "@/lib/job-runner/studio-process";
 import type { ZernioJobResult } from "@/lib/outcomes/zernio-job";
 
 export type Log = (line: string) => void;
@@ -58,11 +60,17 @@ export interface JobRunnerDeps {
   /** Stüdyo siparişi: plan öğelerinden fiş dosyası yazar (dosya, $0). Aynı kimlikli fişin üstüne yazmaz. */
   writeOrders(ctx: IntelContext, options: { week: string; slot?: string; ideaId?: string; log: Log }): Promise<OrderRunResult>;
   /** Dönüş: stüdyodan dönen videoları onay bekleyen yayın satırına çevirir (satır + bildirim, $0). */
-  returnOrders(ctx: IntelContext, options: { log: Log }): Promise<OrderReturnRun>;
+  returnOrders(ctx: IntelContext, options: { log: Log; onlyOrderId?: string }): Promise<OrderReturnRun>;
   /** Yayın: YALNIZ onaylı stüdyo satırını zamanlar / yayınlananı kapatır ($0). Anahtar yoksa `key_missing` (çağrı yok). */
   publishOrders(ctx: IntelContext, options: { log: Log }): Promise<PublishRun>;
   /** Başlangıç `draft_niche`: tek hafif yazı çağrısıyla konu taslağı. FIRLATMAZ: çıkarılamazsa `draft` yoktur. */
   draftNiche(ctx: IntelContext, profile: NicheDraftProfile, log: Log): Promise<NicheDraftResult>;
   /** İşin açtığı koşuların mutabakatı (sınırlı bekleme) + toplam tutarı; iş sonunda bir kez. Para harcamaz. */
   settleSpend(ctx: IntelContext, jobId: string, options: { log: Log; shouldStop?: () => boolean; waitMs?: number }): Promise<JobSpend>;
+  /** `produce`: panel fişini stüdyo klasörüne `onay: evet` ile yazar (idempotent, $0; ücret stüdyo çalışınca doğar). */
+  sendOrder(ctx: IntelContext, orderId: string): Promise<SendOrderResult>;
+  /** `produce` PARA: stüdyoyu sabit argümanla çalıştırır (ses sağlayıcısı ücretlidir). */
+  runStudio: StudioRunner;
+  /** Sipariş klasörünün kökü (fiş yazımı ve stüdyo aynı kökü kullanır). */
+  orderRoot(): string;
 }

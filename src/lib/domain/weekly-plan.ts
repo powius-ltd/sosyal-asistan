@@ -300,6 +300,8 @@ export interface WeeklyPlan {
   sections: WeeklyPlanSections;
   /** Kreatif direktör brifi (tema, sütunlar, deneme değişkeni, slotlar; denetimden geçmiş). Brifsiz / eski planda undefined. */
   brief?: CreativeBrief;
+  /** Müşterinin "Planı onayla" anı (SPN-35); onaylanmadıysa undefined. Yeniden üretimde sıfırlanır. Onay yalnız `ready` plana verilir. */
+  approvedAt?: string;
   /** Plana girenler (3–5), sıraya göre artan. */
   items: WeeklyPlanItem[];
   /** Adaylar: üretildi ama plana alınmadı (sırasız; `rankScore`'a göre azalan). */

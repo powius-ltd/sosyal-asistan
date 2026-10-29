@@ -31,6 +31,11 @@ export const JOB_OUTCOME_CODES = [
   "plan_not_ready", // başlangıç: videolar incelendi ama plan çıkmadı (daha çok veri gerek)
   "no_plan", // sipariş: bu hafta için plan yok ya da yazılacak öğe çıkmadı (fiş yazılmadı)
   "zernio_key_missing", // Zernio ölçümü: bu hesap için API anahtarı yok (hiçbir çağrı yapılmadı)
+  "order_not_sendable", // üretime gönder: fiş taslak değil ya da stüdyonun yapamadığı türde / modda (hiçbir şey yazılmadı)
+  "voice_key_missing", // üretime gönder: bu hesabın ses anahtarı yok (stüdyo çağrılmadı)
+  "studio_unavailable", // üretime gönder: stüdyo klasörü / komutu bulunamadı (fiş dosyası geri alındı)
+  "studio_busy", // üretime gönder: stüdyo başka bir videoyu üretiyor (fiş dosyası geri alındı, fiş hata)
+  "studio_failed", // üretime gönder: stüdyo videoyu üretemedi (nedeni fişte)
   "not_implemented", // bu iş türünün koşucusu henüz yok: hiçbir şey yapılmadı
 ] as const;
 export type JobOutcomeCode = (typeof JOB_OUTCOME_CODES)[number];

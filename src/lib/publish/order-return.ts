@@ -9,6 +9,7 @@ import { dirname, join } from "node:path";
 
 import type { CreatePublishJobInput } from "@/lib/data/queries";
 import { ComplianceFailedError, RepositoryError } from "@/lib/data/repository";
+import { withAiDisclosure } from "@/lib/publish/ai-disclosure-line";
 import { OrderMediaError, toOrderMediaPath } from "@/lib/publish/order-media";
 import { istanbulStampToUtc } from "@/lib/publish/order-time";
 import { AI_DISCLOSURE_PROBLEM_PLAIN, orderDraftNotice, orderReadyNotice, SCHEDULE_PAST_NOTE_PLAIN, type PublishNoticeDraft } from "@/lib/plain-language-order";
@@ -23,7 +24,16 @@ export interface OrderReturnStore {
   createJob(input: CreatePublishJobInput): Promise<void>;
   /** true = yeni yazıldı, false = aynı anahtar daha önce yazılmıştı. */
   notify(draft: PublishNoticeDraft & { dedupeKey: string }): Promise<boolean>;
+  /**
+   * SPN-33: stüdyodan dönen sonucu panel fişine yansıtır (`uretildi` + video / `hata` + not). Panelde karşılığı olmayan sipariş (elle yazılmış
+   * fiş) sessizce geçilir; tekrar çağrı zararsızdır. Verilmezse (eski bağlama / testler) fiş durumuna dokunulmaz.
+   */
+  markPanelOrder?(update: PanelOrderUpdate): Promise<void>;
 }
+
+export type PanelOrderUpdate =
+  | { orderId: string; status: "uretildi"; video: string; cover?: string }
+  | { orderId: string; status: "hata"; errorNote: string };
 
 export type OrderReturnSkip = "invalid_ticket" | "video_missing" | "caption_missing" | "caption_invalid" | "no_account" | "media_outside_root";
 
@@ -40,6 +50,8 @@ export interface OrderReturnInput {
   studioSlug: string;
   now: Date;
   store: OrderReturnStore;
+  /** Yalnız bu stüdyo sipariş kimliği işlenir (üretimden hemen sonra tek sipariş için); verilmezse klasördeki tüm fişler. */
+  onlyOrderId?: string;
 }
 
 const WEEK = /^\d{4}-\d{2}-\d{2}$/;
@@ -64,9 +76,19 @@ export async function returnOrders(input: OrderReturnInput): Promise<OrderReturn
     } catch {
       continue; // bozuk fiş başka işin konusu; burada sessizce atlanır (sipariş kimliği bilinmiyor)
     }
-    if (ticket.hesap !== input.studioSlug || ticket.durum !== "uretildi" || !ticket.onay) continue;
+    if (ticket.hesap !== input.studioSlug || !ticket.onay) continue;
+    if (input.onlyOrderId !== undefined && ticket.siparis_id !== input.onlyOrderId) continue;
+    if (ticket.durum === "hata") {
+      await input.store.markPanelOrder?.({ orderId: ticket.siparis_id, status: "hata", errorNote: ticket.hata_notu ?? "Stüdyo videoyu üretemedi." });
+      continue;
+    }
+    if (ticket.durum !== "uretildi") continue;
     const orderId = ticket.siparis_id;
+    const markDone = async () => {
+      if (ticket.video !== undefined) await input.store.markPanelOrder?.({ orderId, status: "uretildi", video: ticket.video, ...(ticket.kapak !== undefined ? { cover: ticket.kapak } : {}) });
+    };
     if (await input.store.hasJobForOrder(orderId)) {
+      await markDone();
       result.alreadyHandled += 1;
       continue;
     }
@@ -99,7 +121,7 @@ export async function returnOrders(input: OrderReturnInput): Promise<OrderReturn
     const past = at === undefined || at.getTime() <= input.now.getTime();
     const base: CreatePublishJobInput = {
       socialAccountId: accountId,
-      caption,
+      caption: withAiDisclosure(caption),
       mediaPath,
       orderId,
       aiGenerated: true,
@@ -111,6 +133,7 @@ export async function returnOrders(input: OrderReturnInput): Promise<OrderReturn
       await input.store.createJob({ ...base, status: "awaiting_approval" });
     } catch (e) {
       if (e instanceof RepositoryError && e.code === "already_exists") {
+        await markDone();
         result.alreadyHandled += 1;
         continue;
       }
@@ -120,6 +143,7 @@ export async function returnOrders(input: OrderReturnInput): Promise<OrderReturn
           await input.store.createJob({ ...base, status: "draft" });
         } catch (e2) {
           if (e2 instanceof RepositoryError && e2.code === "already_exists") {
+            await markDone();
             result.alreadyHandled += 1;
             continue;
           }
@@ -134,6 +158,7 @@ export async function returnOrders(input: OrderReturnInput): Promise<OrderReturn
       ? orderDraftNotice({ orderId, problem: AI_DISCLOSURE_PROBLEM_PLAIN })
       : orderReadyNotice({ orderId, ...(past ? { scheduleNote: SCHEDULE_PAST_NOTE_PLAIN } : {}) });
     await input.store.notify({ ...notice, dedupeKey: `order_return:${orderId}` });
+    await markDone();
     (draft ? result.drafts : result.opened).push(orderId);
   }
   return result;

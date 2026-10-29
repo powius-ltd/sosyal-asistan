@@ -11,6 +11,9 @@ vi.mock("next/navigation", () => ({
 }));
 vi.mock("@/lib/data", async (importOriginal) => ({ ...(await importOriginal<typeof import("@/lib/data")>()), getPanelContext: async () => ctx.current }));
 
+// Üretime gönder yuvası async sunucu bileşenidir (jsdom çizemez); kendi testi produce-action.test.tsx'te.
+vi.mock("@/components/studio-order/produce-action", () => ({ ProduceAction: () => null }));
+
 import TicketPage from "@/app/(panel)/fis/[id]/page";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { createMockRepository } from "@/lib/data/mock/mock-repository";

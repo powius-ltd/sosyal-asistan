@@ -4,11 +4,13 @@ import type { ReactNode } from "react";
 import { ContentLink } from "@/components/common/content-link";
 import { LiftBadge } from "@/components/common/lift-badge";
 import { TicketButton } from "@/components/studio-order/ticket-button";
+import { ReviseIdeaButton } from "@/components/weekly-plan/revise-idea-button";
 import { QuoteBlock } from "@/components/weekly-plan/quote-block";
 import { SlotTime } from "@/components/weekly-plan/slot-time";
 import { TAP, TAP_LINKS } from "@/components/weekly-plan/tap-target";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
+import { REVISABLE_STATUSES } from "@/lib/data/idea-revision-input";
 import type { IdeaEvidence } from "@/lib/domain/intel";
 import type { WeeklyPlanItem } from "@/lib/domain/weekly-plan";
 import { formatDuration } from "@/lib/format";
@@ -141,8 +143,9 @@ export function PlanItemCard({ item, audienceTimeZone, orderId }: { item: Weekly
           )}
         </div>
 
-        <div>
+        <div className="flex flex-wrap gap-2">
           <TicketButton ideaId={idea.id} orderId={orderId} />
+          {REVISABLE_STATUSES.includes(idea.status) ? <ReviseIdeaButton title={idea.title} /> : null}
         </div>
       </CardContent>
     </Card>

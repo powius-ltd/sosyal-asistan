@@ -29,7 +29,7 @@ export const CHAT_TIMEOUT_MS = 90_000;
 export type ChatAnswerEvent = Extract<ChatEvent, { type: "answer" }>;
 
 export type ChatResult =
-  | { ok: true; answer: ChatAnswerEvent; meta?: LlmCallMeta; llmCalled: boolean; /** Kullanıcı bir iş yaptırmak (`delegate`; karar ajanın kapısındadır) ya da kendi fikrini kaydettirmek (`save_idea`, `idea` ile) istiyor; yalnız out_of_scope yanıtıyla. */ command?: ChatCommand; idea?: ChatOutput["idea"]; ticket?: ChatOutput["ticket"] }
+  | { ok: true; answer: ChatAnswerEvent; meta?: LlmCallMeta; llmCalled: boolean; /** Kullanıcı bir iş yaptırmak (`delegate`; karar ajanın kapısındadır) ya da kendi fikrini kaydettirmek (`save_idea`, `idea` ile) istiyor; yalnız out_of_scope yanıtıyla. */ command?: ChatCommand; idea?: ChatOutput["idea"]; ticket?: ChatOutput["ticket"]; revision?: ChatOutput["revision"] }
   | { ok: false; code: ChatErrorCode; message: string; llmCalled: boolean; llmCode?: LlmErrorCode };
 
 export interface ChatDeps {
@@ -108,7 +108,7 @@ export async function answerChat(ctx: FactsContext, request: ChatRequest, deps: 
       review: (output) => reviewChatOutput(output, facts),
       reviewFailure: "throw",
     });
-    return { ok: true, answer: placeChatAnswer(value, facts), meta, llmCalled: true, ...(value.command === undefined ? {} : { command: value.command }), ...(value.idea === undefined ? {} : { idea: value.idea }), ...(value.ticket === undefined ? {} : { ticket: value.ticket }) };
+    return { ok: true, answer: placeChatAnswer(value, facts), meta, llmCalled: true, ...(value.command === undefined ? {} : { command: value.command }), ...(value.idea === undefined ? {} : { idea: value.idea }), ...(value.ticket === undefined ? {} : { ticket: value.ticket }), ...(value.revision === undefined ? {} : { revision: value.revision }) };
   } catch (error) {
     if (error instanceof ChatAbortedError) return fail("aborted", true);
     if (error instanceof LlmError) {

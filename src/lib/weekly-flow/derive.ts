@@ -70,6 +70,7 @@ function selectedIdeas(input: WeeklyFlowInput): string[] {
 function ownSelect(input: WeeklyFlowInput): Own {
   const R = COPY.reasons.select;
   const count = selectedIdeas(input).length;
+  if (hasCurrentPlan(input) && input.plan!.approved === true) return { done: true, reason: R.approved };
   if (count > 0) return { done: true, reason: R.done(count) };
   return { done: false, reason: R.missing, action: chat(COPY.chat.select), secondaryAction: { kind: "link", href: ROUTES.thisWeek }, waitingReason: hasCurrentPlan(input) ? R.missing : R.waiting };
 }

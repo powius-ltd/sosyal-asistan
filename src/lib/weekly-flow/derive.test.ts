@@ -102,6 +102,14 @@ describe("deriveWeeklyFlow", () => {
     }
   });
 
+  it("Seç: onaylı plan (SPN-35) seçilmiş fikir görünmese de tamam sayılır; onaysız ve seçimsiz plan etkin kalır", () => {
+    const ideas = [{ id: "a", status: "new" as const }];
+    expect(step(done({ plan: { weekStart: WEEK, approved: true, ideas }, ticketIdeaIds: [] }), "select")).toMatchObject({ state: "done", reason: WEEKLY_FLOW_COPY.reasons.select.approved });
+    expect(step(done({ plan: { weekStart: WEEK, approved: false, ideas }, ticketIdeaIds: [] }), "select").state).toBe("active");
+    // Onay başka haftanın planına aitse bu haftanın Seç adımını tamamlamaz.
+    expect(step(done({ plan: { weekStart: "2026-10-19", approved: true, ideas }, ticketIdeaIds: [] }), "select").state).not.toBe("done");
+  });
+
   it("Fiş: seçilenin fişi yoksa etkin; hepsi varsa done; fiş kaydı okunamadı blocked", () => {
     const two = { weekStart: WEEK, ideas: [{ id: "a", status: "saved" as const }, { id: "b", status: "scripted" as const }] };
     expect(step(done({ plan: two, ticketIdeaIds: ["a"] }), "ticket")).toMatchObject({ state: "active", reason: "Seçtiğin fikrin fişi henüz yok.", action: { kind: "chat" } });

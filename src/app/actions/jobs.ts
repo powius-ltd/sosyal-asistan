@@ -28,6 +28,7 @@ import {
   WORKER_NOT_READY,
   WORKER_START_FAILED,
 } from "@/lib/job-control/messages";
+import { produceRequestProblem } from "@/lib/job-control/produce-check";
 import { JobApprovalRefused, requestJobChecked, requestRoutineForAll } from "@/lib/job-control/request";
 import { ROUTES } from "@/lib/routes";
 import { listWorkspaces } from "@/lib/workspace/registry";
@@ -81,6 +82,11 @@ export async function requestJobAction(input: unknown): Promise<RequestJobResult
 
   try {
     const { repo, wsId, now } = await getPanelContext();
+    if (parsed.data.kind === "produce") {
+      const panelSlug = (await listWorkspaces()).find((w) => w.id === wsId)?.slug;
+      const problem = await produceRequestProblem(repo, wsId, panelSlug, parsed.data.orderId);
+      if (problem !== undefined) return actionFail(problem, "invalid_state");
+    }
     const job = await requestJobChecked(repo, wsId, parsed.data);
     startWorker(now);
     refreshPanel();

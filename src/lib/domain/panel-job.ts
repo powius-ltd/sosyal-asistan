@@ -19,7 +19,7 @@ import type { OnboardingPhase, OnboardingProbeResult } from "@/lib/domain/onboar
 // ---------------------------------------------------------------------- Tür
 
 /** İş türleri (DB check ile birebir). Yeni tür = migration + bu liste + `JOB_KIND_SPEC` + düz dil sözlüğü birlikte. */
-export const JOB_KINDS = ["routine", "collect", "measure", "analyze", "label", "plan", "briefing", "onboarding", "measure_zernio", "discover", "order", "order_return", "publish", "ads_sync"] as const;
+export const JOB_KINDS = ["routine", "collect", "measure", "analyze", "label", "plan", "briefing", "onboarding", "measure_zernio", "discover", "order", "order_return", "publish", "ads_sync", "produce"] as const;
 export type JobKind = (typeof JOB_KINDS)[number];
 
 /**
@@ -78,10 +78,13 @@ export const JOB_KIND_SPEC: Record<JobKind, JobKindSpec> = {
   publish: { spend: "never", approvalBases: [], preview: false, timeoutMinutes: 20 },
   // Reklam (2026-10-21, migration 0029): `ads_sync` reklam verisini resmi API'den (Zernio) OKUR. $0, onaysız (Apify parası yok, reklam hesabına yazmaz), önizlemesiz.
   ads_sync: { spend: "never", approvalBases: [], preview: false, timeoutMinutes: 10 },
+  // Üretime gönder (2026-10-29, migration 0034, paket 33): panel fişini stüdyoya onaylı yazar, stüdyoyu doğrudan çalıştırır (ses = ElevenLabs parası),
+  // biter bitmez o siparişin dönüşünü koşar. Para harcar: her seferinde tutar onayı (`one_time`); önizleme yok; zamanlayıcı yok.
+  produce: { spend: "always", approvalBases: ["one_time"], preview: false, timeoutMinutes: 60 },
 };
 
 /** Terminal komutu olan (düğmeyle / komutla tek başına başlatılabilen) türler: başlangıç işi akışından başlar, komutu yoktur. */
-export type CommandJobKind = Exclude<JobKind, "onboarding" | "measure_zernio" | "discover" | "order" | "order_return" | "publish" | "ads_sync">;
+export type CommandJobKind = Exclude<JobKind, "onboarding" | "measure_zernio" | "discover" | "order" | "order_return" | "publish" | "ads_sync" | "produce">;
 
 /** Komut kimliği → iş türü (komutu olan türlerle birebir): komut metni gösteren her yer aynı işi düğmeyle başlatır. */
 export const JOB_KIND_BY_COMMAND: Record<BriefingCommandId, CommandJobKind> = {
@@ -157,7 +160,8 @@ export interface JobSpendCaps {
  */
 export function availableApprovalBases(kind: JobKind, caps: JobSpendCaps): JobUsdApprovalBasis[] {
   const allowed = JOB_KIND_SPEC[kind].approvalBases;
-  if (allowed.length === 0 || caps.apifyMonthlyCapUsd === 0) return [];
+  // `produce` ses parasıdır (stüdyo), Apify tavanına bağlı değil: yalnız tek seferlik tutar onayı.
+  if (allowed.length === 0 || (kind !== "produce" && caps.apifyMonthlyCapUsd === 0)) return [];
   const monthlyCap = kind === "measure" ? caps.measureMonthlyCapUsd : caps.apifyMonthlyCapUsd;
   if (kind === "measure" && monthlyCap === 0) return [];
   const monthlyOpen = monthlyCap !== undefined && monthlyCap > 0;
@@ -207,7 +211,7 @@ export const canCancelJob = isActiveJobStatus;
 // --------------------------------------------------------------------- Adım
 
 /** Adım kimlikleri: haftalık turun adımları (`orchestrator` `ReportStepId` ile aynı) + tek adımlı `measure` + başlangıç akışınınkiler. */
-export const JOB_STEP_IDS = ["precheck", "collect", "analyze", "label", "cluster", "plan", "measure_check", "measure", "briefing", "verify", "discover", "draft_niche", "measure_zernio", "order", "order_return", "publish", "ads_sync"] as const;
+export const JOB_STEP_IDS = ["precheck", "collect", "analyze", "label", "cluster", "plan", "measure_check", "measure", "briefing", "verify", "discover", "draft_niche", "measure_zernio", "order", "order_return", "publish", "ads_sync", "produce"] as const;
 export type JobStepId = (typeof JOB_STEP_IDS)[number];
 
 /** pending: sırası gelmedi · running: sürüyor · ok · skipped: tasarım gereği atlandı · failed · needs_approval: onay bekliyor (koşmadı). */
@@ -233,6 +237,7 @@ export const JOB_STEPS_BY_KIND: Record<JobKind, readonly JobStepId[]> = {
   order_return: ["order_return"],
   publish: ["publish"],
   ads_sync: ["ads_sync"],
+  produce: ["order", "produce", "order_return"],
 };
 
 // Sonuç kodları ayrı dosyada (dosya boyu sınırı); dışa açık ad değişmez.
@@ -315,6 +320,8 @@ export type JobParams = {
   slot?: string;
   /** `order`: yalnız bu fikir (UUID). */
   ideaId?: string;
+  /** `produce`: üretime gönderilen panel fişi (`studio_orders.id`, UUID). */
+  orderId?: string;
   /** `onboarding`: aşama (ZORUNLU; DB check). */
   phase?: OnboardingPhase;
   /** `onboarding` `build`: "Başlat" ile izlemeye alınan rakipler (`competitors.id`; en çok `ONBOARDING_RIVALS_MAX`; boş / yok = rakipsiz). */
@@ -355,41 +362,8 @@ export interface PanelJob {
   finishedAt?: string;
 }
 
-// ------------------------------------------------------------ Zaman kuralları
-
-/** İşçi nabzı (ms). */
-export const JOB_HEARTBEAT_INTERVAL_MS = 10_000;
-/** Nabzı bundan eski `running` iş "yanıt vermiyor"dur. DB (`private.panel_job_stale_after`) ile AYNI değer: 90 sn. */
-export const JOB_STALE_AFTER_MS = 90_000;
-/** Ekranın yoklama aralığı (ms); yalnız etkin iş varken, sekme görünürken. */
-export const JOB_POLL_INTERVAL_MS = 4_000;
-/** Bu kadar süredir `queued` duran iş için işçi dürtülür (işçi ölmüş olabilir). */
-export const JOB_KICK_AFTER_MS = 15_000;
-/** Aynı tarayıcı iki dürtme arasında en az bu kadar bekler (sırada bekleyen iş her yoklamada işçi doğurmasın). */
-export const JOB_KICK_MIN_INTERVAL_MS = 30_000;
-
-/** `stale: true` = çalışıyor görünen ama nabzı bayat iş; `silentMs` son nabızdan beri geçen süre (nabız okunamıyorsa yok). */
-export type JobStaleness = { stale: false } | { stale: true; silentMs?: number };
-
-/**
- * "Yanıt vermiyor" kuralı (saf; ekran ve depo AYNI fonksiyonu kullanır). Yalnız `running` iş bayat olabilir: son nabız
- * `JOB_STALE_AFTER_MS`'ten eskiyse ya da okunamıyorsa bayattır. Bayat iş kendiliğinden KAPANMAZ (uyku / kapak sonrası yanlış kapatma
- * olmasın): yalnız yeni iş isteği, claim ve iptal anında `failed` + `worker_lost` olur.
- */
-export function jobStaleness(job: Pick<PanelJob, "status" | "heartbeatAt">, now: Date): JobStaleness {
-  if (job.status !== "running") return { stale: false };
-  const beat = job.heartbeatAt === undefined ? Number.NaN : Date.parse(job.heartbeatAt);
-  if (Number.isNaN(beat)) return { stale: true };
-  const silentMs = now.getTime() - beat;
-  return silentMs > JOB_STALE_AFTER_MS ? { stale: true, silentMs } : { stale: false };
-}
-
-/** Sıradaki iş `JOB_KICK_AFTER_MS`'tir bekliyor mu: işçi dürtülmeli (dürtme idempotenttir: fazla işçi iş alamaz, çıkar). */
-export function needsWorkerKick(job: Pick<PanelJob, "status" | "createdAt">, now: Date): boolean {
-  if (job.status !== "queued") return false;
-  const waited = now.getTime() - Date.parse(job.createdAt);
-  return Number.isFinite(waited) && waited >= JOB_KICK_AFTER_MS;
-}
+// Zaman kuralları (nabız, yoklama, bayatlık, dürtme) `panel-job-liveness.ts`'tedir; buradan da dışa verilir.
+export * from "@/lib/domain/panel-job-liveness";
 
 // ------------------------------------------------------------ İşçi sözleşmesi
 

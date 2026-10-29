@@ -45,6 +45,8 @@ import { studioOrdersContract } from "@/lib/data/contract/studio-orders";
 import { topicHookMatrixContract } from "@/lib/data/contract/topic-hook-matrix";
 import { outcomesContract } from "@/lib/data/contract/outcomes";
 import { createContractContext, type RepositoryContractOptions } from "@/lib/data/contract/support";
+import { ideaRevisionContract } from "@/lib/data/contract/idea-revision";
+import { planApprovalContract } from "@/lib/data/contract/plan-approval";
 import { weeklyPlanContract } from "@/lib/data/contract/weekly-plan";
 import { workspaceContract } from "@/lib/data/contract/workspace";
 import { workspaceAccountTypeContract } from "@/lib/data/contract/workspace-account-type";
@@ -68,6 +70,8 @@ export function runRepositoryContract(name: string, create: () => PanelRepositor
     opsContract(ctx);
     bestTimesContract(ctx);
     weeklyPlanContract(ctx);
+    planApprovalContract(ctx);
+    ideaRevisionContract(ctx);
     insightsContract(ctx);
     insightsNicheContract(ctx);
     outcomesContract(ctx);

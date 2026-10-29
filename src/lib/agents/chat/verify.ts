@@ -42,6 +42,12 @@ function ticketProblems(output: ChatOutput): string[] {
   return [];
 }
 
+/** Fikir düzeltme komutunun şekil kuralları (kimliğin bu haftanın planında olması sunucuda `revise-command.ts`'te denetlenir). */
+function revisionProblems(output: ChatOutput): string[] {
+  if (output.command === "revise_idea") return output.revision === undefined ? ['command "revise_idea" için revision (ideaId, request) gerekir'] : [];
+  return output.revision === undefined ? [] : ['revision yalnız command "revise_idea" ile verilir'];
+}
+
 /** Tüm sorunlar; [] = yanıt geçerli. */
 export function verifyChatOutput(output: ChatOutput, facts: BriefingFacts): string[] {
   const problems: string[] = [];
@@ -49,7 +55,7 @@ export function verifyChatOutput(output: ChatOutput, facts: BriefingFacts): stri
   const evidence = new Set(output.evidence);
   if (output.command !== undefined && output.kind !== "out_of_scope") problems.push("command yalnız out_of_scope yanıtıyla verilir");
   if (output.command === "save_idea" && output.idea === undefined) problems.push('command "save_idea" için idea (title, note) gerekir');
-  problems.push(...ticketProblems(output));
+  problems.push(...ticketProblems(output), ...revisionProblems(output));
   if (output.command !== "save_idea" && output.idea !== undefined) problems.push('idea yalnız command "save_idea" ile verilir');
 
   if (isAnswer) {

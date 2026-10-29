@@ -74,6 +74,7 @@ export function createSupabaseRepository(options: SupabaseRepositoryOptions): Pa
     countIdeasByStatus: (wsId) => ideas.countIdeasByStatus(ctx, wsId),
     getIdea: (wsId, ideaId) => ideas.getIdea(ctx, wsId, ideaId),
     updateIdeaStatus: (wsId, ideaId, status) => ideas.updateIdeaStatus(ctx, wsId, ideaId, status),
+    reviseIdea: (wsId, ideaId, input, now) => ideas.reviseIdea(ctx, wsId, ideaId, input, now),
     createManualIdea: (wsId, input, now) => manualIdeas.createManualIdea(ctx, wsId, input, now),
 
     // Yayın
@@ -110,6 +111,7 @@ export function createSupabaseRepository(options: SupabaseRepositoryOptions): Pa
 
     // Haftalık plan + ses profili + içgörü
     getWeeklyPlan: (wsId, weekStart) => plans.getWeeklyPlan(ctx, wsId, weekStart),
+    approveWeeklyPlan: (wsId, weekStart, now) => plans.approveWeeklyPlan(ctx, wsId, weekStart, now),
     listWeeklyPlans: (wsId, query) => plans.listWeeklyPlans(ctx, wsId, query),
     getVoiceProfile: (wsId, accountId) => plans.getVoiceProfile(ctx, wsId, accountId),
     getInsights: (wsId, query) => insights.getInsights(ctx, wsId, query),
@@ -144,6 +146,7 @@ export function createSupabaseRepository(options: SupabaseRepositoryOptions): Pa
     getStudioOrder: (wsId, id) => studioOrders.getStudioOrder(ctx, wsId, id),
     listStudioOrders: (wsId, query) => studioOrders.listStudioOrders(ctx, wsId, query),
     updateStudioOrder: (wsId, id, patch, now) => studioOrders.updateStudioOrder(ctx, wsId, id, patch, now),
+    advanceStudioOrder: (wsId, id, patch, now) => studioOrders.advanceStudioOrder(ctx, wsId, id, patch, now),
 
     // Başlangıç akışı
     getOnboardingState: (wsId) => onboarding.getOnboardingState(ctx, wsId),

@@ -362,6 +362,7 @@ export type RequestJobInput =
       | { kind: "analyze" | "label" | "briefing"; source?: "cycle" }
       | { kind: "plan"; week?: string; source?: "cycle" }
       | { kind: "discover"; approval?: JobApprovalInput; source?: "agent" }
+      | { kind: "produce"; orderId: string; approval?: JobApprovalInput }
     ) &
       JobCreditsInput)
   | { kind: "measure_zernio"; source?: "cycle" }

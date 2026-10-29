@@ -1,5 +1,5 @@
 /**
- * Sohbetin haftalık akış bilgisi (paket 28 G6): bu haftanın planındaki fikirler (kimlik + başlık + durum) ve fişler (kimlik + fikir kimliği + tür + durum).
+ * Sohbetin haftalık akış bilgisi (paket 28 G6): güncel planın (bu hafta ya da ileriki haftanın en yeni planı; Bugün şeridiyle aynı okuma) fikirleri (kimlik + başlık + durum) ve fişler (kimlik + fikir kimliği + tür + durum).
  * Model kimlikleri YALNIZ buradan kopyalar (`<workflow>` veri bloğu); komutu sunucu aynı veriyle yeniden doğrular (`ticket-command.ts`).
  * Yalnız OKUMA; okunamazsa boş döner (sohbet çökmez). Başlık veri bloğunda kaçırılır (`dataBlock`).
  */
@@ -20,7 +20,10 @@ export async function loadChatWorkflow(ctx: FactsContext): Promise<ChatWorkflow>
   const { repo, workspaceId, now } = ctx;
   try {
     const workspace = await repo.getWorkspace(workspaceId);
-    const weekStart = weekStartOf(toDayKey(now, workspace?.timezone) ?? "");
+    const current = weekStartOf(toDayKey(now, workspace?.timezone) ?? "");
+    // Plan çoğunlukla gelecek hafta için üretilir: bu haftadan eski olmayan en yeni plan; yoksa bu haftanınki.
+    const latest = (await repo.listWeeklyPlans(workspaceId, { limit: 1 }))[0];
+    const weekStart = latest !== undefined && current !== undefined && latest.weekStart >= current ? latest.weekStart : current;
     const plan = weekStart === undefined ? null : await repo.getWeeklyPlan(workspaceId, weekStart);
     const orders = await repo.listStudioOrders(workspaceId, {});
     return {

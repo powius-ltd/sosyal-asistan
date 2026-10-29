@@ -52,3 +52,17 @@ export const TICKET_COPY = {
   notFound: "Fiş bulunamadı",
   notFoundHint: "Silinmiş ya da başka bir hesaba ait olabilir.",
 } as const;
+
+/** "Üretime gönder" düğmesi ve onay penceresi (SPN-33). Düğme yalnız yönetici modunda çizilir (işler kapıdan geçer); tutar orada gösterilir. */
+export const PRODUCE_COPY = {
+  button: "Üretime gönder",
+  dialogTitle: "Videoyu şimdi üret",
+  dialogLead: "Bu fiş stüdyoya gider ve video şimdi üretilir; birkaç dakika sürebilir.",
+  scope: "Video üretilir ama paylaşılmaz: paylaşmadan önce yine senin onayını isteriz. Paylaşım saati fişteki istenen saattir.",
+  spend: "Üretim ses için ücretli bir hizmet kullanır.",
+  amountLabel: "En çok harcanacak tutar (USD)",
+  approve: "Onayla ve üret",
+  cancel: "Vazgeç",
+  closedSpend: "Harcama bilgisini okuyamadım; üretim şu an başlatılamıyor.",
+  retryHint: "Önceki deneme yarıda kaldı; yeniden gönderebilirsin.",
+} as const;

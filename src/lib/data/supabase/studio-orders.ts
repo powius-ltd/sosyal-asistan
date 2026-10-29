@@ -4,7 +4,7 @@
  * yapılır, yarışta DB hatası aynı koda çevrilir (`23505` → `already_exists`, `23503` → `not_found`). Fişte yalnız `taslak` iken `tur` ve
  * not değişir; yazım `status = 'taslak'` koşuluyla yapılır (okuma ile yazma arasında stüdyo durumu ilerlettiyse 0 satır → `invalid_state`).
  */
-import { parseCreateStudioOrder, parseStudioOrderQuery, parseUpdateStudioOrder, type CreateStudioOrderInput, type StudioOrderQuery, type UpdateStudioOrderInput } from "@/lib/data/studio-order-input";
+import { advanceStudioOrderProblem, applyAdvance, parseAdvanceStudioOrder, parseCreateStudioOrder, parseStudioOrderQuery, parseUpdateStudioOrder, type AdvanceStudioOrderInput, type CreateStudioOrderInput, type StudioOrderQuery, type UpdateStudioOrderInput } from "@/lib/data/studio-order-input";
 import { RepositoryError } from "@/lib/data/repository";
 import type { SupabaseContext } from "@/lib/data/supabase/context";
 import { isUuid, onlyUuids, unwrap } from "@/lib/data/supabase/errors";
@@ -97,7 +97,9 @@ export async function updateStudioOrder(ctx: SupabaseContext, wsId: string, id: 
   const current = await getStudioOrder(ctx, wsId, id);
   if (current === undefined) throw new RepositoryError("not_found", "Fiş bulunamadı.");
   if (current.status !== "taslak") throw new RepositoryError("invalid_state", "Yalnız taslak fiş değiştirilebilir.");
-  const ticket: Ticket = value.kind === undefined ? current.ticket : { ...current.ticket, tur: value.kind };
+  if (value.ticket !== undefined && (value.ticket.fikir_id !== undefined && value.ticket.fikir_id !== current.ideaId)) throw new RepositoryError("invalid_input", "Fişteki fikir kimliği fişin fikriyle aynı olmalı.");
+  const base = value.ticket ?? current.ticket;
+  const ticket: Ticket = value.kind === undefined ? base : { ...base, tur: value.kind };
   void now; // updated_at'i DB tetikleyicisi yazar.
   const rows = unwrap(
     await ctx.db
@@ -110,4 +112,29 @@ export async function updateStudioOrder(ctx: SupabaseContext, wsId: string, id: 
   );
   if (rows.length === 0) throw new RepositoryError("invalid_state", "Yalnız taslak fiş değiştirilebilir.");
   return toStudioOrder(rows[0]);
+}
+
+/** SPN-33: durum ilerletme. Yazım okunan durum koşuluyla yapılır (araya giren değişiklikte 0 satır → durum yeniden okunur, aynıysa boşa gider). */
+export async function advanceStudioOrder(ctx: SupabaseContext, wsId: string, id: string, patch: AdvanceStudioOrderInput, now: Date): Promise<StudioOrder> {
+  await requireWorkspace(ctx, wsId);
+  const value = parseAdvanceStudioOrder(patch);
+  const current = await getStudioOrder(ctx, wsId, id);
+  if (current === undefined) throw new RepositoryError("not_found", "Fiş bulunamadı.");
+  const problem = advanceStudioOrderProblem(current.status, value.status);
+  if (problem !== undefined) throw new RepositoryError("invalid_state", problem);
+  if (current.status === value.status) return current;
+  void now; // updated_at'i DB tetikleyicisi yazar.
+  const rows = unwrap(
+    await ctx.db
+      .from("studio_orders")
+      .update({ ticket: ticketJson(applyAdvance(current.ticket, value)), status: value.status })
+      .eq("workspace_id", wsId)
+      .eq("id", id)
+      .eq("status", current.status)
+      .select(COLUMNS),
+  );
+  if (rows.length > 0) return toStudioOrder(rows[0]);
+  const again = await getStudioOrder(ctx, wsId, id);
+  if (again?.status === value.status) return again;
+  throw new RepositoryError("invalid_state", "Fişin durumu bu arada değişti.");
 }

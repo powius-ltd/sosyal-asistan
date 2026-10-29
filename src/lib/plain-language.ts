@@ -15,6 +15,7 @@ import type { JobStatusView } from "@/lib/domain/panel-job-view";
 import type { ConfidenceLevel } from "@/lib/domain/weekly-plan";
 import { formatDecimal, formatNumber, LOCALE } from "@/lib/format";
 import { LIFT_DIGITS, liftTimes, roundedLift } from "@/lib/plain-language-lift";
+import { PRODUCE_OUTCOME_PLAIN } from "@/lib/plain-language-order";
 
 export { liftTimes };
 export * from "@/lib/plain-language-ads";
@@ -203,6 +204,7 @@ export const JOB_KIND_PLAIN: Record<JobKind, { label: string; doing: string }> =
   order_return: { label: "Stüdyo videolarını al", doing: "stüdyodan gelen videoları yayın onayına hazırlıyorum" },
   publish: { label: "Onaylı videoyu yayınla", doing: "onayladığın videoyu zamanlıyorum" },
   ads_sync: { label: "Reklam verisini güncelle", doing: "reklam verisini okuyorum" },
+  produce: { label: "Videoyu üret", doing: "videoyu stüdyoda üretiyorum" },
 };
 
 /** Adım: `name` adım listesindeki ad, `doing` "şimdi yaptığım" cümlesi. */
@@ -223,6 +225,7 @@ export const JOB_STEP_PLAIN: Record<JobStepId, { name: string; doing: string }> 
   order_return: { name: "Stüdyo videoları", doing: "stüdyodan gelen videoları onaya hazırlıyorum" },
   publish: { name: "Yayın", doing: "onaylı videoyu zamanlıyorum" },
   ads_sync: { name: "Reklam verisi", doing: "reklam verisini okuyorum" },
+  produce: { name: "Video üretimi", doing: "videoyu stüdyoda üretiyorum" },
   draft_niche: { name: "Konu taslağı", doing: "ne anlattığını çıkarıyorum" },
 };
 
@@ -283,6 +286,7 @@ export const JOB_OUTCOME_PLAIN: Record<JobOutcomeCode, string> = {
   plan_not_ready: "Videolarını inceledim; plan çıkarabilmem için biraz daha veri gerekiyor.",
   no_plan: "Bu hafta için fişe çevrilecek bir plan öğesi bulamadım.",
   zernio_key_missing: "Bu hesap için bağlantı anahtarı yok, sonuçlar okunamadı.",
+  ...PRODUCE_OUTCOME_PLAIN,
   not_implemented: "Bu iş henüz yapılamıyor.",
 };
 

@@ -96,6 +96,7 @@ const JOB_CREDIT_SOURCES: Record<JobKind, readonly Source[]> = {
   order_return: [],
   publish: [],
   ads_sync: [],
+  produce: [],
   discover: [{ item: "account_scan", units: "accounts" }],
   // Başlangıç (ilk tur) dökümü; ayrılan tutar birimlerden değil aşamanın sabit tavanından gelir (`job-credits.ts`).
   onboarding: [

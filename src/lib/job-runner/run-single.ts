@@ -30,7 +30,7 @@ import { spendGate } from "@/lib/job-runner/spend-gate";
 import { tapLlmFailure } from "@/lib/orchestrator/llm-failure";
 
 /** Tek adımlı işler: haftalık tur ve başlangıç işi (çok adımlı; kendi koşucuları var) dışındakiler. */
-export type SingleJobKind = Exclude<JobKind, "routine" | "onboarding">;
+export type SingleJobKind = Exclude<JobKind, "routine" | "onboarding" | "produce">;
 
 /** Süre (sn, bir ondalık). */
 export const secondsSince = (startedMs: number, nowMs: number): number => Math.max(0, Math.round((nowMs - startedMs) / 100) / 10);

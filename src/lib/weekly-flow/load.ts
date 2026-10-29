@@ -24,7 +24,7 @@ export interface LoadWeeklyFlowArgs {
 }
 
 const toFlowPlan = (plan: WeeklyPlan | null | undefined): WeeklyFlowInput["plan"] =>
-  plan === undefined ? undefined : plan === null ? null : { weekStart: plan.weekStart, ideas: plan.items.map((i) => ({ id: i.ideaId, status: i.idea.status })) };
+  plan === undefined ? undefined : plan === null ? null : { weekStart: plan.weekStart, approved: plan.approvedAt !== undefined, ideas: plan.items.map((i) => ({ id: i.ideaId, status: i.idea.status })) };
 
 export async function loadWeeklyFlowInput({ repo, wsId, now, today }: LoadWeeklyFlowArgs): Promise<WeeklyFlowInput> {
   const [workspace, jobs, outliers, orders, planList, runs] = await Promise.all([

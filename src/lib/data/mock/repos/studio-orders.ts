@@ -5,10 +5,10 @@
  */
 import { RepositoryError, type PanelRepository } from "@/lib/data/repository";
 import type { MockContext } from "@/lib/data/mock/repos/context";
-import { parseCreateStudioOrder, parseStudioOrderQuery, parseUpdateStudioOrder } from "@/lib/data/studio-order-input";
+import { advanceStudioOrderProblem, applyAdvance, parseAdvanceStudioOrder, parseCreateStudioOrder, parseStudioOrderQuery, parseUpdateStudioOrder } from "@/lib/data/studio-order-input";
 import { isActiveOrderStatus, type StudioOrder } from "@/lib/domain/studio-order";
 
-export type StudioOrderMethods = Pick<PanelRepository, "createStudioOrder" | "getStudioOrder" | "listStudioOrders" | "updateStudioOrder">;
+export type StudioOrderMethods = Pick<PanelRepository, "createStudioOrder" | "getStudioOrder" | "listStudioOrders" | "updateStudioOrder" | "advanceStudioOrder">;
 
 export function createStudioOrderMethods(ctx: MockContext): StudioOrderMethods {
   const { state, requireWs, out } = ctx;
@@ -58,8 +58,23 @@ export function createStudioOrderMethods(ctx: MockContext): StudioOrderMethods {
       const order = find(wsId, id);
       if (order === undefined) throw new RepositoryError("not_found", "Fiş bulunamadı.");
       if (order.status !== "taslak") throw new RepositoryError("invalid_state", "Yalnız taslak fiş değiştirilebilir.");
+      if (value.ticket !== undefined && value.ticket.fikir_id !== undefined && value.ticket.fikir_id !== order.ideaId) throw new RepositoryError("invalid_input", "Fişteki fikir kimliği fişin fikriyle aynı olmalı.");
+      if (value.ticket !== undefined) order.ticket = value.ticket;
       if (value.kind !== undefined) order.ticket = { ...order.ticket, tur: value.kind };
       if (value.note !== undefined) order.note = value.note;
+      order.updatedAt = now.toISOString();
+      return out(order);
+    },
+    async advanceStudioOrder(wsId, id, patch, now) {
+      requireWs(wsId);
+      const value = parseAdvanceStudioOrder(patch);
+      const order = find(wsId, id);
+      if (order === undefined) throw new RepositoryError("not_found", "Fiş bulunamadı.");
+      const problem = advanceStudioOrderProblem(order.status, value.status);
+      if (problem !== undefined) throw new RepositoryError("invalid_state", problem);
+      if (order.status === value.status) return out(order);
+      order.ticket = applyAdvance(order.ticket, value);
+      order.status = value.status;
       order.updatedAt = now.toISOString();
       return out(order);
     },

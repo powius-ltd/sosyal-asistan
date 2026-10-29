@@ -24,6 +24,7 @@ import { createJobSession, type JobFinal, type JobSession } from "@/lib/job-runn
 import type { JobStore } from "@/lib/job-runner/job-store";
 import { onboardingTimeoutMinutes, runOnboardingJob } from "@/lib/job-runner/run-onboarding";
 import { runRoutineJob } from "@/lib/job-runner/run-routine";
+import { runProduceJob } from "@/lib/job-runner/run-produce";
 import { runSingleJob } from "@/lib/job-runner/run-single";
 import { isCopyEdition } from "@/lib/edition";
 import { routineCollectMaxUsd } from "@/lib/job-runner/spend-gate";
@@ -85,6 +86,7 @@ function requiredEnv(job: PanelJob, now: Date): readonly string[] {
     case "publish": // Zernio anahtarı yoksa iş kendi koduyla (`zernio_key_missing`) durur
     case "ads_sync": // Zernio anahtarı yoksa iş kendi koduyla (`zernio_key_missing`) durur
     case "measure_zernio": // anahtar yoksa iş kendi koduyla (`zernio_key_missing`) durur
+    case "produce": // hesabın ses anahtarı hesap bilindikten sonra koşucuda sorulur
       return [];
   }
 }
@@ -110,6 +112,8 @@ async function work(job: PanelJob, session: JobSession, options: RunJobOptions, 
       return runRoutineJob(job, ctx, session, deps, clockMs, meter);
     case "onboarding":
       return runOnboardingJob(job, ctx, session, deps, clockMs, meter);
+    case "produce":
+      return runProduceJob(job, ctx, session, deps, clockMs);
     case "collect":
     case "measure":
     case "analyze":

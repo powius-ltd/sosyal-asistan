@@ -21,7 +21,7 @@ const RESTARTABLE: readonly JobStatus[] = ["partial", "blocked", "failed", "canc
  */
 export function restartRequest(view: JobStatusView): JobRequest | undefined {
   // Başlangıç işi geçmişten yeniden başlatılmaz: akışın kendi eylemleri vardır (deneme hakkı, sabit onay).
-  if (view.dryRun || view.kind === "onboarding" || view.kind === "measure_zernio" || view.kind === "discover" || view.kind === "order" || view.kind === "order_return" || view.kind === "publish" || view.kind === "ads_sync" || !RESTARTABLE.includes(view.status)) return undefined;
+  if (view.dryRun || view.kind === "onboarding" || view.kind === "measure_zernio" || view.kind === "discover" || view.kind === "order" || view.kind === "produce" || view.kind === "order_return" || view.kind === "publish" || view.kind === "ads_sync" || !RESTARTABLE.includes(view.status)) return undefined;
   if (view.kind === "collect") {
     const limit = view.operator?.params.limit;
     return { kind: "collect", ...(limit === undefined ? {} : { limit }) };

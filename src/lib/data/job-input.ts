@@ -104,6 +104,8 @@ export const requestJobSchema = z
       strict({ kind: z.literal("publish"), source: sourceField }),
       // Reklam verisini okuma: alansız, $0, onaysız (Apify parası yok, reklam hesabına yazmaz), önizlemesiz.
       strict({ kind: z.literal("ads_sync"), source: sourceField }),
+      // Fişi stüdyoda üret (SPN-33): panel fişinin kimliği zorunlu; ses parası harcar, USD tutar onayı ister, önizlemesiz.
+      strict({ kind: z.literal("produce"), orderId: z.uuid({ error: "Fiş kimliği geçersiz." }), approval: approvalField, maxCredits: maxCreditsField }),
       strict({ kind: z.literal("discover"), approval: approvalField, maxCredits: maxCreditsField, source: agentSourceField }),
       strict({ kind: z.literal("plan"), week: weekField, maxCredits: maxCreditsField, source: sourceField }),
       // Başlangıç işi: yalnız aşama (+ ilk turda rakip seçimi). Onay, tutar ve kredi sınırı alanı YOKTUR (katı şema reddeder).
@@ -178,6 +180,7 @@ export function parseRequestJobInput(input: unknown): ParsedJobRequest {
     ...("week" in parsed && parsed.week !== undefined ? { week: parsed.week } : {}),
     ...("slot" in parsed && parsed.slot !== undefined ? { slot: parsed.slot } : {}),
     ...("ideaId" in parsed && parsed.ideaId !== undefined ? { ideaId: parsed.ideaId } : {}),
+    ...("orderId" in parsed && parsed.orderId !== undefined ? { orderId: parsed.orderId } : {}),
     ...("source" in parsed && parsed.source !== undefined ? { source: parsed.source } : {}),
   };
   return {

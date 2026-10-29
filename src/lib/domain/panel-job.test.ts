@@ -50,7 +50,7 @@ describe("tür tablosu", () => {
     expect(Object.keys(JOB_KIND_SPEC).sort()).toEqual([...JOB_KINDS].sort());
     expect(Object.keys(JOB_KIND_BY_COMMAND).sort()).toEqual([...BRIEFING_COMMAND_IDS].sort());
     const withCommand = JOB_KINDS.filter((kind) => JOB_KIND_SPEC[kind].commandId !== undefined);
-    expect(JOB_KINDS.filter((kind) => !withCommand.includes(kind)), "komutu olmayanlar: başlangıç işi ve halka uçları (Zernio ölçümü, keşif)").toEqual(["onboarding", "measure_zernio", "discover", "order", "order_return", "publish", "ads_sync"]);
+    expect(JOB_KINDS.filter((kind) => !withCommand.includes(kind)), "komutu olmayanlar: başlangıç işi ve halka uçları (Zernio ölçümü, keşif)").toEqual(["onboarding", "measure_zernio", "discover", "order", "order_return", "publish", "ads_sync", "produce"]);
     expect(jobScript("onboarding"), "betiği yok: yedek komut metni de yok").toBeUndefined();
     expect(new Set(Object.values(JOB_KIND_BY_COMMAND)).size, "komut → tür birebir").toBe(withCommand.length);
     for (const kind of JOB_KINDS) {
@@ -76,8 +76,8 @@ describe("tür tablosu", () => {
   });
 
   it("KISIT 1–2: onay zorunluluğu ve onay kapsamı", () => {
-    expect(JOB_KINDS.filter((kind) => jobRequiresApproval(kind, false))).toEqual(["collect", "measure", "onboarding", "discover"]);
-    expect(JOB_KINDS.filter((kind) => jobAllowsApproval(kind, false))).toEqual(["routine", "collect", "measure", "onboarding", "discover"]);
+    expect(JOB_KINDS.filter((kind) => jobRequiresApproval(kind, false))).toEqual(["collect", "measure", "onboarding", "discover", "produce"]);
+    expect(JOB_KINDS.filter((kind) => jobAllowsApproval(kind, false))).toEqual(["routine", "collect", "measure", "onboarding", "discover", "produce"]);
     for (const kind of JOB_KINDS) {
       expect(jobRequiresApproval(kind, true), `${kind}: kuru koşu onaysızdır`).toBe(false);
       expect(jobAllowsApproval(kind, true), `${kind}: kuru koşuya onay yazılmaz`).toBe(false);
@@ -86,7 +86,8 @@ describe("tür tablosu", () => {
 
   it("adımlar: haftalık tur = önkontrol + orkestratörün adımları (aynı sıra); tek adımlı işte tek adım", () => {
     expect(JOB_STEPS_BY_KIND.routine).toEqual(["precheck", ...ROUTINE_STEPS]);
-    for (const kind of JOB_KINDS.filter((k) => k !== "routine" && k !== "onboarding")) expect(JOB_STEPS_BY_KIND[kind], kind).toEqual([kind]);
+    for (const kind of JOB_KINDS.filter((k) => k !== "routine" && k !== "onboarding" && k !== "produce")) expect(JOB_STEPS_BY_KIND[kind], kind).toEqual([kind]);
+    expect(JOB_STEPS_BY_KIND.produce, "üretim: fiş yaz, üret, dönüş").toEqual(["order", "produce", "order_return"]);
     expect(new Set(JOB_STEP_IDS).size, "adım kimlikleri tekrarsız").toBe(JOB_STEP_IDS.length);
     for (const steps of Object.values(JOB_STEPS_BY_KIND)) for (const step of steps) expect(JOB_STEP_IDS).toContain(step);
   });
@@ -158,9 +159,9 @@ describe("migration 0021 ile aynı listeler (başlangıç işi; GÜNCEL tür / d
   it("tür ve dayanak listeleri; KISIT 1 ve KISIT 2 domain ile aynı (0026: sipariş türü eklenir; kısıtlar 0025 ile aynı)", () => {
     const read = (name: string) => readFileSync(fileURLToPath(new URL(`../../../supabase/migrations/${name}`, import.meta.url)), "utf8");
     const listIn = (text: string, pattern: RegExp) => [...(pattern.exec(text)?.[1] ?? "").matchAll(/'([^']+)'/g)].map((m) => m[1]);
-    const latest = read("0025_halka_uclari.sql");
+    const latest = read("0034_produce_job.sql");
     const latestList = (pattern: RegExp) => listIn(latest, pattern);
-    expect(listIn(read("0029_ads.sql"), /panel_jobs_kind_check check \(kind in \(([^)]+)\)/)).toEqual([...JOB_KINDS]);
+    expect(listIn(read("0034_produce_job.sql"), /panel_jobs_kind_check check \(kind in \(([^)]+)\)/)).toEqual([...JOB_KINDS]);
     expect(listOf(/panel_jobs_approval_basis_check check \(approval_basis in \(([^)]+)\)/)).toEqual([...JOB_APPROVAL_BASES]);
     expect(latestList(/panel_jobs_spend_needs_approval check \(dry_run or kind not in \(([^)]+)\)/), "KISIT 1 = USD onayı isteyen türler").toEqual(
       JOB_KINDS.filter((kind) => jobRequiresApproval(kind, false)),

@@ -1,7 +1,8 @@
 /**
  * Panel çalışma alanı → stüdyo çalışma alanı eşlemesi (TEK tablo) ve hesabın üretim modu. Stüdyoda tanımlı olmayan hesap (örn. `ornek`)
  * için fiş YAZILMAZ: sessiz varsayım yok, açık hata. Mod hesaptan seçilir: ornek-studyo motoru metin ister (`senaryo`), anlatım hattı konu
- * ister (`konu`); ornek-studyo `konu` kabul etmez (`schema.ts` de bunu reddeder).
+ * ister (`konu`); ornek-studyo `konu` kabul etmez (`schema.ts` de bunu reddeder). Ornek senaryo kipindedir (stüdyo kapısı konu fişini
+ * üretmez; fikirlerin script'i hazır, tür stüdyo varsayılanı `animasyon`).
  */
 import type { OrderMode } from "@/lib/studio-order/schema";
 
@@ -14,7 +15,7 @@ export interface StudioAccount {
 const STUDIO_ACCOUNTS: Readonly<Record<string, StudioAccount>> = {
   ornekstudyoapp: { studioSlug: "ornek-studyo", mode: "senaryo" },
   "ornek-marka": { studioSlug: "ornek-marka", mode: "konu" },
-  "ornek-hesap": { studioSlug: "ornek-hesap", mode: "konu" },
+  "ornek-hesap": { studioSlug: "ornek-hesap", mode: "senaryo" },
 };
 
 export class StudioAccountError extends Error {

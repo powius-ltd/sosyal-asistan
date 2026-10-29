@@ -37,6 +37,7 @@ import { createCreativeMatrixMethods } from "@/lib/data/mock/repos/creative-matr
 import { createCredits } from "@/lib/data/mock/repos/credits";
 import { createTopicHookMatrixMethods } from "@/lib/data/mock/repos/topic-hook-matrix";
 import { createHookLibraryMethods } from "@/lib/data/mock/repos/hook-library";
+import { applyIdeaRevision, parseIdeaRevision } from "@/lib/data/idea-revision-input";
 import { createIdeaLinks } from "@/lib/data/mock/repos/idea-links";
 import { createJobs } from "@/lib/data/mock/repos/jobs";
 import { createManualIdeaMethods } from "@/lib/data/mock/repos/manual-ideas";
@@ -281,6 +282,17 @@ export function createMockRepository(seed: number = DEFAULT_SEED, options: MockR
         throw new RepositoryError("invalid_state", `Fikir durumu ${idea.status} → ${status} olamaz.`);
       }
       idea.status = status;
+      idea.updatedAt = clock.tick();
+      return out(idea);
+    },
+
+    async reviseIdea(wsId, ideaId, input, now) {
+      requireWs(wsId);
+      const idea = findOrThrow(state.ideas, ideaId, "Fikir");
+      const parts = applyIdeaRevision(idea, parseIdeaRevision(input), now);
+      idea.hooks = parts.hooks;
+      idea.scriptOutline = parts.scriptOutline;
+      idea.details = parts.details;
       idea.updatedAt = clock.tick();
       return out(idea);
     },

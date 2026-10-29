@@ -106,4 +106,38 @@ export function studioOrdersContract(ctx: ContractContext): void {
       await r.updateIdeaStatus(wsId, ideaId, "dismissed");
     }
   });
+
+  it("fiş: durum ilerler (uretiliyor + onay, uretildi + video, hata + not); geçersiz geçiş ve girdi reddedilir", async () => {
+    const r = create();
+    const now = new Date();
+    const ideaId = await freshIdea(r, wsId, "Fiş sözleşme fikri 4");
+    const failedId = await freshIdea(r, wsId, "Fiş sözleşme fikri 5");
+    try {
+      const order = await r.createStudioOrder(wsId, { ideaId, ticket: ticketFor(ideaId) }, now);
+      await expectCode(r.advanceStudioOrder(wsId, order.id, { status: "uretildi" } as never, now), "invalid_input");
+      await expectCode(r.advanceStudioOrder(wsId, order.id, { status: "hata" } as never, now), "invalid_input");
+      await expectCode(r.advanceStudioOrder(wsId, order.id, { status: "paylasildi" } as never, now), "invalid_input");
+      await expectCode(r.advanceStudioOrder(wsId, MISSING_ID, { status: "uretiliyor" }, now), "not_found");
+      await expectCode(r.advanceStudioOrder(MISSING_ID, order.id, { status: "uretiliyor" }, now), "not_found");
+
+      const sent = await r.advanceStudioOrder(wsId, order.id, { status: "uretiliyor" }, now);
+      expect(sent).toMatchObject({ status: "uretiliyor" });
+      expect(sent.ticket).toMatchObject({ durum: "uretiliyor", onay: true });
+      expect((await r.advanceStudioOrder(wsId, order.id, { status: "uretiliyor" }, now)).status).toBe("uretiliyor");
+      await expectCode(r.updateStudioOrder(wsId, order.id, { kind: "ugc" }, now), "invalid_state");
+
+      const done = await r.advanceStudioOrder(wsId, order.id, { status: "uretildi", video: "x/final.mp4", cover: "x/kapak.jpg" }, now);
+      expect(done.ticket).toMatchObject({ durum: "uretildi", onay: true, video: "x/final.mp4", kapak: "x/kapak.jpg" });
+      await expectCode(r.advanceStudioOrder(wsId, order.id, { status: "uretiliyor" }, now), "invalid_state");
+
+      const failed = await r.createStudioOrder(wsId, { ideaId: failedId, ticket: ticketFor(failedId) }, now);
+      await r.advanceStudioOrder(wsId, failed.id, { status: "uretiliyor" }, now);
+      const bad = await r.advanceStudioOrder(wsId, failed.id, { status: "hata", errorNote: "Ses üretilemedi." }, now);
+      expect(bad.ticket).toMatchObject({ durum: "hata", hata_notu: "Ses üretilemedi." });
+      await expectCode(r.advanceStudioOrder(wsId, failed.id, { status: "uretildi", video: "y.mp4" }, now), "invalid_state");
+    } finally {
+      await r.updateIdeaStatus(wsId, ideaId, "dismissed");
+      await r.updateIdeaStatus(wsId, failedId, "dismissed");
+    }
+  });
 }

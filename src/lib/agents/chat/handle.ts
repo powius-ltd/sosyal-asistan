@@ -14,6 +14,7 @@ import { answerChat, type ChatResult } from "@/lib/agents/chat/answer";
 import type { ChatAvailability } from "@/lib/agents/chat/availability";
 import { encodeChatEvent, type ChatErrorCode, type ChatEvent } from "@/lib/agents/chat/events";
 import type { ChatLock } from "@/lib/agents/chat/lock";
+import { runChatReviseCommand } from "@/lib/agents/chat/revise-command";
 import { runChatTicketCommand } from "@/lib/agents/chat/ticket-command";
 import { saveChatIdea } from "@/lib/agents/chat/save-idea";
 import { CHAT_ERROR_MESSAGE } from "@/lib/agents/chat/messages";
@@ -131,6 +132,11 @@ export async function handleChatRequest(request: Request, deps: ChatHandlerDeps)
           const panelSlug = await deps.panelSlug?.(ctx.workspaceId).catch(() => undefined);
           const note = await runChatTicketCommand({ ...ctx, panelSlug }, result.command, result.ticket, deps.log);
           send({ ...result.answer, text: `${result.answer.text} ${note}` });
+        } else if (result.ok && result.command === "revise_idea" && result.revision !== undefined) {
+          // Fikir düzeltme: kimlik bu haftanın planında doğrulanır, yeniden yazım ayrı model çağrısıdır (kendi koşu kaydı); sonuç cümlesi yanıta eklenir.
+          const revised = await runChatReviseCommand(ctx, deps.createBackend({ signal: abort.signal, totalMs: CHAT_TOTAL_MS }), result.revision, deps.log);
+          if (revised.meta !== undefined) await deps.recorder.succeeded(ctx.workspaceId, revised.meta).catch(() => deps.log?.("koşu kaydı yazılamadı"));
+          send({ ...result.answer, text: `${result.answer.text} ${revised.message}` });
         } else if (delegated !== undefined) send({ type: "answer", kind: "answer", text: delegated, evidence: [] });
         else send(result.ok ? result.answer : { type: "error", code: result.code, message: result.message });
         await recordRun(deps, ctx.workspaceId, result);

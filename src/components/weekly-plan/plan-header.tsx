@@ -1,3 +1,4 @@
+import { ApprovePlanButton } from "@/components/weekly-plan/approve-plan-button";
 import { ConfidenceBadge } from "@/components/weekly-plan/confidence-badge";
 import { Badge } from "@/components/ui/badge";
 import { weekDayKeys, type WeeklyPlan, type WeeklyPlanStatus } from "@/lib/domain/weekly-plan";
@@ -26,6 +27,7 @@ export function PlanHeader({ plan }: { plan: WeeklyPlan }) {
         <h2 className="text-xl font-semibold tracking-tight">{range} haftası</h2>
         <Badge variant={plan.status === "ready" ? "default" : "secondary"}>{STATUS_LABEL[plan.status]}</Badge>
         {plan.confidence ? <ConfidenceBadge level={plan.confidence} /> : null}
+        {plan.approvedAt ? <Badge variant="outline">{PLAN_SCREEN_PLAIN.approvedBadge(formatDate(plan.approvedAt, DEFAULT_TIMEZONE) ?? "—")}</Badge> : null}
       </div>
       <p className="text-sm text-muted-foreground">
         {PLAN_SCREEN_PLAIN.inPlan(plan.items.length)}
@@ -33,6 +35,12 @@ export function PlanHeader({ plan }: { plan: WeeklyPlan }) {
         {formatDateTime(plan.generatedAt, DEFAULT_TIMEZONE) ?? "—"}
       </p>
       {plan.summary ? <p className="max-w-3xl text-sm">{plan.summary}</p> : null}
+      {plan.status === "ready" && !plan.approvedAt ? (
+        <div className="flex flex-col items-start gap-2 pt-1">
+          <ApprovePlanButton weekStart={plan.weekStart} />
+          <p className="text-xs text-muted-foreground">{PLAN_SCREEN_PLAIN.approveNote}</p>
+        </div>
+      ) : null}
     </div>
   );
 }

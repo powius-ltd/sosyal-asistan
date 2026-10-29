@@ -47,6 +47,7 @@ export const jobParamsSchema: z.ZodType<JobParams> = z
     week: z.string().refine(isWeekStart, "Hafta Pazartesi günü (YYYY-MM-DD) olmalı").optional(),
     slot: z.string().regex(/^[A-Za-z0-9]{1,8}$/, "Slot kısa bir kod olmalı (S1, P2).").optional(),
     ideaId: z.uuid().optional(),
+    orderId: z.uuid().optional(),
     phase: z.enum(ONBOARDING_PHASES).optional(),
     rivalIds: onboardingRivalIdsSchema.optional(),
     source: z.enum(["cycle", "agent"]).optional(),

@@ -43,6 +43,7 @@ function ceilingUnits(kind: JobKind, collects: boolean): CreditUnits {
     case "order_return":
     case "publish":
     case "ads_sync":
+    case "produce": // stüdyo sesi kendi sağlayıcı parasıdır (USD onayı); kredi kalemi yok
       return {};
   }
 }

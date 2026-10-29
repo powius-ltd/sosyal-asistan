@@ -10,6 +10,7 @@
 import type { ScriptReview } from "@/lib/domain/script-review";
 import type { ContentSummary } from "@/lib/domain/content-summary";
 import type { IdeaReelLink } from "@/lib/domain/idea-link";
+import type { IdeaRevision } from "@/lib/domain/idea-revision";
 import type { CtaType, DurationBucket, IdeaFrame } from "@/lib/domain/taxonomy";
 import type { ContentFormat, Platform } from "@/lib/platforms/types";
 import { truncateText } from "@/lib/text";
@@ -340,13 +341,13 @@ export interface IdeaDetails {
   maxSharedWords?: number;
   /** Senaryo editörü + olgu kontrolü sonucu (yalnız plana giren fikirlerde; tur çalışmadıysa ya da başarısızsa yok). */
   scriptReview?: ScriptReview;
+  revisions?: IdeaRevision[];
 }
 
-// Senaryo editörü tipleri `domain/script-review.ts`'tedir (400 satır sınırı); `IdeaDetails.scriptReview` için buradan da erişilir.
+// Senaryo editörü (`script-review.ts`) ve Reels bağı (`idea-link.ts`) tipleri 400 satır sınırı yüzünden ayrı dosyada; buradan da erişilir.
 export { SCRIPT_CLAIM_VERDICTS } from "@/lib/domain/script-review";
 export type { ScriptClaim, ScriptClaimVerdict, ScriptReview } from "@/lib/domain/script-review";
 
-// Fikir ↔ Reels bağı tipleri `domain/idea-link.ts`'tedir (400 satır sınırı); `Idea.reelLink` için buradan da erişilir.
 export { canConfirmIdeaLink, IDEA_LINK_ORIGINS, IDEA_LINK_STATUSES } from "@/lib/domain/idea-link";
 export type { IdeaLinkOrigin, IdeaLinkStatus, IdeaReelLink } from "@/lib/domain/idea-link";
 

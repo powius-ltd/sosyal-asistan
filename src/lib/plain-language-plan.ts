@@ -171,6 +171,17 @@ export const PLAN_SCREEN_PLAIN = {
   emptyOperator: "Planı hazırlayınca burada görünür.",
   emptyWeekBody: "Planı yöneticin hazırlar; hazır olunca bu sayfada görünür ve PDF olarak kaydedebilirsin.",
   emptyBody: "Planı yöneticin hazırlar; hazır olunca burada görünür.",
+  /** Plan onayı (SPN-35): onay fikirleri seçer; para harcamaz, çekim ayrı adımdır. */
+  approve: "Planı onayla",
+  approving: "Onaylanıyor…",
+  approveNote: "Onaylayınca plandaki fikirler seçilmiş olur. Para harcanmaz; üretimi sonra sen başlatırsın.",
+  approveFailed: "Plan onaylanamadı. Bağlantını kontrol edip tekrar dene.",
+  approvedBadge: (date: string): string => `Onaylandı · ${date}`,
+  approvedDone: "Plan onaylandı; fikirlerin seçildi.",
+  /** Fikri sohbetle değiştirme (SPN-35): düğme Asistan'ı açar; ne değişeceğini Asistan sorar. */
+  revise: "Sohbetle değiştir",
+  reviseAsk: (title: string): string => `"${title}" fikrini değiştirmek istiyorum.`,
+  reviseUnavailable: "Asistan şu an açılamıyor.",
 } as const;
 
 // ---------------------------------------------------------------- Fikir kartı

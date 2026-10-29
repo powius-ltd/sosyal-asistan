@@ -3,7 +3,7 @@ import { describe, expect, it } from "vitest";
 
 import { createMockRepository } from "@/lib/data/mock/mock-repository";
 import { RepositoryError } from "@/lib/data/repository";
-import { createOrderForIdea, updateOrder } from "@/lib/studio-order/create-for-idea";
+import { createOrderForIdea, refreshDraftOrder, updateOrder } from "@/lib/studio-order/create-for-idea";
 import { MOCK_WORKSPACE_ID as WS } from "@/lib/workspace/current";
 
 const NOW = new Date("2026-09-30T09:00:00.000Z");
@@ -71,5 +71,28 @@ describe("updateOrder", () => {
     expect(updated.ticket.tur).toBe("ugc");
     expect(updated.note).toBe("Yeni not");
     await expect(updateOrder({ repo, wsId: WS, now: NOW, orderId: order.id })).rejects.toBeInstanceOf(RepositoryError);
+  });
+});
+
+describe("refreshDraftOrder (SPN-35 G6)", () => {
+  it("fikir metni değişince taslak fiş yeni metinle kurulur; kimlik, tür ve not korunur", async () => {
+    const { repo, idea } = await setup();
+    const { order } = await createOrderForIdea({ repo, wsId: WS, now: NOW, ideaId: idea.id, panelSlug: "ornek-marka", kind: "ugc", note: "Sabah çekilsin." });
+    await repo.reviseIdea(WS, idea.id, { request: "açılışı değiştir", hooks: [{ text: "Yepyeni bir açılış cümlesi burada.", type: "question" }, { text: "İkinci yeni açılış.", type: "bold_claim" }, { text: "Üçüncü yeni açılış.", type: "confession" }], scriptOutline: ["Yeni madde bir", "Yeni madde iki"] }, NOW);
+    const refreshed = await refreshDraftOrder({ repo, wsId: WS, now: NOW, ideaId: idea.id });
+    expect(refreshed?.id).toBe(order.id);
+    expect(refreshed?.ticket).toMatchObject({ siparis_id: order.ticket.siparis_id, hesap: order.ticket.hesap, tur: "ugc", durum: "taslak", onay: false });
+    expect(JSON.stringify(refreshed?.ticket)).toContain("Yepyeni bir açılış cümlesi burada.");
+    expect(refreshed?.note).toBe(order.note);
+  });
+
+  it("taslak olmayan (üretime gitmiş) fişe ve fişsiz fikre dokunmaz", async () => {
+    const { repo, idea } = await setup();
+    expect(await refreshDraftOrder({ repo, wsId: WS, now: NOW, ideaId: idea.id })).toBeUndefined();
+    const { order } = await createOrderForIdea({ repo, wsId: WS, now: NOW, ideaId: idea.id, panelSlug: "ornek-marka" });
+    const sent = await repo.advanceStudioOrder(WS, order.id, { status: "uretiliyor" }, NOW);
+    await repo.reviseIdea(WS, idea.id, { request: "değiştir", hooks: [{ text: "Bir.", type: "question" }, { text: "İki.", type: "question" }, { text: "Üç.", type: "question" }], scriptOutline: ["a madde", "b madde"] }, NOW).catch(() => undefined);
+    expect(await refreshDraftOrder({ repo, wsId: WS, now: NOW, ideaId: idea.id })).toBeUndefined();
+    expect((await repo.getStudioOrder(WS, order.id))?.ticket).toEqual(sent.ticket);
   });
 });
