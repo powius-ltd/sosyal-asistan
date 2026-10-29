@@ -2,15 +2,17 @@ import { CalendarClock, ExternalLink, Lightbulb, TriangleAlert } from "lucide-re
 import Link from "next/link";
 
 import { PlatformBadge } from "@/components/common/platform-badge";
+import type { JobRunContext } from "@/components/jobs/job-run-types";
+import { RevisionBadge, RevisionHistory } from "@/components/studio-order/revision-history";
 import { ComplianceDot, JobFlagBadges } from "@/components/publish/job-badges";
 import { JobActions, type JobFixContext } from "@/components/publish/job-actions";
+import { OrderVideo } from "@/components/publish/order-video";
 import { type PublishJobView } from "@/components/publish/job-views";
 import { prefillFromJob } from "@/components/publish/publish-form-state";
 import { PublishStatusBadge } from "@/components/publish/publish-status";
 import type { PublishFormDialogProps } from "@/components/publish/publish-form-dialog";
 import { PLATFORM_LABEL } from "@/lib/domain/platform";
 import { formatDateTime, formatNumber } from "@/lib/format";
-import { ORDER_MEDIA_NOTE_PLAIN } from "@/lib/plain-language-order";
 import { fixModeOf, plainPublishError } from "@/lib/plain-language-publish";
 import { isOrderMediaPath } from "@/lib/order-media-path";
 import { ROUTES } from "@/lib/routes";
@@ -25,6 +27,8 @@ export interface PublishFixSettings extends Pick<PublishFormDialogProps, "accoun
   now: Date;
   /** Adreste `?duzelt=` ile gelen iş: formu açık başlar. */
   fixJobId?: string;
+  /** İşler bağlamı (yalnız işler açıkken): "Revize iste" penceresi yeniden üretimi buradan başlatır; yoksa yalnız not kaydedilir. */
+  jobRun?: JobRunContext;
 }
 
 const linkTap = "min-h-tap md:min-h-0";
@@ -65,6 +69,7 @@ export function PublishJobCard({ view, timeZone, fixSettings }: { view: PublishJ
           <span className="font-medium">{accountLabel}</span>
           <PlatformBadge platform={job.platform} />
           <PublishStatusBadge status={job.status} />
+          {view.order ? <RevisionBadge revision={view.order.revision} /> : null}
           <JobFlagBadges job={job} />
           <ComplianceDot result={view.compliance} />
         </div>
@@ -77,7 +82,8 @@ export function PublishJobCard({ view, timeZone, fixSettings }: { view: PublishJ
           <p className="text-sm text-muted-foreground">Açıklama yazılmamış.</p>
         )}
 
-        {isOrderMediaPath(job.mediaPath) ? <p className="text-xs text-muted-foreground">{ORDER_MEDIA_NOTE_PLAIN}</p> : null}
+        {isOrderMediaPath(job.mediaPath) ? <OrderVideo jobId={job.id} /> : null}
+        {view.order ? <RevisionHistory entries={view.order.history} timeZone={timeZone} /> : null}
 
         <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-muted-foreground">
           <span className="inline-flex items-center gap-1">
@@ -135,6 +141,7 @@ export function PublishJobCard({ view, timeZone, fixSettings }: { view: PublishJ
         complianceRegion={view.complianceRegion}
         operator={fixSettings?.operator}
         copy={copy}
+        revise={view.order?.canRevise && view.order.left > 0 ? { orderId: view.order.id, left: view.order.left, jobContext: fixSettings?.jobRun } : undefined}
         summary={{
           account: accountLabel,
           caption: job.caption ? truncateText(job.caption, CAPTION_PREVIEW_CHARS) : undefined,

@@ -9,6 +9,7 @@ import { Hint } from "@/components/common/hint";
 import { CompliancePanel } from "@/components/publish/compliance-panel";
 import { ConfirmDialog, JobSummary, type JobActionsSummary } from "@/components/publish/job-confirm-dialog";
 import { PublishFormDialog, type PublishFix, type PublishFormDialogProps } from "@/components/publish/publish-form-dialog";
+import { ReviseButton, type ReviseButtonProps } from "@/components/studio-order/revise-button";
 import { Button } from "@/components/ui/button";
 import type { ActionResult } from "@/lib/actions/result";
 import type { ComplianceRegion, ComplianceResult } from "@/lib/domain/compliance";
@@ -41,6 +42,8 @@ interface JobActionsProps {
   copy?: JobFixContext;
   /** Yönetici modu: onay penceresindeki uyum bulgularında kural kodu da görünür. */
   operator?: boolean;
+  /** Stüdyo videosu onay bekliyorsa ve revize hakkı varsa "Revize iste" (SPN-36); yoksa düğme çizilmez. */
+  revise?: ReviseButtonProps;
 }
 
 /**
@@ -48,7 +51,7 @@ interface JobActionsProps {
  * taslak → "Onaya gönder"; onay bekleyen → "Onayla" (uyum engeli yoksa); düzeltilebilir (taslak / onay bekleyen / başarısız / süresi
  * dolan) → "Kopyala ve düzelt" ya da "Yeniden dene"; yayın başlamadan önce → "İptal". Onaya göndermek onay değildir.
  */
-export function JobActions({ jobId, status, containerId, hasCaption, compliance, complianceRegion, summary, copy, operator = false }: JobActionsProps) {
+export function JobActions({ jobId, status, containerId, hasCaption, compliance, complianceRegion, summary, copy, operator = false, revise }: JobActionsProps) {
   const [approveOpen, setApproveOpen] = useState(false);
   const [cancelOpen, setCancelOpen] = useState(false);
   const [fixOpen, setFixOpen] = useState(copy?.autoOpen ?? false);
@@ -111,6 +114,7 @@ export function JobActions({ jobId, status, containerId, hasCaption, compliance,
           Onayla
         </Button>
       ) : null}
+      {revise ? <ReviseButton {...revise} /> : null}
       {copy ? (
         <Button
           size="sm"

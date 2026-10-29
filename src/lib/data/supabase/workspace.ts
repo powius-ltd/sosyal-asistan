@@ -37,7 +37,7 @@ export async function updateWorkspace(ctx: SupabaseContext, wsId: string, patchI
   const current = await requireWorkspace(ctx, wsId);
   const patch = parseWorkspacePatch(patchInput);
   const columns: Partial<
-    Pick<WorkspaceRow, "apify_monthly_cap_usd" | "llm_monthly_cap_usd" | "measure_monthly_cap_usd" | "measure_cap_approved_at" | "agent_monthly_cap_usd" | "agent_cap_approved_at" | "collect_every_days" | "collect_video_limit" | "rival_target" | "niche_brief" | "compliance_region" | "content_language" | "account_type">
+    Pick<WorkspaceRow, "apify_monthly_cap_usd" | "llm_monthly_cap_usd" | "measure_monthly_cap_usd" | "measure_cap_approved_at" | "agent_monthly_cap_usd" | "agent_cap_approved_at" | "collect_every_days" | "collect_video_limit" | "rival_target" | "auto_weekly_plan" | "auto_measure" | "auto_produce" | "niche_brief" | "compliance_region" | "content_language" | "account_type">
   > & { agent_cap_approved_by?: string | null } = {};
   if (patch.apifyMonthlyCapUsd !== undefined) columns.apify_monthly_cap_usd = patch.apifyMonthlyCapUsd;
   if (patch.llmMonthlyCapUsd !== undefined) columns.llm_monthly_cap_usd = patch.llmMonthlyCapUsd;
@@ -55,6 +55,9 @@ export async function updateWorkspace(ctx: SupabaseContext, wsId: string, patchI
   if (patch.collectEveryDays !== undefined) columns.collect_every_days = patch.collectEveryDays;
   if (patch.collectVideoLimit !== undefined) columns.collect_video_limit = patch.collectVideoLimit;
   if (patch.rivalTarget !== undefined) columns.rival_target = patch.rivalTarget;
+  if (patch.autoWeeklyPlan !== undefined) columns.auto_weekly_plan = patch.autoWeeklyPlan;
+  if (patch.autoMeasure !== undefined) columns.auto_measure = patch.autoMeasure;
+  if (patch.autoProduce !== undefined) columns.auto_produce = patch.autoProduce;
   if (patch.nicheBrief !== undefined) columns.niche_brief = patch.nicheBrief === "" ? null : patch.nicheBrief;
   if (patch.complianceRegion !== undefined) columns.compliance_region = patch.complianceRegion;
   if (patch.contentLanguage !== undefined) columns.content_language = patch.contentLanguage;

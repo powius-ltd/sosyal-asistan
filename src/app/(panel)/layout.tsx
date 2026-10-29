@@ -13,7 +13,7 @@ import { maskotName } from "@/lib/agents/persona";
 import { getDataSource, getPanelContext } from "@/lib/data";
 import { isCopyEdition } from "@/lib/edition";
 import { onboardingGate } from "@/lib/onboarding/gate";
-import { isOperatorMode } from "@/lib/workspace/operator-mode";
+import { isBackstageVisible } from "@/lib/workspace/backstage";
 import { listOperatorWorkspaces } from "@/lib/workspace/registry";
 
 // Panel verisi workspace/oturuma özeldir: derleme anında statik üretilmez, her istekte çalışır.
@@ -55,6 +55,8 @@ export default async function PanelLayout({ children }: { children: ReactNode })
     switchableAccounts?.find((account) => account.id === wsId)?.handle ??
     (switchable === undefined ? (await repo.listOwnAccounts(wsId).catch(() => []))[0]?.handle : undefined);
   const isMockData = getDataSource() === "mock";
+  // Kulis kapısı: derin ekranlar (sekmeler, Kulis menüsü) yalnız yönetici modunda; müşteri 4 ana ekranı görür.
+  const backstage = isBackstageVisible();
 
   return (
     <TooltipProvider>
@@ -67,7 +69,7 @@ export default async function PanelLayout({ children }: { children: ReactNode })
           // "Hesap ekle" başlangıç akışının kapısını izler (örnek veride de açıktır); profil menüsüne eklenmez.
           canAddAccount={onboardingGate().open}
           // Kulis (İşler, Keşfet, Koleksiyonlar) yalnız yönetici modunda menüye girer; müşteri hiç görmez.
-          operatorMode={isOperatorMode()}
+          operatorMode={backstage}
           isMockData={isMockData}
           unreadNotifications={unreadNotifications}
         />
@@ -77,7 +79,7 @@ export default async function PanelLayout({ children }: { children: ReactNode })
         <div className="flex min-h-0 flex-1">
           <main className="min-h-0 min-w-0 flex-1 overflow-y-auto px-4 pt-2 pb-24 md:px-6 md:pt-3">
             <div className="mx-auto w-full max-w-7xl">
-              <SectionTabs operatorMode={isOperatorMode()} copyEdition={isCopyEdition()} />
+              <SectionTabs operatorMode={backstage} copyEdition={isCopyEdition()} />
               {children}
             </div>
           </main>
@@ -85,7 +87,7 @@ export default async function PanelLayout({ children }: { children: ReactNode })
             <ChatDockSlot />
           </Suspense>
         </div>
-        <BottomTabs />
+        <BottomTabs backstage={backstage} />
       </div>
       <Toaster position="top-center" mobileOffset={{ top: "calc(0.75rem + env(safe-area-inset-top))" }} />
     </TooltipProvider>

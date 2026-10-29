@@ -81,8 +81,8 @@ describe("sohbet revise_idea (G4)", () => {
     expect(verifyChatOutput(command({ ideaId: "id_01", request: "x" }), facts)).toEqual([]);
   });
 
-  it("istem: sürüm chat-v8; düzeltme komutu anlatılır ve sohbet planı onaylayamaz", () => {
-    expect(CHAT_PROMPT_VERSION).toBe("chat-v8");
+  it("istem: sürüm chat-v9; düzeltme komutu anlatılır ve sohbet planı onaylayamaz", () => {
+    expect(CHAT_PROMPT_VERSION).toBe("chat-v9");
     const prompt = buildChatSystemPrompt("business");
     expect(prompt).toContain("revise_idea");
     expect(prompt).toContain("NEVER approve the plan");

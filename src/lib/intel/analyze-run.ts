@@ -2,6 +2,7 @@
  * `analyze:now` orkestrasyonu. Sıra:
  *   içerik oku → seç (kod, §3 sırası) → konu eleği (Claude; niş dışı rakip çıkar, yeniden seç) → video adresleri (Apify dataset, ücretsiz)
  *   → adres süresi kontrolü → agy analizi (varsayılan 3 eşzamanlı, `--concurrency=1–6`; çağrı tavanı) → transcripts + content_analyses + collection_runs yazımı.
+ * Yerel dosyası olan kendi video (stüdyo `final.mp4`, `local-video-source.ts`) Apify adresi aranmadan dosyadan incelenir; asla `needs_recollect`/`invalid_url` olmaz.
  * ÜCRETLİ Apify koşusu başlatılmaz. `--dry-run`: yalnız seçim + adres durumu (LLM yok, yazma yok).
  * Video geçici klasörde analiz edilir ve `lib/video-analysis` tarafından silinir; bu katman video/adres yazmaz ve ADRESİ GÜNLÜĞE YAZMAZ.
  */
@@ -15,6 +16,7 @@ import { createCallBudget, readMaxAgyCalls, runBudgetedQueue } from "@/lib/intel
 import { lightModel, type IntelContext } from "@/lib/intel/context";
 import { loadAllContent, loadScreens, loadTranscripts, type ScreenInfo } from "@/lib/intel/content-load";
 import type { AnalyzeArgs } from "@/lib/intel/args";
+import { resolveLocalVideos } from "@/lib/intel/local-video-source";
 import { runHousekeeping } from "@/lib/intel/housekeeping";
 import { closeRun, openSubscriptionRun } from "@/lib/intel/run-log";
 import { dropStaleScreens } from "@/lib/intel/screen-freshness";
@@ -24,7 +26,8 @@ import { mustRecollect, partitionVideos, resolveVideoUrls, type VideoNeed } from
 import { createLlmBackend } from "@/lib/llm/backend";
 import { PROMPT_VERSION as SCREEN_PROMPT_VERSION } from "@/lib/llm/screen-topics";
 import { createVideoAnalyzer, sweepStaleTempDirs } from "@/lib/video-analysis";
-import type { VideoAnalysisResult } from "@/lib/video-analysis/types";
+import { VideoAnalysisError } from "@/lib/video-analysis/errors";
+import type { AnalyzeVideoInput, VideoAnalysisResult, VideoAnalyzer } from "@/lib/video-analysis/types";
 
 /** `unsupported_platform`: seçilen videoların platformu video incelemesini desteklemiyor (indirme kuralı yok); hiçbir video indirilmedi, model çağrılmadı. */
 export type AnalyzeOutcome = "completed" | "dry_run" | "needs_recollect" | "backend_unavailable" | "nothing_to_do" | "unsupported_platform";
@@ -144,6 +147,12 @@ function describe(result: VideoAnalysisResult): string {
   return `ok${result.evidenceVerified ? " + kanıt doğrulandı" : " (kanıt doğrulanamadı)"}${result.analysis.hookType ? `, hook: ${result.analysis.hookType}` : ""}`;
 }
 
+/** Yerel dosyadan inceleme; arka uç yerel dosya desteklemiyorsa fırlatır (sessizce başka yola düşülmez; kullanılabilir arka uçlar hepsi destekler). */
+async function analyzeFromFile(analyzer: VideoAnalyzer, input: Omit<AnalyzeVideoInput, "videoUrl">, file: string): Promise<VideoAnalysisResult> {
+  if (analyzer.analyzeLocal === undefined) throw new VideoAnalysisError("not_implemented", `${analyzer.backend} arka ucu yerel dosya incelemesini desteklemiyor.`);
+  return analyzer.analyzeLocal(input, file);
+}
+
 export async function runAnalysis(ctx: IntelContext, args: AnalyzeArgs, log: (line: string) => void): Promise<AnalyzeSummary> {
   const t0 = performance.now();
   const summary = emptySummary();
@@ -165,24 +174,37 @@ export async function runAnalysis(ctx: IntelContext, args: AnalyzeArgs, log: (li
   const byId = new Map(items.map((item) => [item.id, item]));
   // Platform video incelemesini desteklemiyorsa (oturumsuz indirilebilen adres yok) adres aranmaz, indirme denenmez, "yeniden topla" DENMEZ:
   // adım açık sonuçla atlanır. Konu eleği yukarıda yapıldı (açıklama metniyle); plan sayılar + açıklama ile sürer.
-  if (!selection.some((c) => supportsVideoInspection((byId.get(c.id) as ContentItem).platform))) {
+  // Stüdyoda üretilip yayınlanan kendi videonun yerel dosyası varsa o kullanılır (platform kuralı ve Apify adresi aranmaz).
+  const ownHandle = items.find((item) => item.owner.kind === "own")?.owner.handle;
+  const local = await resolveLocalVideos(
+    ctx.client,
+    ctx.workspaceId,
+    selection.map((c) => {
+      const item = byId.get(c.id) as ContentItem;
+      return { id: item.id, platform: item.platform, shortcode: item.shortcode, externalId: item.externalId, isOwn: item.owner.kind === "own" };
+    }),
+    { workspaceSlug: ctx.workspaceSlug, handle: ownHandle },
+  );
+  for (const note of local.notes) log(`Not: ${note}`);
+  if (!selection.some((c) => local.files.has(c.id) || supportsVideoInspection((byId.get(c.id) as ContentItem).platform))) {
     log(`Seçilen ${selection.length} videonun platformunda video incelemesi henüz yok: indirme ve model çağrısı yapılmadı.`);
     return finish(args.dryRun ? "dry_run" : "unsupported_platform");
   }
-  const needs: VideoNeed[] = selection.map((c) => {
+  const remote = selection.filter((c) => !local.files.has(c.id));
+  const needs: VideoNeed[] = remote.map((c) => {
     const item = byId.get(c.id) as ContentItem;
     return { contentId: item.id, externalId: item.externalId, shortcode: item.shortcode, platform: item.platform, ownerId: item.owner.id, handle: item.owner.handle };
   });
   const resolution = await resolveVideoUrls(ctx.client, ctx.workspaceId, needs);
   for (const note of resolution.notes) log(`Not: ${note}`);
-  const partition = partitionVideos(selection, resolution.urls, ctx.now);
+  const partition = partitionVideos(remote, resolution.urls, ctx.now);
   summary.expired = partition.expired.length;
   summary.missing = partition.missing.length;
 
-  log(`Seçilen ${selection.length} video: ${partition.ready.length} hazır, ${partition.expired.length} adresi dolmuş, ${partition.missing.length} adres yok.`);
+  log(`Seçilen ${selection.length} video: ${partition.ready.length + local.files.size} hazır (${local.files.size} yerel dosyadan), ${partition.expired.length} adresi dolmuş, ${partition.missing.length} adres yok.`);
   for (const c of selection) log(`  - ${c.isOwn ? "kendi" : "rakip"} ${label(byId.get(c.id) as ContentItem)} lift ${c.lift?.toFixed(2) ?? "—"} (kademe ${c.liftTier ?? "—"})`);
   if (args.dryRun) return finish("dry_run");
-  if (mustRecollect(partition)) {
+  if (local.files.size === 0 && mustRecollect(partition)) {
     log("Seçilen videoların adresi yok ya da süresi dolmuş: önce `npm run collect:now` gerekir (ücretli Apify koşusu, kullanıcı onayı ister). Analiz başlatılmadı.");
     return finish("needs_recollect");
   }
@@ -202,6 +224,8 @@ export async function runAnalysis(ctx: IntelContext, args: AnalyzeArgs, log: (li
   for (const c of partition.missing) await saveAnalysis(ctx.client, unanalyzedResult(c.id, "invalid_url", analyzer.model, analyzer.backend), { workspaceId: ctx.workspaceId, ownerHandle: c.handle });
   summary.failed += partition.expired.length + partition.missing.length;
 
+  type Work = { item: AnalysisCandidate; url?: string; file?: string };
+  const work: Work[] = [...selection.filter((c) => local.files.has(c.id)).map((item) => ({ item, file: local.files.get(item.id) })), ...partition.ready];
   const budget = createCallBudget(readMaxAgyCalls(process.env));
   let index = 0;
   let agyTokens: number | undefined;
@@ -209,7 +233,7 @@ export async function runAnalysis(ctx: IntelContext, args: AnalyzeArgs, log: (li
   let finished = 0;
   const checkpoint = async (): Promise<void> => {
     try {
-      await args.onProgress?.({ done: finished, total: partition.ready.length });
+      await args.onProgress?.({ done: finished, total: work.length });
     } catch {
       // sayaç kancasının hatası yok sayılır (durdurma yine sorulur)
     }
@@ -223,13 +247,14 @@ export async function runAnalysis(ctx: IntelContext, args: AnalyzeArgs, log: (li
     }
   };
   await checkpoint();
-  const queue = await runBudgetedQueue(partition.ready, budget, async ({ item: c, url }) => {
+  const queue = await runBudgetedQueue(work, budget, async ({ item: c, url, file }) => {
     const item = byId.get(c.id) as ContentItem;
-    const position = `${++index}/${partition.ready.length}`;
+    const position = `${++index}/${work.length}`;
     log(`[${position}] ${label(item)} analiz ediliyor...`);
     const run = await openSubscriptionRun(ctx.client, ctx.workspaceId, analyzer.backend === "claude_frames" ? "claude_cli" : "gemini", "video_analysis", label(item));
     try {
-      const result = await analyzer.analyze({ contentId: item.id, videoUrl: url, isCompetitor: !c.isOwn, caption: item.caption, durationSec: item.durationSec });
+      const input = { contentId: item.id, isCompetitor: !c.isOwn, caption: item.caption, durationSec: item.durationSec };
+      const result = file !== undefined ? await analyzeFromFile(analyzer, input, file) : await analyzer.analyze({ ...input, videoUrl: url as string });
       await saveAnalysis(ctx.client, result, { workspaceId: ctx.workspaceId, runId: run.id, ownerHandle: c.handle });
       await closeRun(ctx.client, run.id, {
         ok: result.status !== "failed",

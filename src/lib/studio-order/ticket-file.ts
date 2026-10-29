@@ -12,7 +12,7 @@ export interface ParsedTicket {
 const KEY_ORDER = [
   "siparis_id", "fikir_id", "plan_hafta", "slot", "hesap", "mod", "tur", "sutun", "istenen_saat", "uretim_saati", "onay", "durum",
   "hedef", "hedef_sure_sn", "hedef_sure_gerekce", "cta", "kaynak_link", "konu", "ana_hat", "senaryo", "ornek_video",
-  "video", "kapak", "hata_notu", "zernio_post_id", "yayin_url",
+  "revize_notu", "onceki_video", "video", "kapak", "hata_notu", "zernio_post_id", "yayin_url",
 ] as const;
 /** Değeri henüz olmayan ama fişte görünmesi istenen alanlar (stüdyo yazar). */
 const STUDIO_FIELDS = ["video", "kapak", "hata_notu"] as const;

@@ -77,6 +77,9 @@ export const ticketSchema = z
     ana_hat: z.array(text).min(1).optional(),
     senaryo: z.string().trim().min(1).optional(),
     ornek_video: ornekVideoSchema.optional(),
+    /** Revize (SPN-36): müşterinin notu ve revize edilen önceki sürümün videosu. Not yoksa alan yazılmaz (stüdyo davranışı değişmez). */
+    revize_notu: text.optional(),
+    onceki_video: text.optional(),
     video: text.optional(),
     kapak: text.optional(),
     hata_notu: text.optional(),

@@ -966,13 +966,13 @@ isOneToOne: false
                   ]
                 },"studio_orders": {
                   Row: {
-                    "created_at": string,"id": string,"idea_id": string,"note": string,"slot": number | null,"status": string,"ticket": NonNullable<Json>,"updated_at": string,"week_start": string | null,"workspace_id": string
+                    "created_at": string,"id": string,"idea_id": string,"note": string,"revision": number,"revisions": NonNullable<Json>,"slot": number | null,"status": string,"ticket": NonNullable<Json>,"updated_at": string,"week_start": string | null,"workspace_id": string
                   }
                   Insert: {
-                    "created_at"?: string,"id"?: string,"idea_id": string,"note"?: string,"slot"?: number | null,"status"?: string,"ticket": NonNullable<Json>,"updated_at"?: string,"week_start"?: string | null,"workspace_id": string
+                    "created_at"?: string,"id"?: string,"idea_id": string,"note"?: string,"revision"?: number,"revisions"?: NonNullable<Json>,"slot"?: number | null,"status"?: string,"ticket": NonNullable<Json>,"updated_at"?: string,"week_start"?: string | null,"workspace_id": string
                   }
                   Update: {
-                    "created_at"?: string,"id"?: string,"idea_id"?: string,"note"?: string,"slot"?: number | null,"status"?: string,"ticket"?: NonNullable<Json>,"updated_at"?: string,"week_start"?: string | null,"workspace_id"?: string
+                    "created_at"?: string,"id"?: string,"idea_id"?: string,"note"?: string,"revision"?: number,"revisions"?: NonNullable<Json>,"slot"?: number | null,"status"?: string,"ticket"?: NonNullable<Json>,"updated_at"?: string,"week_start"?: string | null,"workspace_id"?: string
                   }
                   Relationships: [
                     {
@@ -1147,13 +1147,13 @@ isOneToOne: false
                   ]
                 },"workspaces": {
                   Row: {
-                    "account_confirmed_at": string | null,"account_type": string,"agent_cap_approved_at": string | null,"agent_cap_approved_by": string | null,"agent_monthly_cap_usd": number | null,"apify_monthly_cap_usd": number,"audience_timezone": string | null,"collect_every_days": number,"collect_video_limit": number,"compliance_region": string,"content_language": string | null,"created_at": string,"id": string,"llm_monthly_cap_usd": number,"measure_cap_approved_at": string | null,"measure_monthly_cap_usd": number | null,"name": string,"niche_brief": string | null,"rival_target": number,"settings": NonNullable<Json>,"slug": string,"timezone": string,"updated_at": string
+                    "account_confirmed_at": string | null,"account_type": string,"agent_cap_approved_at": string | null,"agent_cap_approved_by": string | null,"agent_monthly_cap_usd": number | null,"apify_monthly_cap_usd": number,"audience_timezone": string | null,"auto_measure": boolean,"auto_produce": boolean,"auto_weekly_plan": boolean,"collect_every_days": number,"collect_video_limit": number,"compliance_region": string,"content_language": string | null,"created_at": string,"id": string,"llm_monthly_cap_usd": number,"measure_cap_approved_at": string | null,"measure_monthly_cap_usd": number | null,"name": string,"niche_brief": string | null,"rival_target": number,"settings": NonNullable<Json>,"slug": string,"timezone": string,"updated_at": string
                   }
                   Insert: {
-                    "account_confirmed_at"?: string | null,"account_type"?: string,"agent_cap_approved_at"?: string | null,"agent_cap_approved_by"?: string | null,"agent_monthly_cap_usd"?: number | null,"apify_monthly_cap_usd"?: number,"audience_timezone"?: string | null,"collect_every_days"?: number,"collect_video_limit"?: number,"compliance_region"?: string,"content_language"?: string | null,"created_at"?: string,"id"?: string,"llm_monthly_cap_usd"?: number,"measure_cap_approved_at"?: string | null,"measure_monthly_cap_usd"?: number | null,"name": string,"niche_brief"?: string | null,"rival_target"?: number,"settings"?: NonNullable<Json>,"slug": string,"timezone"?: string,"updated_at"?: string
+                    "account_confirmed_at"?: string | null,"account_type"?: string,"agent_cap_approved_at"?: string | null,"agent_cap_approved_by"?: string | null,"agent_monthly_cap_usd"?: number | null,"apify_monthly_cap_usd"?: number,"audience_timezone"?: string | null,"auto_measure"?: boolean,"auto_produce"?: boolean,"auto_weekly_plan"?: boolean,"collect_every_days"?: number,"collect_video_limit"?: number,"compliance_region"?: string,"content_language"?: string | null,"created_at"?: string,"id"?: string,"llm_monthly_cap_usd"?: number,"measure_cap_approved_at"?: string | null,"measure_monthly_cap_usd"?: number | null,"name": string,"niche_brief"?: string | null,"rival_target"?: number,"settings"?: NonNullable<Json>,"slug": string,"timezone"?: string,"updated_at"?: string
                   }
                   Update: {
-                    "account_confirmed_at"?: string | null,"account_type"?: string,"agent_cap_approved_at"?: string | null,"agent_cap_approved_by"?: string | null,"agent_monthly_cap_usd"?: number | null,"apify_monthly_cap_usd"?: number,"audience_timezone"?: string | null,"collect_every_days"?: number,"collect_video_limit"?: number,"compliance_region"?: string,"content_language"?: string | null,"created_at"?: string,"id"?: string,"llm_monthly_cap_usd"?: number,"measure_cap_approved_at"?: string | null,"measure_monthly_cap_usd"?: number | null,"name"?: string,"niche_brief"?: string | null,"rival_target"?: number,"settings"?: NonNullable<Json>,"slug"?: string,"timezone"?: string,"updated_at"?: string
+                    "account_confirmed_at"?: string | null,"account_type"?: string,"agent_cap_approved_at"?: string | null,"agent_cap_approved_by"?: string | null,"agent_monthly_cap_usd"?: number | null,"apify_monthly_cap_usd"?: number,"audience_timezone"?: string | null,"auto_measure"?: boolean,"auto_produce"?: boolean,"auto_weekly_plan"?: boolean,"collect_every_days"?: number,"collect_video_limit"?: number,"compliance_region"?: string,"content_language"?: string | null,"created_at"?: string,"id"?: string,"llm_monthly_cap_usd"?: number,"measure_cap_approved_at"?: string | null,"measure_monthly_cap_usd"?: number | null,"name"?: string,"niche_brief"?: string | null,"rival_target"?: number,"settings"?: NonNullable<Json>,"slug"?: string,"timezone"?: string,"updated_at"?: string
                   }
                   Relationships: [
                     
@@ -1295,6 +1295,9 @@ isOneToOne: false
 "agent_monthly_cap_usd": number | null,
 "apify_monthly_cap_usd": number,
 "audience_timezone": string | null,
+"auto_measure": boolean,
+"auto_produce": boolean,
+"auto_weekly_plan": boolean,
 "collect_every_days": number,
 "collect_video_limit": number,
 "compliance_region": string,
@@ -1326,6 +1329,9 @@ isOneToOne: false
 "agent_monthly_cap_usd": number | null,
 "apify_monthly_cap_usd": number,
 "audience_timezone": string | null,
+"auto_measure": boolean,
+"auto_produce": boolean,
+"auto_weekly_plan": boolean,
 "collect_every_days": number,
 "collect_video_limit": number,
 "compliance_region": string,
@@ -1357,6 +1363,9 @@ isOneToOne: false
 "agent_monthly_cap_usd": number | null,
 "apify_monthly_cap_usd": number,
 "audience_timezone": string | null,
+"auto_measure": boolean,
+"auto_produce": boolean,
+"auto_weekly_plan": boolean,
 "collect_every_days": number,
 "collect_video_limit": number,
 "compliance_region": string,
@@ -1433,6 +1442,27 @@ isOneToOne: false
                           SetofOptions: {
         from: "*"
         to: "credit_holds"
+        isOneToOne: true
+        isSetofReturn: false
+      } },
+"request_order_revision":
+{ Args: { "p_at": string,"p_note": string,"p_order": string,"p_ws": string }; Returns: {
+              "created_at": string,
+"id": string,
+"idea_id": string,
+"note": string,
+"revision": number,
+"revisions": NonNullable<Json>,
+"slot": number | null,
+"status": string,
+"ticket": NonNullable<Json>,
+"updated_at": string,
+"week_start": string | null,
+"workspace_id": string
+            }
+                          SetofOptions: {
+        from: "*"
+        to: "studio_orders"
         isOneToOne: true
         isSetofReturn: false
       } },

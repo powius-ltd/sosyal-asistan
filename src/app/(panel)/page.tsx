@@ -3,8 +3,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Suspense } from "react";
 
-import { PageHeader } from "@/components/common/page-header";
-import { EntryScreen } from "@/components/entry/entry-screen";
+import { CustomerToday } from "@/components/today/customer-today";
+import { automationLine } from "@/lib/today/automation-line";
 import { StoryTiles } from "@/components/home/story-tiles";
 import { VideosCard } from "@/components/home/videos-card";
 import { WeekSection } from "@/components/home/week-section";
@@ -17,7 +17,6 @@ import { loadTodayData } from "@/components/today/today-data";
 import { TAP_INNER_LINKS } from "@/components/today/tap";
 import { TodayVoice } from "@/components/today/today-voice";
 import { maskotName } from "@/lib/agents/persona";
-import { ENTRY_COPY } from "@/lib/copy/entry";
 import { TODAY_COPY } from "@/lib/copy/today";
 import { getPanelContext } from "@/lib/data";
 import { isCopyEdition } from "@/lib/edition";
@@ -26,7 +25,9 @@ import { pendingVideos } from "@/lib/home/pending-videos";
 import { buildStoryTiles } from "@/lib/home/story-tiles";
 import { voiceMascotState } from "@/lib/mascot/state";
 import { planItemStatuses } from "@/lib/overview/plan-item-status";
+import { readSafe } from "@/lib/overview/read-safe";
 import { ROUTES } from "@/lib/routes";
+import { isBackstageVisible } from "@/lib/workspace/backstage";
 
 export const metadata: Metadata = { title: "Bugün" };
 
@@ -61,14 +62,16 @@ export default async function TodayPage() {
     />
   );
 
-  // Müşteri kopyası: açılış giriş ekranıdır (7 adımlı hat + haftanın videoları; kullanıcı kararı 2026-10-27). Kurulum bitmemişse eski akış.
-  if (plain && !setup) {
-    return (
-      <div className="flex min-w-0 flex-col gap-6 lg:gap-7">
-        <PageHeader title={ENTRY_COPY.title} />
-        <EntryScreen repo={repo} wsId={wsId} now={now} today={input} />
-      </div>
-    );
+  // Müşteri görünümü (kulis kapalı): dört sade blok. Kurulum bitmemişse eski akış (başlangıç kartı orada).
+  if (!isBackstageVisible() && !setup) {
+    const [scheduled, jobs, workspace] = await Promise.all([
+      readSafe("zamanlanmış yayınlar", () =>
+        repo.listPublishJobs(wsId, { status: ["approved", "container_pending", "ready"], from: now.toISOString(), limit: 20 }),
+      ),
+      readSafe("otomatik işler", () => repo.listJobs(wsId, { limit: 200 })),
+      readSafe("çalışma alanı", () => repo.getWorkspace(wsId)),
+    ]);
+    return <CustomerToday now={now} input={input} scheduled={scheduled} automation={automationLine(workspace, jobs, now)} />;
   }
 
   return (

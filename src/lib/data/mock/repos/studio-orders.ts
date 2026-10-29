@@ -6,12 +6,15 @@
 import { RepositoryError, type PanelRepository } from "@/lib/data/repository";
 import type { MockContext } from "@/lib/data/mock/repos/context";
 import { advanceStudioOrderProblem, applyAdvance, parseAdvanceStudioOrder, parseCreateStudioOrder, parseStudioOrderQuery, parseUpdateStudioOrder } from "@/lib/data/studio-order-input";
-import { isActiveOrderStatus, type StudioOrder } from "@/lib/domain/studio-order";
+import { REVISION_PROBLEM_MESSAGE } from "@/lib/data/order-revision-messages";
+import { parseRevisionNote, revisedTicket } from "@/lib/data/order-revision-schema";
+import { isActiveOrderStatus, orderRevisionProblem, type StudioOrder } from "@/lib/domain/studio-order";
+import { baseOrderIdOf, revisionOrderId } from "@/lib/studio-order/revision-id";
 
-export type StudioOrderMethods = Pick<PanelRepository, "createStudioOrder" | "getStudioOrder" | "listStudioOrders" | "updateStudioOrder" | "advanceStudioOrder">;
+export type StudioOrderMethods = Pick<PanelRepository, "createStudioOrder" | "getStudioOrder" | "listStudioOrders" | "updateStudioOrder" | "advanceStudioOrder" | "requestOrderRevision">;
 
 export function createStudioOrderMethods(ctx: MockContext): StudioOrderMethods {
-  const { state, requireWs, out } = ctx;
+  const { state, requireWs, out, clock } = ctx;
   const orders: StudioOrder[] = [];
   const find = (wsId: string, id: string) => orders.find((o) => o.workspaceId === wsId && o.id === id);
   return {
@@ -32,6 +35,8 @@ export function createStudioOrderMethods(ctx: MockContext): StudioOrderMethods {
         ticket: structuredClone(value.ticket),
         note: value.note,
         status: value.ticket.durum,
+        revision: 1,
+        revisions: [],
         createdAt: stamp,
         updatedAt: stamp,
       };
@@ -75,6 +80,27 @@ export function createStudioOrderMethods(ctx: MockContext): StudioOrderMethods {
       if (order.status === value.status) return out(order);
       order.ticket = applyAdvance(order.ticket, value);
       order.status = value.status;
+      order.updatedAt = now.toISOString();
+      return out(order);
+    },
+    async requestOrderRevision(wsId, orderId, note, now) {
+      requireWs(wsId);
+      const text = parseRevisionNote(note);
+      const order = find(wsId, orderId);
+      if (order === undefined) throw new RepositoryError("not_found", "Fiş bulunamadı.");
+      const job = state.publishJobs.find((j) => j.workspaceId === wsId && j.orderId === order.ticket.siparis_id && (j.status === "awaiting_approval" || j.status === "draft"));
+      const problem = orderRevisionProblem(order, job?.status);
+      if (problem !== undefined || job === undefined) throw new RepositoryError("invalid_state", REVISION_PROBLEM_MESSAGE[problem ?? "no_pending_publish"]);
+      job.status = "cancelled";
+      job.updatedAt = clock.tick();
+      const nextRevision = order.revision + 1;
+      order.revisions = [
+        ...order.revisions,
+        { version: order.revision, orderId: order.ticket.siparis_id, requestedAt: now.toISOString(), note: text, publishJobId: job.id, ...(order.ticket.video !== undefined ? { video: order.ticket.video } : {}), ...(order.ticket.kapak !== undefined ? { cover: order.ticket.kapak } : {}) },
+      ];
+      order.ticket = revisedTicket(order.ticket, { orderId: revisionOrderId(baseOrderIdOf(order), nextRevision), note: text });
+      order.revision = nextRevision;
+      order.status = "taslak";
       order.updatedAt = now.toISOString();
       return out(order);
     },

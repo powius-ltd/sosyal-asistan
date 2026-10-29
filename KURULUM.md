@@ -9,7 +9,7 @@
 ---
 
 ## Claude için: sıralı adımlar
-Bu dosyayı baştan sona, sırayla uygula. Her adımın sonunda `npm run kurulum -- denetle` çalıştır; eksik varsa söylediği şeyi yap, sonra devam et. Para harcayan ya da müşterinin hesabında kalıcı değişiklik yapan adımdan önce müşteriye sor. Bu klasörde `.env.local` dışında anahtar saklama; anahtarı ekrana basma. Kurulum sırasında kaynak koda (`src/`, `scripts/`) dokunma: bir komut hata verirse düzeltmeye kalkma, hatayı müşteriye düz dille söyle ve kuran ekibe (bize) iletmesini iste.
+Bu dosyayı baştan sona, sırayla uygula. Tam denetim 8. adımdadır (`npm run kurulum -- denetle`); daha önce çalıştırırsan sırası gelmemiş adımlar "eksik" görünür, bu normaldir: yalnız o ana kadar yaptığın adımın satırına bak. Para harcayan ya da müşterinin hesabında kalıcı değişiklik yapan adımdan önce müşteriye sor. Bu klasörde `.env.local` dışında anahtar saklama; anahtarı ekrana basma. Kurulum sırasında kaynak koda (`src/`, `scripts/`) dokunma: bir komut hata verirse düzeltmeye kalkma, hatayı müşteriye düz dille söyle ve kuran ekibe (bize) iletmesini iste.
 
 İşletim sistemini anla (macOS, Windows ya da Linux). Aşağıda her adımda önce macOS, sonra Windows, sonra Linux yazar.
 
@@ -23,28 +23,28 @@ Node.js (20 ya da üstü), ffmpeg, Python 3.10+.
 
 Sonra bu klasörde: `npm ci`.
 
-### 2. Konuşma yazıya dökme (Whisper, bilgisayarda çalışır, ücretsiz)
-Videolardaki konuşmayı yazıya çevirir. Bir kez kurulur, `small` modeli önceden indirilir (yaklaşık 500 MB).
+### 2. Ayar dosyası
+`.env.example` dosyasını `.env.local` olarak kopyala. İçinde bu kopya için gereken ayarlar hazırdır (panel sürümü, video incelemesi için Claude, günlük tur açık). Boş kalan anahtarlar sonraki adımlarda dolar.
+
+### 3. Konuşma yazıya dökme (Whisper, bilgisayarda çalışır, ücretsiz)
+Videolardaki konuşmayı yazıya çevirir. Bir kez kurulur, `medium` modeli önceden indirilir (yaklaşık 1,5 GB; `small` Türkçede özel adları bozuyor). Diskte en az 2 GB boş yer olmalı; indirme bağlantıya göre birkaç dakika ile yarım saat sürer, müşteriye söyle. Model bu klasöre değil kullanıcı önbelleğine iner (`~/.cache/huggingface`).
 - **macOS / Linux** (macOS'ta brew `python3` adını bağlamaz: `python3.12` yaz; Linux'ta `python3.12` yoksa `python3`):
   ```
   python3.12 -m venv .venv
   .venv/bin/pip install faster-whisper
-  .venv/bin/python -c "from faster_whisper import WhisperModel; WhisperModel('small', device='cpu', compute_type='int8')"
+  .venv/bin/python -c "from faster_whisper import WhisperModel; WhisperModel('medium', device='cpu', compute_type='int8')"
   ```
   `.env.local` içine `WHISPER_PYTHON=<bu klasörün tam yolu>/.venv/bin/python` yaz.
 - **Windows (PowerShell):**
   ```
   py -3 -m venv .venv
   .venv\Scripts\pip install faster-whisper
-  .venv\Scripts\python -c "from faster_whisper import WhisperModel; WhisperModel('small', device='cpu', compute_type='int8')"
+  .venv\Scripts\python -c "from faster_whisper import WhisperModel; WhisperModel('medium', device='cpu', compute_type='int8')"
   ```
   `.env.local` içine `WHISPER_PYTHON=<bu klasörün tam yolu>\.venv\Scripts\python.exe` yaz.
 
-### 3. Claude girişi
+### 4. Claude girişi
 Terminalde `claude` yaz, giriş yapılı değilse müşteriye giriş yaptır (kendi aboneliği). Panelin yazı ve video işleri bu girişle çalışır; ayrıca anahtar gerekmez. Anthropic API anahtarı **koyma**: koyarsan işler abonelik yerine anahtardan ücretlenir.
-
-### 4. Ayar dosyası
-`.env.example` dosyasını `.env.local` olarak kopyala. İçinde bu kopya için gereken ayarlar hazırdır (panel sürümü, video incelemesi için Claude, günlük tur açık). Boş kalan anahtarlar sonraki adımlarda dolar.
 
 ### 5. Veritabanı (Supabase)
 0. **Bağlayıcı olmadan da kurulur:** bağlayıcı eklenemiyorsa ya da izin penceresi açılmıyorsa 1–3'ü atla; müşteri Supabase panelinde Frankfurt'ta yeni proje açar, Project Settings > API sayfasındaki proje adresini ve anahtarları `.env.local`'a kendisi yapıştırır, sonra 4–5. Müşteriye araç adı, izin komutu (`/permissions`, `mcp__…`) söyleme; "tarayıcıda açılan pencerede izin ver" de yeter.
@@ -61,13 +61,13 @@ Müşteriden Instagram ya da TikTok kullanıcı adını al (ve hesabın türün�
 Bu komut hesabı açar, `.env.local`'a `LOCAL_USER_ID` ve `LOCAL_WORKSPACE_ID` yazar ve aylık otomatik harcama tavanını 4,5 $ yapar (Apify'ın ücretsiz 5 $'ının altında).
 
 ### 7. Apify
-Müşteri jetonu `.env.local`'daki `APIFY_TOKEN=` satırına yapıştırır. Para harcatan ilk toplamayı **müşteriye sormadan başlatma**.
+Müşteri jetonu `.env.local`'daki `APIFY_TOKEN=` satırına yapıştırır; panel açıldıktan sonra Ayarlar > Anahtarlar kartından da girebilir ("Dene" düğmesi ücretsiz bir istekle anahtarın çalıştığını gösterir; Zernio ve ElevenLabs anahtarları da oradan girilir). Para harcatan ilk toplamayı **müşteriye sormadan başlatma** (günlük zamanlayıcı da toplama başlatır: adım 11'deki soruyu sor).
 
 ### 8. Denetim
 `npm run kurulum -- denetle`: hepsi tamam olmalı (ayar dosyası, Claude girişi, ffmpeg, Whisper ve model, Apify anahtarı, veritabanı bağlantısı). Eksik satırı ne yapılacağını söyler; düzelt, yeniden çalıştır.
 
 ### 9. Paneli başlat
-`npm run build`, sonra `npm run start`. Panel `http://localhost:3100` adresinde açılır. Müşteriye göster; ilk açılışta hesap için kısa bir kurulum akışı çıkar, onu müşteri kendisi yürütür (düğmeye basmadan para harcanmaz).
+`npm run build`, sonra `npm run start`. Panel `http://localhost:3100` adresinde açılır. 3100 doluysa başka port ver (`npm run start -- -p 3200`) ve kısayoldaki adresi de aynı porta yaz. Derleme (`npm run build`) hata verirse kurulumu durdur: bu bizim hatamızdır, hatayı müşteriye düz dille söyle ve ekibe iletmesini iste. Müşteriye göster; ilk açılışta hesap için kısa bir kurulum akışı çıkar, onu müşteri kendisi yürütür (düğmeye basmadan para harcanmaz).
 
 ### 10. Masaüstü kısayolu
 Kısayol paneli başlatır ve tarayıcıyı açar. `<KLASÖR>` yerine bu klasörün tam yolunu yaz.
@@ -90,6 +90,8 @@ Kısayol paneli başlatır ve tarayıcıyı açar. `<KLASÖR>` yerine bu klasör
 
 ### 11. Günlük iş (her gün kendiliğinden çalışsın)
 `npm run gunluk` komutu panelin günlük turunu atar (ajan turu işleri açar, ardından aynı komut ayrı bir işçi başlatmadan o işleri koşturur: yeni içerik toplama, inceleme, plan; sonra varsa ölçüm; haftada bir veritabanı yedeği `yedek/` klasörüne). Her gün sabah 09:00'da çalışması için bilgisayarın zamanlayıcısına ekle. Zamanlayıcıya ayrıca işçi eklenmez, tek komut yeter. Önce komutu elle bir kez `npm run gunluk -- --dry-run` ile dene (hiçbir şey yazmaz, işçi de koşmaz).
+
+**Eklemeden önce müşteriye sor** (zamanlayıcı ilk sabah kendiliğinden yeni video toplar, bu para harcar): "Yarından itibaren her sabah 09:00'da panel yeni videoları kendisi toplar; ayda en çok 4,5 $ harcar, Apify'ın ücretsiz 5 $'ı içinde kalır. Açayım mı?" Evet derse aşağıdakini ekle. Hayır derse zamanlayıcıyı ekleme; müşteri ilk toplamayı panelden kendisi başlatır, istediğinde bu adım sonra yapılır.
 - **macOS (launchd):** `~/Library/LaunchAgents/panel.gunluk.plist` oluştur:
   ```
   <?xml version="1.0" encoding="UTF-8"?>
@@ -114,6 +116,7 @@ Müşteriye `KULLANIM.md` dosyasını göster. Kurulumda yapılanları ve kalan 
 
 ## Sorun giderme
 - `npm run kurulum -- denetle` her sorunda önce çalıştırılır; eksiği ve çözümü yazar.
-- Panel açılmıyorsa: başka bir uygulama 3100 portunu tutuyor olabilir; `npm run start` çıktısındaki hataya bak.
+- Panel açılmıyorsa: başka bir uygulama 3100 portunu tutuyor olabilir (`EADDRINUSE`); `npm run start -- -p 3200` ile başka portta aç, kısayolu da o porta göre düzelt.
+- Veritabanı adımı "SSL" / "TLS" hatası verirse: `SUPABASE_DB_URL` adresinin sonuna `?sslmode=require` ekle (Supabase bulutu SSL ister).
 - Claude "limit doldu" derse günlük tur ertesi güne kalır; bir şey bozulmaz.
 - Veritabanına ulaşılamıyorsa ücretsiz proje 7 gün boşta kalınca uyumuş olabilir: Supabase panelinden "Restore" de.

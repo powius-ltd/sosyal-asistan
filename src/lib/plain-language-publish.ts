@@ -40,7 +40,7 @@ export const QUOTA_NOTE = "Sayım panelden yapılan yayınlardır.";
 
 /** Bağlı hesap yokken Yeni yayın formunun yerini tutan cümle. */
 export const NO_CONNECTED_ACCOUNT_NOTE =
-  "Yayın işi açmak için resmi bağlantıyla bağlı bir hesap gerekir; hesap bağlama yakında açılacak.";
+  "Paylaşım için Ayarlar → Instagram yayını anahtarını gir.";
 
 export interface UnsupportedAccount {
   handle: string;

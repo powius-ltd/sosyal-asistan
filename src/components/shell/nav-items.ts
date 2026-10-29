@@ -5,10 +5,10 @@ import {
   ChartNoAxesColumn,
   Compass,
   LayoutGrid,
-  Lightbulb,
   ListChecks,
   Settings,
   SquarePlay,
+  Timer,
   type LucideIcon,
 } from "lucide-react";
 
@@ -42,6 +42,8 @@ export interface NavPrimary {
   label: string;
   icon: LucideIcon;
   href: string;
+  /** Müşteri görünümünde (kulis kapalı, sekme yok) maddenin tek hedefi; yoksa `href`. */
+  customerHref?: string;
   sections: readonly NavLeaf[];
 }
 
@@ -70,6 +72,7 @@ export const NAV_PRIMARY: readonly NavPrimary[] = [
     label: "Videolar",
     icon: SquarePlay,
     href: ROUTES.content,
+    customerHref: ROUTES.publish,
     sections: [
       { href: ROUTES.content, label: "İçeriklerim" },
       { href: ROUTES.publish, label: "Yayın" },
@@ -97,8 +100,9 @@ export const NAV_MENU_GROUPS: readonly NavMenuGroup[] = [
     id: "account",
     label: "Hesap",
     items: [
-      { href: ROUTES.notifications, label: "Bildirimler", icon: Bell },
+      { href: ROUTES.automation, label: "Otomatik", icon: Timer },
       { href: ROUTES.settings, label: "Ayarlar", icon: Settings },
+      { href: ROUTES.notifications, label: "Bildirimler", icon: Bell },
     ],
   },
   {
@@ -126,10 +130,19 @@ const EXTRA_OWNERS: readonly { prefix: string; primary: PrimaryId }[] = [
   { prefix: TICKET_ROUTE_PREFIX, primary: "plan" },
 ];
 
-/** Ana maddenin çizilecek sekmeleri: yalnız yöneticiye açık olanlar müşteriden gizlenir. */
-export function visibleSections(primary: NavPrimary, operatorMode: boolean, copyEdition = false): readonly NavLeaf[] {
+/** Ana maddenin tıklanınca gittiği adres: kulis kapalıyken (müşteri) tek hedef `customerHref`, açıkken `href`. */
+export function primaryHref(primary: NavPrimary, backstage = true): string {
+  return backstage ? primary.href : (primary.customerHref ?? primary.href);
+}
+
+/**
+ * Ana maddenin çizilecek sekmeleri. `backstage` = `isBackstageVisible()`: kapalıyken (müşteri) HİÇ sekme çizilmez; açıkken yalnız
+ * yöneticiye açık olanlar da görünür.
+ */
+export function visibleSections(primary: NavPrimary, backstage: boolean, copyEdition = false): readonly NavLeaf[] {
+  if (!backstage) return [];
   // Müşteri kopyasında reklam modülü yoktur (yönetici modu açık olsa da): sekme çizilmez.
-  return primary.sections.filter((leaf) => (operatorMode || leaf.operatorOnly !== true) && !(copyEdition && leaf.href === ROUTES.ads));
+  return primary.sections.filter((leaf) => (leaf.operatorOnly !== true || backstage) && !(copyEdition && leaf.href === ROUTES.ads));
 }
 
 /** Çizilecek menü kümeleri: kulis yalnız yönetici modunda. */
@@ -179,9 +192,9 @@ export function locate(pathname: string): NavLocation | undefined {
  * Ana maddenin `aria-current` değeri (üst ve alt çubuk AYNI kural): maddenin kendi adresindeyken `page`; alt sayfasındayken `true`
  * (sayfayı ikinci düzey sekme işaretler, ana madde "bu bölümdesin" der); başka yerde yok.
  */
-export function primaryCurrent(primary: NavPrimary, pathname: string): "page" | "true" | undefined {
+export function primaryCurrent(primary: NavPrimary, pathname: string, backstage = true): "page" | "true" | undefined {
   if (locate(pathname)?.area !== primary.id) return undefined;
-  return pathname === primary.href ? "page" : "true";
+  return pathname === primaryHref(primary, backstage) ? "page" : "true";
 }
 
 /** Kopya kabuğunun (müşteri kopyası, `PANEL_EDITION=kopya`) sol menü maddesi. Etkinlik `locate` ile bulunur: `area` bölge, `leafHref` bölge içi sayfa. */
@@ -197,25 +210,16 @@ export interface CopyNavItem {
   children?: readonly NavLeaf[];
 }
 
-/** Kopya menüsü: Yayın, Karşılaştırma, Reklamlar ve Kulis YOK. Rotalar `ROUTES`'tan; Bildirimler + Ayarlar `NAV_MENU_GROUPS` "account"tan gelir. */
-export const NAV_COPY: readonly CopyNavItem[] = [
-  { label: "Bugün", href: ROUTES.overview, icon: LayoutGrid, area: "today" },
-  { label: "Bu hafta", href: ROUTES.thisWeek, icon: CalendarDays, leafHref: ROUTES.thisWeek },
-  { label: "Fikirler", href: ROUTES.ideas, icon: Lightbulb, leafHref: ROUTES.ideas },
-  { label: "Videolarım", href: ROUTES.content, icon: SquarePlay, area: "videos" },
-  {
-    label: "Sonuçlar",
-    href: ROUTES.results,
-    icon: ChartNoAxesColumn,
-    area: "results",
-    children: [
-      { href: ROUTES.outliers, label: "Tutanlar" },
-      { href: ROUTES.competitors, label: "Rakipler" },
-      { href: ROUTES.anatomy, label: "Neden tuttu" },
-      { href: ROUTES.hooks, label: "Açılış kütüphanesi" },
-    ],
-  },
-];
+/**
+ * Kopya menüsü: müşteri sade görünümü, 4 ana ekran, alt bağlantı yok (kulis kapalı: `isBackstageVisible`). Hedefler `customerHref`'ten
+ * (Videolar → Yayın). Rotalar `ROUTES`'tan; Otomatik + Ayarlar + Bildirimler `NAV_MENU_GROUPS` "account"tan gelir.
+ */
+export const NAV_COPY: readonly CopyNavItem[] = NAV_PRIMARY.map((primary) => ({
+  label: primary.label,
+  href: primaryHref(primary, false),
+  icon: primary.icon,
+  area: primary.id,
+}));
 
 /** Kopya menüsünün altındaki sabit maddeler (Bildirimler, Ayarlar). */
 export const NAV_COPY_FOOTER: readonly NavLeaf[] = NAV_MENU_GROUPS.find((group) => group.id === "account")?.items ?? [];

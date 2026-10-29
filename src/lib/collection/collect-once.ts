@@ -49,8 +49,9 @@ export async function collectOnce(options: CollectOptions, depsIn: CollectDeps =
   const maxUsd = options.maxUsd ?? DEFAULT_MAX_USD;
   const log = options.log ?? (() => undefined);
 
-  const { targets, skipped } = await loadTargets(deps.client, options.workspaceId, { ownOnly: options.ownOnly });
+  const { targets, skipped, ownViaZernio } = await loadTargets(deps.client, options.workspaceId, { ownOnly: options.ownOnly });
   const notes: string[] = skipped.length > 0 ? [`Platform modülü olmayan hesaplar atlandı: ${skipped.join(", ")}.`] : [];
+  if (ownViaZernio.length > 0) notes.push(`Kendi hesap Zernio'dan okunuyor, Apify'a gitmedi: ${ownViaZernio.join(", ")}.`);
   const reports = new Map<string, TargetReport>(
     targets.map((target) => [ownerKey(target.owner), { handle: target.handle, kind: target.owner.kind }]),
   );

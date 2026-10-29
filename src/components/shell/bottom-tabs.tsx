@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-import { NAV_PRIMARY, primaryCurrent } from "@/components/shell/nav-items";
+import { NAV_PRIMARY, primaryCurrent, primaryHref } from "@/components/shell/nav-items";
 import { cn } from "@/lib/utils";
 
 /**
@@ -12,18 +12,18 @@ import { cn } from "@/lib/utils";
  * dolgusu buradadır. Hedef boyu `--shell-bottom-nav` (`globals.css`, 64 px ≥ 48 px): sağ alttaki sohbet düğmesi AYNI değişkenle çubuğun
  * üstünde durur. Ayarlar, Bildirimler ve kulis üst çubuktaki profil menüsündedir.
  */
-export function BottomTabs() {
+export function BottomTabs({ backstage = true }: { backstage?: boolean }) {
   const pathname = usePathname();
   return (
     <nav aria-label="Ana gezinme" data-testid="bottom-tabs" className="shrink-0 border-t bg-card pb-[env(safe-area-inset-bottom)] md:hidden">
       <ul className="mx-auto grid max-w-xl grid-cols-4 px-1">
         {NAV_PRIMARY.map((primary) => {
-          const current = primaryCurrent(primary, pathname);
+          const current = primaryCurrent(primary, pathname, backstage);
           const Icon = primary.icon;
           return (
             <li key={primary.id}>
               <Link
-                href={primary.href}
+                href={primaryHref(primary, backstage)}
                 aria-current={current}
                 className={cn(
                   "group flex h-(--shell-bottom-nav) w-full flex-col items-center justify-center gap-1 rounded-inner text-[0.8125rem] leading-none outline-none transition-colors focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:ring-inset",

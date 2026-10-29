@@ -138,9 +138,9 @@ function PublishFormBody({ accounts, timeZone, complianceRegion, operator = fals
         <p className="rounded-lg bg-muted/50 p-3 text-sm text-muted-foreground">
           {NO_CONNECTED_ACCOUNT_NOTE}{" "}
           <Link href={ROUTES.settings} className="underline hover:text-foreground">
-            Ayarlar
+            Ayarlar&apos;a git
           </Link>
-          &apos;dan bağlantı durumunu gör.
+          .
         </p>
       ) : (
         <form

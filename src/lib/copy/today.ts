@@ -34,6 +34,18 @@ export const TODAY_COPY = {
   videoRoadLabel: "Videonun yolu",
   videoRoad: ["Hazırlandı", "Onayın", "Yayın"] as const,
   videoHint: "izle, uygunsa onayla",
+  /** Müşteri görünümü: dört sade blok. */
+  customer: {
+    waitingHeading: "Senden bekleyen",
+    waitingNone: "Şu an senden bir şey beklemiyor.",
+    waitingButton: "Bak",
+    planWaiting: "Haftalık plan onayını bekliyor",
+    nextHeading: "Sıradaki paylaşım",
+    nextNone: "Zamanlanmış paylaşım yok.",
+    weekHeading: "Bu hafta",
+    automationHeading: "Otomatik",
+    automationLink: "Otomatik işler",
+  },
   /** Ayrıntılara geçiş. */
   detailsLink: "Sayılar, grafikler ve son tutan videolar",
   detailsAria: "Ayrıntılar",

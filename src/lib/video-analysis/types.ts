@@ -164,4 +164,6 @@ export interface VideoAnalyzer {
   checkAvailable(): Promise<BackendAvailability>;
   /** Hiçbir durumda fırlatmaz (hata → `failed` sonucu); YALNIZ uygulanmamış arka uç `not_implemented` fırlatır. */
   analyze(input: AnalyzeVideoInput): Promise<VideoAnalysisResult>;
+  /** Yerel dosyadan analiz (indirme yok; dosya geçici klasöre KOPYALANIR, kaynağa dokunulmaz). Tanımsız = bu arka uç yerel dosya desteklemez. */
+  analyzeLocal?(input: Omit<AnalyzeVideoInput, "videoUrl">, sourcePath: string): Promise<VideoAnalysisResult>;
 }

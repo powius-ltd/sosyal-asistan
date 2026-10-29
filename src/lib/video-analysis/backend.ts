@@ -8,6 +8,7 @@
 import "server-only";
 
 import { ANALYSIS_BACKENDS, type AnalysisBackend } from "@/lib/domain/intel";
+import { analyzeLocalVideo } from "@/lib/video-analysis/analyze-local";
 import { analyzeVideo, resolveDeps } from "@/lib/video-analysis/analyze-video";
 import { checkAgyAvailable, readAgyConfig } from "@/lib/video-analysis/agy-client";
 import { analyzeClaudeFramesFile, checkClaudeFramesAvailable, readClaudeFramesConfig } from "@/lib/video-analysis/claude-frames";
@@ -29,6 +30,7 @@ function createAgyAnalyzer(deps: AnalyzeVideoDeps): VideoAnalyzer {
     model: config.model,
     checkAvailable: () => checkAgyAvailable({ runner: deps.runner, config }),
     analyze: (input) => analyzeVideo(input, deps),
+    analyzeLocal: (input, sourcePath) => analyzeLocalVideo(input, sourcePath, deps),
   };
 }
 
@@ -40,6 +42,7 @@ function createClaudeFramesAnalyzer(deps: AnalyzeVideoDeps): VideoAnalyzer {
     model: config.model,
     checkAvailable: () => checkClaudeFramesAvailable(deps),
     analyze: (input) => analyzeVideo(input, deps, options),
+    analyzeLocal: (input, sourcePath) => analyzeLocalVideo(input, sourcePath, deps, options),
   };
 }
 

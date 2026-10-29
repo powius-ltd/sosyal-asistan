@@ -30,8 +30,8 @@ async function renderToday(operator: boolean) {
 const follows = (a: Element, b: Element) => Boolean(a.compareDocumentPosition(b) & Node.DOCUMENT_POSITION_FOLLOWING);
 
 describe("Bugün sayfası (mock veri)", () => {
-  it("blok sırası: söz (sayfanın başlığı) → baskın karar → rakamlar → hafta şeridi → sonuçlar bağlantısı", async () => {
-    await renderToday(false);
+  it("yönetici görünümü: blok sırası: söz (sayfanın başlığı) → baskın karar → rakamlar → hafta şeridi → sonuçlar bağlantısı", async () => {
+    await renderToday(true);
     const voice = screen.getByTestId("today-voice");
     expect(within(voice).getByRole("heading", { level: 1 })).toBeInTheDocument();
     const queue = screen.getByTestId("today-queue");
@@ -51,8 +51,19 @@ describe("Bugün sayfası (mock veri)", () => {
     expect(screen.queryByTestId("today-ask")).not.toBeInTheDocument();
   });
 
-  it("söz karar sayısını söyler; ilk karar baskın blok (TEK dolu düğme orada), kalanı 'Sonra' satırı", async () => {
+  it("müşteri görünümü: dört sade blok; maskot sözü, akış şeridi, Sonra listesi ve hafta şeridi yok", async () => {
     await renderToday(false);
+    const waiting = screen.getByTestId("ct-waiting");
+    const next = screen.getByTestId("ct-next");
+    const auto = screen.getByTestId("ct-auto");
+    expect(follows(waiting, next)).toBe(true);
+    expect(follows(next, auto)).toBe(true);
+    expect(within(auto).getByRole("link", { name: "Otomatik işler" })).toHaveAttribute("href", "/otomatik");
+    for (const id of ["today-voice", "today-later", "today-week", "today-tiles"]) expect(screen.queryByTestId(id)).not.toBeInTheDocument();
+  });
+
+  it("yönetici görünümü: söz karar sayısını söyler; ilk karar baskın blok (TEK dolu düğme orada), kalanı 'Sonra' satırı", async () => {
+    await renderToday(true);
     const decisions = [...document.querySelectorAll("[data-decision]")];
     expect(decisions.length).toBeGreaterThan(1);
     expect(screen.getByTestId("today-voice")).toHaveTextContent(`${decisions.length} kararın var.`);
@@ -64,7 +75,7 @@ describe("Bugün sayfası (mock veri)", () => {
   });
 
   it("eski Özet kartı ve Ayrıntılar bölümü sayfadan kalkmıştır (sayılar, grafikler, tutanlar /sonuclar'dadır); plan haftanın şeridi olarak görünür", async () => {
-    const { container } = await renderToday(false);
+    const { container } = await renderToday(true);
     expect(screen.queryByTestId("overview-summary")).not.toBeInTheDocument();
     expect(screen.queryByTestId("overview-details")).not.toBeInTheDocument();
     expect(screen.queryByRole("region", { name: "Sayılar" })).not.toBeInTheDocument();

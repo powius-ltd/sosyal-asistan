@@ -195,9 +195,8 @@ export interface WorkspacePatch {
   /** Aylık AJAN tavanı (USD, 0..`MAX_CAP_USD`): verilmesi ONAYDIR; kaldırılamaz, 0 = kapalı. Ajan kendi tavanını değiştiremez. */
   agentMonthlyCapUsd?: number;
   /** Ajan ritmi: toplama sıklığı (gün), hesap başına video, hedef rakip sayısı (sınırlar `domain/agent-settings.ts`). */
-  collectEveryDays?: number;
-  collectVideoLimit?: number;
-  rivalTarget?: number;
+  collectEveryDays?: number; collectVideoLimit?: number; rivalTarget?: number;
+  autoWeeklyPlan?: boolean; autoMeasure?: boolean; autoProduce?: boolean; // Otomatik işler (0037): kapalıysa halka açmaz; undefined = dokunma
   nicheBrief?: string;
   /** Yayın uyum bölgesi ("TR" | "US" | "TR_US"); başka değer → `invalid_input`. */
   complianceRegion?: ComplianceRegion;

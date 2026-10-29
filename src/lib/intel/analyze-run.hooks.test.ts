@@ -20,6 +20,7 @@ vi.mock("@/lib/intel/video-source", () => ({
   partitionVideos: vi.fn((items: readonly { id: string }[]) => ({ ready: items.map((item) => ({ item, url: `https://video.test/${item.id}` })), expired: [], missing: [] })),
   mustRecollect: vi.fn(() => false),
 }));
+vi.mock("@/lib/intel/local-video-source", () => ({ resolveLocalVideos: vi.fn(async () => ({ files: new Map(), notes: [] })) }));
 vi.mock("@/lib/intel/analysis-store", () => ({ saveAnalysis }));
 vi.mock("@/lib/intel/run-log", () => ({ openSubscriptionRun: vi.fn(async () => ({ id: "run" })), closeRun }));
 vi.mock("@/lib/video-analysis", () => ({

@@ -112,7 +112,7 @@ describe("ana gezinme: üst çubuk (web) ve alt çubuk (telefon)", () => {
 describe("ikinci düzey sekme şeridi", () => {
   const tabsOn = (path: string) => {
     pathname.current = path;
-    return render(<SectionTabs />);
+    return render(<SectionTabs operatorMode />);
   };
 
   it("Plan: Bu hafta · Fikirler; etkin sekme aria-current=page; dokunma hedefi 48 px", () => {
@@ -146,6 +146,7 @@ describe("ikinci düzey sekme şeridi", () => {
       ["Karşılaştırma", ROUTES.comparison],
       ["Kreatif anatomisi", ROUTES.anatomy],
       ["Açılış kütüphanesi", ROUTES.hooks],
+      ["Reklamlar", ROUTES.ads],
     ]);
     expect(currentOf(nav)).toEqual([["Açılış kütüphanesi", "page"]]);
     expect(within(nav).getByText("Neye dayanıyorum")).toBeInTheDocument();
@@ -164,7 +165,8 @@ describe("ikinci düzey sekme şeridi", () => {
     expect(currentOf(nav)).toEqual([["Reklamlar", "page"]]);
     operator.unmount();
     render(<SectionTabs />);
-    expect(linksOf(screen.getByRole("navigation", { name: "Sonuçlar bölümleri" })).map(([label]) => label)).not.toContain("Reklamlar");
+    // Müşteri görünümünde (kulis kapalı) ikinci düzey şerit hiç çizilmez.
+    expect(screen.queryByRole("navigation")).not.toBeInTheDocument();
   });
 
   it("tek sayfalı maddede (Bugün), profil menüsü sayfalarında ve bilinmeyen yolda çizilmez", () => {
@@ -202,15 +204,16 @@ describe("profil menüsü", () => {
     await waitFor(() => expect(screen.queryByRole("menu")).not.toBeInTheDocument());
   });
 
-  it("müşteri modunda kulis yok: yalnız Bildirimler ve Ayarlar; okunmamış yoksa sayı çizilmez; örnek veride not var", async () => {
+  it("müşteri modunda kulis yok: yalnız Otomatik, Ayarlar ve Bildirimler; okunmamış yoksa sayı çizilmez; örnek veride not var", async () => {
     pathname.current = ROUTES.overview;
     const user = userEvent.setup();
     render(<ProfileMenu operatorMode={false} unreadNotifications={0} isMockData />);
     await user.click(screen.getByRole("button", { name: "Profil menüsü" }));
     const menu = await screen.findByRole("menu");
     expect(within(menu).getAllByRole("menuitem").map((item) => [item.textContent, item.getAttribute("href")])).toEqual([
-      ["Bildirimler", ROUTES.notifications],
+      ["Otomatik", ROUTES.automation],
       ["Ayarlar", ROUTES.settings],
+      ["Bildirimler", ROUTES.notifications],
     ]);
     expect(within(menu).queryByText("Kulis")).not.toBeInTheDocument();
     expect(within(menu).queryByRole("menuitem", { name: "İşler" })).not.toBeInTheDocument();

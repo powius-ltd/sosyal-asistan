@@ -35,4 +35,9 @@ describe("computePublishQuota", () => {
       ["b", 0],
     ]);
   });
+
+  it("yayınlanabilirlik kuralı verilirse (Zernio anahtarı) bağlı olmayan hesap da satır alır", () => {
+    const rows = computePublishQuota([account("a", "scrape_only")], { publishedLast24hByAccount: { a: 1 } }, () => true);
+    expect(rows.map((r) => [r.accountId, r.used])).toEqual([["a", 1]]);
+  });
 });

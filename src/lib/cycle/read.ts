@@ -46,7 +46,7 @@ export async function readCycleFacts(
   const thisWeek = weekStartOf(today) ?? today;
   const nextWeekStart = addDays(thisWeek, 7);
 
-  const workspace = unwrap(await client.from("workspaces").select("slug, account_type, collect_every_days, collect_video_limit, rival_target").eq("id", workspaceId).single());
+  const workspace = unwrap(await client.from("workspaces").select("slug, account_type, collect_every_days, collect_video_limit, rival_target, auto_weekly_plan, auto_measure").eq("id", workspaceId).single());
   const [accounts, rivals, candidates, contents, analyses, plans, jobs, competitorTimes, measured, orderRows, screens, transcripts, labelVersions] = await Promise.all([
     client.from("social_accounts").select("id, handle, last_synced_at").eq("workspace_id", workspaceId),
     client.from("competitors").select("id, last_collected_at").eq("workspace_id", workspaceId).eq("status", "tracked"),
@@ -102,6 +102,8 @@ export async function readCycleFacts(
     ownAccounts: accountRows.length,
     trackedRivals: unwrap(rivals).length,
     pendingCandidates: candidates.count ?? 0,
+    autoWeeklyPlan: workspace.auto_weekly_plan,
+    autoMeasure: workspace.auto_measure,
     ...(applySettings
       ? { collectEveryDays: workspace.collect_every_days, collectVideoLimit: workspace.collect_video_limit, rivalTarget: workspace.rival_target }
       : {}),

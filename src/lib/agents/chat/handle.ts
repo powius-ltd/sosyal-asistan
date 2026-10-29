@@ -15,6 +15,7 @@ import type { ChatAvailability } from "@/lib/agents/chat/availability";
 import { encodeChatEvent, type ChatErrorCode, type ChatEvent } from "@/lib/agents/chat/events";
 import type { ChatLock } from "@/lib/agents/chat/lock";
 import { runChatReviseCommand } from "@/lib/agents/chat/revise-command";
+import { runChatReviseVideoCommand } from "@/lib/agents/chat/revise-video-command";
 import { runChatTicketCommand } from "@/lib/agents/chat/ticket-command";
 import { saveChatIdea } from "@/lib/agents/chat/save-idea";
 import { CHAT_ERROR_MESSAGE } from "@/lib/agents/chat/messages";
@@ -137,6 +138,10 @@ export async function handleChatRequest(request: Request, deps: ChatHandlerDeps)
           const revised = await runChatReviseCommand(ctx, deps.createBackend({ signal: abort.signal, totalMs: CHAT_TOTAL_MS }), result.revision, deps.log);
           if (revised.meta !== undefined) await deps.recorder.succeeded(ctx.workspaceId, revised.meta).catch(() => deps.log?.("koşu kaydı yazılamadı"));
           send({ ...result.answer, text: `${result.answer.text} ${revised.message}` });
+        } else if (result.ok && result.command === "revise_video" && result.videoRevision !== undefined) {
+          // Video revizesi: sohbet BAŞLATMAZ; fiş doğrulanır, not önerilir ve yayın sayfasındaki onay kartına yönlendirilir.
+          const note = await runChatReviseVideoCommand(ctx, result.videoRevision, deps.log);
+          send({ ...result.answer, text: `${result.answer.text} ${note}` });
         } else if (delegated !== undefined) send({ type: "answer", kind: "answer", text: delegated, evidence: [] });
         else send(result.ok ? result.answer : { type: "error", code: result.code, message: result.message });
         await recordRun(deps, ctx.workspaceId, result);

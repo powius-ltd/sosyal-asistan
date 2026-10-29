@@ -8,8 +8,10 @@
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 
-import { actionOk, toActionError, validationFail, type ActionResult } from "@/lib/actions/result";
+import { actionFail, actionOk, toActionError, validationFail, type ActionFailure, type ActionResult } from "@/lib/actions/result";
 import { getPanelContext } from "@/lib/data";
+import { RepositoryError } from "@/lib/data/repository";
+import { parseRevisionNote } from "@/lib/data/order-revision-schema";
 import { STUDIO_ORDER_NOTE_MAX } from "@/lib/data/studio-order-input";
 import { ROUTES } from "@/lib/routes";
 import { createOrderForIdea, updateOrder } from "@/lib/studio-order/create-for-idea";
@@ -29,6 +31,11 @@ const updateSchema = z
     note: z.string({ error: "Not metin olmalı." }).trim().max(STUDIO_ORDER_NOTE_MAX, `Not en fazla ${STUDIO_ORDER_NOTE_MAX} karakter olabilir.`).optional(),
   })
   .refine((v) => v.kind !== undefined || v.note !== undefined, { message: "Değiştirilecek bir alan ver." });
+
+const reviseSchema = z.strictObject({
+  orderId: z.string({ error: "Fiş seç." }).trim().min(1, "Fiş seç.").max(128),
+  note: z.string({ error: "Revize notu metin olmalı." }),
+});
 
 const NOT_FOUND = { not_found: "Fikir ya da fiş bulunamadı; silinmiş olabilir. Sayfayı yenile." };
 
@@ -65,5 +72,29 @@ export async function updateStudioOrderAction(input: unknown): Promise<ActionRes
     return actionOk({ orderId: order.id });
   } catch (error) {
     return toActionError(error, { ...NOT_FOUND, invalid_state: "Fiş artık taslak değil; değiştirilemez." });
+  }
+}
+
+/** Revize reddi: depo iletisi Türkçe ve nedeni söyler ("onaylanmış video", "en fazla 3 revize"); genel çeviri bunu ezerdi. */
+function reviseFailure(error: unknown): ActionFailure {
+  if (error instanceof RepositoryError && (error.code === "invalid_state" || error.code === "invalid_input")) return actionFail(error.message, error.code);
+  return toActionError(error, NOT_FOUND);
+}
+
+/**
+ * Video revizesi: üretilmiş, yayın onayı bekleyen videoya müşteri notu yazar (eski yayın iptal, fiş taslağa döner, sürüm +1). Üretimi BAŞLATMAZ:
+ * ekran, işler açıksa aynı yolla (`requestJobAction({ kind: "produce" })`) yeniden üretimi ayrıca ister. Kural ve hata iletileri depodadır.
+ */
+export async function requestOrderRevisionAction(input: unknown): Promise<ActionResult<{ orderId: string; revision: number }>> {
+  const parsed = reviseSchema.safeParse(input);
+  if (!parsed.success) return validationFail(parsed.error);
+  try {
+    const note = parseRevisionNote(parsed.data.note);
+    const { repo, wsId, now } = await getPanelContext();
+    const order = await repo.requestOrderRevision(wsId, parsed.data.orderId, note, now);
+    refresh();
+    return actionOk({ orderId: order.id, revision: order.revision });
+  } catch (error) {
+    return reviseFailure(error);
   }
 }

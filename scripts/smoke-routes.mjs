@@ -42,6 +42,7 @@ const STATIC_ROUTES = [
   "/fikirler",
   "/yayin",
   "/ayarlar",
+  "/otomatik",
   "/koleksiyonlar",
   "/tutanlar/hooklar",
   "/bildirimler",

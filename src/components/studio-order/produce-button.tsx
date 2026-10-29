@@ -15,7 +15,7 @@ import { PRODUCE_COPY } from "@/lib/copy/studio-order";
 import { availableApprovalBases } from "@/lib/domain/panel-job";
 
 /** Önerilen üretim tavanı (USD): bir videonun sesi bunun çok altında kalır; fazlası işi durdurur. */
-const SUGGESTED_PRODUCE_USD = 0.5;
+export const SUGGESTED_PRODUCE_USD = 0.5;
 
 /**
  * Fişteki "Üretime gönder" düğmesi (istemci yaprağı; yalnız işler açıkken çizilir: `ProduceAction`). Basınca iş BAŞLAMAZ: kapsam + tutar

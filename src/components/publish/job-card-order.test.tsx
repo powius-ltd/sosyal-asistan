@@ -15,13 +15,14 @@ const job = (mediaPath?: string): PublishJob => ({
 
 const view = (mediaPath?: string) => buildJobViews([job(mediaPath)], [{ id: "a1", handle: "ornekstudyoapp" }], [], "TR")[0]!;
 
-describe("yayın kartı · stüdyo videosu notu", () => {
-  it("siparis: medyalı satırda önizleme yok notu görünür", () => {
-    render(<ul><PublishJobCard view={view("siparis:ornek-studyo/2026-10-19/s1/final.mp4")} timeZone="Europe/Istanbul" /></ul>);
-    expect(screen.getByText(/Stüdyo videosu/)).toBeTruthy();
+describe("yayın kartı · stüdyo videosu önizlemesi", () => {
+  it("siparis: medyalı satırda video oynatıcı çizilir", () => {
+    const { container } = render(<ul><PublishJobCard view={view("siparis:ornek-studyo/2026-10-19/s1/final.mp4")} timeZone="Europe/Istanbul" /></ul>);
+    expect(container.querySelector("video")?.getAttribute("src")).toMatch(/^\/api\/siparis-video\//);
   });
-  it("normal medyalı satırda not yok", () => {
-    render(<ul><PublishJobCard view={view("publish-media/x.mp4")} timeZone="Europe/Istanbul" /></ul>);
+  it("normal medyalı satırda oynatıcı yok", () => {
+    const { container } = render(<ul><PublishJobCard view={view("publish-media/x.mp4")} timeZone="Europe/Istanbul" /></ul>);
+    expect(container.querySelector("video")).toBeNull();
     expect(screen.queryByText(/Stüdyo videosu/)).toBeNull();
   });
 });

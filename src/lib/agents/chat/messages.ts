@@ -42,3 +42,14 @@ export const CHAT_TICKET_TEXT = {
   existing: (title: string, href: string) => `“${title}” için fiş zaten vardı: ${href}`,
   updated: (href: string) => `Fişi güncelledim: ${href}`,
 } as const;
+
+/** Video revizesi önerisi (`revise_video`): sohbet revize başlatmaz; notu önerir, Yayın sayfasındaki onay kartına yönlendirir. */
+export const CHAT_VIDEO_REVISION_TEXT = {
+  notFound: "Bu video fişlerinde görünmüyor; hangi videodan söz ettiğini söyler misin?",
+  notProduced: "Bu video henüz üretilmedi; revize ancak üretilip onay kartına gelince istenebilir.",
+  limit: "Bu videoya istenebilecek revize hakkı bitti; yeni bir fiş yazmak gerekir.",
+  notPending: "Bu video artık onay beklemiyor; revize istenemez.",
+  failed: "Bunu şimdi kontrol edemedim. Biraz sonra yeniden söyler misin?",
+  suggest: (note: string, left: number) =>
+    `Revize notu önerim: “${note}”. Revizeyi ben başlatmıyorum: Yayın sayfasında videonun onay kartındaki “Revize iste” düğmesine basıp notu yaz (${left} revize hakkın var). Metni değiştirmek istersen önce fikri düzelttir.`,
+} as const;

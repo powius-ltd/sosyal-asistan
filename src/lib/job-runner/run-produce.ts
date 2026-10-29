@@ -20,7 +20,7 @@ import type { JobFinal, JobSession } from "@/lib/job-runner/job-session";
 import { orderReturnVerdict } from "@/lib/job-runner/outcome-map-halka";
 import { cutFinal, secondsSince } from "@/lib/job-runner/run-single";
 import { spendGate } from "@/lib/job-runner/spend-gate";
-import { studioVoiceKeyName } from "@/lib/job-runner/studio-process";
+import { studioVoiceKeyName } from "@/lib/studio-order/voice-key";
 import { findStudioAccount } from "@/lib/studio-order/accounts";
 import type { OrderStatus } from "@/lib/studio-order/schema";
 import { OrderSendError, type SendOrderResult } from "@/lib/studio-order/send-to-studio";

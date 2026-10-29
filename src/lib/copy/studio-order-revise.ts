@@ -1,0 +1,26 @@
+/** Video revizesi (SPN-36) ekran metinleri: yayın onay kartındaki "Revize iste" penceresi, sürüm rozeti ve geçmiş listesi. Panel jargonu yok. */
+
+export const REVISE_COPY = {
+  button: "Revize iste",
+  dialogTitle: "Videoda ne değişsin?",
+  dialogLead: "Notunu yaz; video aynı fişle stüdyoya geri gider ve yeni sürüm üretilir. Eski sürüm silinmez, yayına girmez.",
+  noteLabel: "Revize notu",
+  notePlaceholder: "Örn. açılış daha kısa olsun, sondaki yazı yanlış",
+  noteRule: "En fazla 500 karakter.",
+  scope: "Revize videonun kurgusunu değiştirir; panel metni aynı kalır. Metni değiştirmek istersen önce Asistan'a fikri düzelt de.",
+  left: (n: number) => (n === 1 ? "Bu videoya 1 revize hakkın kaldı." : `Bu videoya ${n} revize hakkın kaldı.`),
+  spend: "Yeniden üretim ses için ücretli bir hizmet kullanır.",
+  amountLabel: "En çok harcanacak tutar (USD)",
+  submit: "Videoyu yeniden üret",
+  submitSaveOnly: "Revize notunu kaydet",
+  cancel: "Vazgeç",
+  noteRequired: "Revize notunu yaz.",
+  savedProducing: "Revize isteğin alındı; video yeniden üretiliyor.",
+  savedOnly: "Revize notun kaydedildi. Video şimdi üretilmiyor; fişten “Üretime gönder” ile yeniden üret.",
+  savedProduceFailed: "Revize notun kaydedildi ama üretim başlamadı. Fişten “Üretime gönder” ile yeniden üret.",
+  savedOnlyHint: "Bu ortamda üretim buradan başlatılamıyor: not kaydedilir, fiş taslağa döner.",
+  openTicket: "Fişi aç",
+  badge: (revision: number) => `${revision}. sürüm`,
+  historyTitle: (count: number) => `Önceki istekler (${count})`,
+  historyItem: (version: number) => `${version}. sürüm için istek`,
+} as const;

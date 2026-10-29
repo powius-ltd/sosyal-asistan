@@ -9,6 +9,7 @@ import { BRIEFING_EVIDENCE_MAX } from "@/lib/domain/briefing";
 import { CHAT_ANSWER_KINDS } from "@/lib/agents/chat/events";
 import { STUDIO_ORDER_NOTE_MAX } from "@/lib/data/studio-order-input";
 import { manualIdeaSchema } from "@/lib/data/manual-idea-input";
+import { ORDER_REVISION_NOTE_MAX } from "@/lib/domain/studio-order";
 import { ORDER_KINDS } from "@/lib/studio-order/schema";
 
 /** Yanıt metni üst sınırı (belirteçler yerleştirilmiş hâliyle de geçerli): "kısa yanıt" kuralı. */
@@ -28,7 +29,13 @@ export const CHAT_REVISION_SCHEMA = z.strictObject({
   request: z.string().trim().min(1).max(500).describe("what the creator wants changed, in their own words"),
 });
 
-export const CHAT_COMMANDS = ["delegate", "save_idea", "select_idea", "write_ticket", "update_ticket", "revise_idea"] as const;
+/** Video revizesi önerisinin hedefi (kimlik YALNIZ `<workflow>.tickets`'ten; sunucu yine doğrular). Sohbet revize BAŞLATMAZ: yalnız notu önerir. */
+export const CHAT_VIDEO_REVISION_SCHEMA = z.strictObject({
+  orderId: z.string().trim().min(1).max(128).describe("id of a ticket copied exactly from <workflow>.tickets"),
+  note: z.string().trim().min(1).max(ORDER_REVISION_NOTE_MAX).describe("what the creator wants changed in the produced video, in their own words"),
+});
+
+export const CHAT_COMMANDS = ["delegate", "save_idea", "select_idea", "write_ticket", "update_ticket", "revise_idea", "revise_video"] as const;
 
 export const CHAT_OUTPUT_SCHEMA = z.strictObject({
   kind: z.enum(CHAT_ANSWER_KINDS).describe("answer = answered from the facts | no_data = the facts do not cover the question | out_of_scope = not about the account's data or asks to do something"),
@@ -41,12 +48,13 @@ export const CHAT_OUTPUT_SCHEMA = z.strictObject({
   command: z
     .enum(CHAT_COMMANDS)
     .optional()
-    .describe("delegate = the user asks you to DO one of the cycle's jobs (collect, analyse, label, plan, run the next step) · save_idea = the creator states a video idea of their own and wants it kept (also needs idea); select_idea / write_ticket / update_ticket = pick a plan idea / write its ticket / change a draft ticket (all need ticket) · revise_idea = rewrite the openings / outline / script of a plan idea as asked (needs revision); only with kind out_of_scope; omit otherwise"),
+    .describe("delegate = the user asks you to DO one of the cycle's jobs (collect, analyse, label, plan, run the next step) · save_idea = the creator states a video idea of their own and wants it kept (also needs idea); select_idea / write_ticket / update_ticket = pick a plan idea / write its ticket / change a draft ticket (all need ticket) · revise_idea = rewrite the openings / outline / script of a plan idea as asked (needs revision) · revise_video = the creator wants to change an already produced video (needs videoRevision; you only suggest the note, the creator sends it from the approval card); only with kind out_of_scope; omit otherwise"),
   idea: manualIdeaSchema
     .optional()
     .describe("only with command save_idea: title (short, in the creator's own words and language, at most 120 characters), note (the creator's own idea in their own words, at most 1000 characters), format only if the creator named one"),
   ticket: CHAT_TICKET_SCHEMA.optional().describe("only with select_idea (ideaId), write_ticket (ideaId, optional kind/note), update_ticket (orderId or ideaId, kind and/or note)"),
   revision: CHAT_REVISION_SCHEMA.optional().describe("only with revise_idea: ideaId and the creator's change request"),
+  videoRevision: CHAT_VIDEO_REVISION_SCHEMA.optional().describe("only with revise_video: orderId and the creator's change note"),
   evidence: z
     .array(z.string())
     .max(BRIEFING_EVIDENCE_MAX)

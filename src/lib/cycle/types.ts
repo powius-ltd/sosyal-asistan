@@ -95,6 +95,12 @@ export interface CycleFacts {
   rivalTarget?: number;
   /** İzlemeye alınmamış bekleyen rakip adayı sayısı (`competitors.status = candidate`); seçim insandadır, ajan izlemeye almaz. */
   pendingCandidates?: number;
+  /**
+   * Otomatik iş anahtarları (`workspaces.auto_weekly_plan` / `auto_measure`; `/otomatik`). Kapalıysa ilgili adımlar (`due` / `needs_approval`)
+   * `blocked` olur ve halka o işi AÇMAZ. Okunmadıysa (eski çağıran) açık sayılır.
+   */
+  autoWeeklyPlan?: boolean;
+  autoMeasure?: boolean;
   /** Gelecek haftanın Pazartesi'si (YYYY-MM-DD); neden metninde kullanılır. */
   nextWeekStart: string;
 }

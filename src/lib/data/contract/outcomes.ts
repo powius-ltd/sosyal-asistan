@@ -14,6 +14,7 @@
  */
 import { expect, it } from "vitest";
 
+import { automationFlagsOf } from "@/lib/automation/flags";
 import { canConfirmIdeaLink, type Idea, type IdeaStatus } from "@/lib/domain/intel";
 import { CHECKPOINT_DAYS } from "@/lib/domain/outcomes";
 import { getPlatformModule } from "@/lib/platforms/registry";
@@ -89,6 +90,24 @@ export function outcomesContract(ctx: ContractContext): void {
       expect(restored.agentMonthlyCapUsd).toBe(0);
     }
     await expectCode(create().updateWorkspace(foreign, { agentMonthlyCapUsd: 1 }), "not_found");
+  });
+
+  it("otomatik işler: yalnız boolean; yazılan alan değişir, ötekilere ve başka alana dokunmaz; başka workspace", async () => {
+    const r = create();
+    const before = await r.getWorkspace(wsId);
+    for (const bad of [{ autoProduce: "evet" }, { autoMeasure: null }, { autoWeeklyPlan: 1 }]) {
+      await expectCode(r.updateWorkspace(wsId, bad as never), "invalid_input");
+    }
+    try {
+      const off = await r.updateWorkspace(wsId, { autoProduce: true, autoMeasure: false });
+      expect(automationFlagsOf(off)).toEqual({ weeklyPlan: automationFlagsOf(before ?? {}).weeklyPlan, measure: false, produce: true });
+      const patched = await r.updateWorkspace(wsId, { autoWeeklyPlan: false });
+      expect(automationFlagsOf(patched), "bir anahtarın yaması ötekilere dokunmaz").toEqual({ weeklyPlan: false, measure: false, produce: true });
+    } finally {
+      const original = automationFlagsOf(before ?? {});
+      await r.updateWorkspace(wsId, { autoWeeklyPlan: original.weeklyPlan, autoMeasure: original.measure, autoProduce: original.produce });
+    }
+    await expectCode(create().updateWorkspace(foreign, { autoProduce: true }), "not_found");
   });
 
   it("bağ: geçersiz girdi, bilinmeyen kayıt ve başka workspace", async (t) => {

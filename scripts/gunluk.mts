@@ -63,6 +63,12 @@ async function runWorker(): Promise<StepOutcome> {
 }
 
 async function runMeasure(workspace: WorkspaceListItem, dryRun: boolean): Promise<StepOutcome> {
+  // Müşteri "Otomatik" ekranında günlük ölçümü kapattıysa okunmaz (`workspaces.auto_measure`; okunamazsa varsayılan açık).
+  const flag = await getAdminClient().from("workspaces").select("auto_measure").eq("id", workspace.id).maybeSingle();
+  if (flag.data?.auto_measure === false) {
+    console.log("  Otomatik günlük ölçüm kapalı (Otomatik ekranı): ölçüm atlandı.");
+    return "skipped";
+  }
   const run = await runZernioMeasure({ client: getAdminClient(), workspaceId: workspace.id, workspaceSlug: workspace.slug, now: new Date(), dryRun, env: process.env });
   if (run.outcome === "key_missing") {
     console.log("  Bu çalışma alanı için Zernio anahtarı yok (ZERNIO_API_KEY_<SLUG>): ölçüm atlandı.");

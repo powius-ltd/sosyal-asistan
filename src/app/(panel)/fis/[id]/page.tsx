@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { PageHeader } from "@/components/common/page-header";
 import { ProduceAction } from "@/components/studio-order/produce-action";
 import { PrintTicketButton } from "@/components/studio-order/print-button";
+import { RevisionBadge, RevisionHistory } from "@/components/studio-order/revision-history";
 import { TicketView } from "@/components/studio-order/ticket-view";
 import { WhyBlock } from "@/components/studio-order/why-block";
 import { readOptional } from "@/components/weekly-plan/optional-read";
@@ -11,6 +12,7 @@ import { TICKET_COPY } from "@/lib/copy/studio-order";
 import { getPanelContext } from "@/lib/data";
 import { PLATFORM_LABEL } from "@/lib/domain/platform";
 import { focusDirectionIndex } from "@/lib/domain/weekly-plan";
+import { DEFAULT_TIMEZONE } from "@/lib/format";
 import { getPlatformModule, hasPlatformModule } from "@/lib/platforms/registry";
 import { ROUTES } from "@/lib/routes";
 import { listWorkspaces } from "@/lib/workspace/registry";
@@ -46,6 +48,7 @@ export default async function TicketPage({ params }: { params: Promise<{ id: str
   const embedUrl = platform && hasPlatformModule(platform) ? getPlatformModule(platform).embedUrl(order.ticket.ornek_video?.url) : undefined;
   const panelSlug = (await listWorkspaces()).find((w) => w.id === wsId)?.slug;
   const title = idea?.title ?? order.ticket.konu ?? order.ticket.sutun;
+  const timeZone = (await repo.getWorkspace(wsId))?.timezone ?? DEFAULT_TIMEZONE;
 
   return (
     <div data-ticket-root>
@@ -61,6 +64,15 @@ export default async function TicketPage({ params }: { params: Promise<{ id: str
           <div className="print:hidden">
             <ProduceAction order={order} panelSlug={panelSlug} />
           </div>
+          {order.revision > 1 ? (
+            <div className="flex flex-col gap-2 rounded-xl border bg-card p-4 print:hidden">
+              <div>
+                <RevisionBadge revision={order.revision} />
+              </div>
+              {order.ticket.revize_notu ? <p className="text-sm whitespace-pre-line">{order.ticket.revize_notu}</p> : null}
+              <RevisionHistory entries={order.revisions} timeZone={timeZone} />
+            </div>
+          ) : null}
           <TicketView order={order} title={title} embedUrl={embedUrl} platformLabel={platformLabel} />
         </div>
         <WhyBlock idea={idea} direction={direction} />

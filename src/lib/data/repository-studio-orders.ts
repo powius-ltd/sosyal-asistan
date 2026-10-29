@@ -27,4 +27,11 @@ export interface StudioOrdersRepository {
    * değişiklik yapmaz (güncel fişi döner). Çağıran yalnız sunucu işidir (gönderme ve dönüş); ekrandan doğrudan çağrılmaz.
    */
   advanceStudioOrder(wsId: string, id: string, patch: AdvanceStudioOrderInput, now: Date): Promise<StudioOrder>;
+  /**
+   * SPN-36: üretilmiş videoya revize ister. Tek işlemde: güncel sürümün yayın satırı `cancelled`, geçmişe kayıt (`revisions`), `revision` + 1,
+   * fiş `taslak` (gönderilmeye hazır) ve fişe `revize_notu` + `onceki_video`; stüdyo sipariş kimliği `-r<n>` ekini alır. Yalnız fişin yayın satırı
+   * `awaiting_approval` / `draft` iken (`orderRevisionProblem`); aksi, paylaşılmış ya da 3 revizeden sonra `invalid_state`. Not boş ya da > 500
+   * karakter: `invalid_input`; fiş yoksa `not_found`. Çağıran: yalnız sunucu action'ı (üretimi ayrı iş başlatır). Güncel fişi döner.
+   */
+  requestOrderRevision(wsId: string, orderId: string, note: string, now: Date): Promise<StudioOrder>;
 }

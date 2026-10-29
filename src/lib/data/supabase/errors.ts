@@ -43,6 +43,7 @@ export function toRepositoryError(error: PostgrestError): Error {
       // Kredi RPC'lerinin girdi hataları (`credit_*`: geçersiz tutar, anahtar çakışması, gerçekleşen > ayrılan).
       if (message === "credit_idempotency_conflict") return new RepositoryError("invalid_input", "Aynı işlem anahtarı başka bir kredi işlemi için kullanılmış.");
       if (message.startsWith("credit_")) return new RepositoryError("invalid_input", "Kredi işlemi girdisi geçersiz.");
+      if (message === "order_revision_note_invalid") return new RepositoryError("invalid_input", "Revize notu 1–500 karakter olmalı.");
       return new Error(`Supabase hatası (${code}): ${message}`);
     case "23514":
       // Yayın koruma trigger'ı (`publish_*`) ve durum/onay check'leri: durum makinesi bu geçişe izin vermiyor.
@@ -61,6 +62,8 @@ export function toRepositoryError(error: PostgrestError): Error {
       if (message === "panel_job_onboarding_needs_probe") return new RepositoryError("invalid_state", ONBOARDING_ERROR.needsProbe);
       if (message === "workspace_not_discardable") return new RepositoryError("invalid_state", ONBOARDING_ERROR.notDiscardable);
       if (message.startsWith("panel_job_")) return new RepositoryError("invalid_state", "İş bu durumda bu işleme izin vermiyor.");
+      // Video revizesi (0036 `order_revision_*`): paylaşılmış / onaylanmış / üretilmemiş video ya da sınır aşımı.
+      if (message.startsWith("order_revision_")) return new RepositoryError("invalid_state", "Bu video bu durumda revize edilemez.");
       // Kredi defteri korumaları (trigger / RPC iletisi `credit_*`: değişmez defter, kapanmış ayırma, eksi bakiye). Tablo CHECK'lerinin
       // iletisi kısıt adını taşır ("violates check constraint …") ve aşağıdaki genel dala (girdi hatası) düşer.
       if (message.startsWith("credit_")) return new RepositoryError("invalid_state", "Kredi kaydı bu durumda bu işleme izin vermiyor.");
@@ -70,6 +73,7 @@ export function toRepositoryError(error: PostgrestError): Error {
     case "P0002":
       if (message === "panel_job_not_found") return new RepositoryError("not_found", "İş bulunamadı.");
       if (message === "credit_hold_not_found") return new RepositoryError("not_found", "Kredi ayırması bulunamadı.");
+      if (message === "studio_order_not_found") return new RepositoryError("not_found", "Fiş bulunamadı.");
       return new RepositoryError("not_found", "Workspace bulunamadı.");
     case "P0001":
       if (message === "insufficient_credits") {

@@ -107,6 +107,9 @@ export function createMockRepository(seed: number = DEFAULT_SEED, options: MockR
       if (valid.collectEveryDays !== undefined) ws.collectEveryDays = valid.collectEveryDays;
       if (valid.collectVideoLimit !== undefined) ws.collectVideoLimit = valid.collectVideoLimit;
       if (valid.rivalTarget !== undefined) ws.rivalTarget = valid.rivalTarget;
+      if (valid.autoWeeklyPlan !== undefined) ws.autoWeeklyPlan = valid.autoWeeklyPlan;
+      if (valid.autoMeasure !== undefined) ws.autoMeasure = valid.autoMeasure;
+      if (valid.autoProduce !== undefined) ws.autoProduce = valid.autoProduce;
       if (valid.nicheBrief !== undefined) ws.nicheBrief = valid.nicheBrief === "" ? undefined : valid.nicheBrief;
       if (valid.complianceRegion !== undefined) ws.complianceRegion = valid.complianceRegion;
       if (valid.contentLanguage !== undefined) ws.contentLanguage = valid.contentLanguage ?? undefined;

@@ -11,7 +11,7 @@ import { competitorSourceOf, competitorStatusOf, complianceRegionOf, connectionO
 import { iso, isoOpt, opt } from "@/lib/data/supabase/mappers/common";
 
 export const WORKSPACE_COLUMNS =
-  "id, name, timezone, audience_timezone, niche_brief, apify_monthly_cap_usd, llm_monthly_cap_usd, measure_monthly_cap_usd, measure_cap_approved_at, agent_monthly_cap_usd, agent_cap_approved_at, collect_every_days, collect_video_limit, rival_target, compliance_region, content_language, account_type, created_at" as const;
+  "id, name, timezone, audience_timezone, niche_brief, apify_monthly_cap_usd, llm_monthly_cap_usd, measure_monthly_cap_usd, measure_cap_approved_at, agent_monthly_cap_usd, agent_cap_approved_at, collect_every_days, collect_video_limit, rival_target, auto_weekly_plan, auto_measure, auto_produce, compliance_region, content_language, account_type, created_at" as const;
 
 export type WorkspaceRow = Pick<
   Tables<"workspaces">,
@@ -29,6 +29,9 @@ export type WorkspaceRow = Pick<
   | "collect_every_days"
   | "collect_video_limit"
   | "rival_target"
+  | "auto_weekly_plan"
+  | "auto_measure"
+  | "auto_produce"
   | "compliance_region"
   | "content_language"
   | "account_type"
@@ -54,6 +57,9 @@ export function toWorkspace(row: WorkspaceRow): Workspace {
     collectEveryDays: row.collect_every_days,
     collectVideoLimit: row.collect_video_limit,
     rivalTarget: row.rival_target,
+    autoWeeklyPlan: row.auto_weekly_plan,
+    autoMeasure: row.auto_measure,
+    autoProduce: row.auto_produce,
     complianceRegion: complianceRegionOf(row.compliance_region),
     // NULL = ayarlanmadı (otomatik çözüm). DB kontrolü yalnız desteklenen dilleri kabul eder.
     contentLanguage: toContentLanguage(row.content_language),

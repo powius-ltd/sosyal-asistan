@@ -48,6 +48,12 @@ function revisionProblems(output: ChatOutput): string[] {
   return output.revision === undefined ? [] : ['revision yalnız command "revise_idea" ile verilir'];
 }
 
+/** Video revize önerisinin şekil kuralı (fişin gerçekten var / üretilmiş olması sunucuda `revise-video-command.ts`'te denetlenir). */
+function videoRevisionProblems(output: ChatOutput): string[] {
+  if (output.command === "revise_video") return output.videoRevision === undefined ? ['command "revise_video" için videoRevision (orderId, note) gerekir'] : [];
+  return output.videoRevision === undefined ? [] : ['videoRevision yalnız command "revise_video" ile verilir'];
+}
+
 /** Tüm sorunlar; [] = yanıt geçerli. */
 export function verifyChatOutput(output: ChatOutput, facts: BriefingFacts): string[] {
   const problems: string[] = [];
@@ -55,7 +61,7 @@ export function verifyChatOutput(output: ChatOutput, facts: BriefingFacts): stri
   const evidence = new Set(output.evidence);
   if (output.command !== undefined && output.kind !== "out_of_scope") problems.push("command yalnız out_of_scope yanıtıyla verilir");
   if (output.command === "save_idea" && output.idea === undefined) problems.push('command "save_idea" için idea (title, note) gerekir');
-  problems.push(...ticketProblems(output), ...revisionProblems(output));
+  problems.push(...ticketProblems(output), ...revisionProblems(output), ...videoRevisionProblems(output));
   if (output.command !== "save_idea" && output.idea !== undefined) problems.push('idea yalnız command "save_idea" ile verilir');
 
   if (isAnswer) {

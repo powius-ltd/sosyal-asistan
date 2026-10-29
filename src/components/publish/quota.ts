@@ -22,9 +22,11 @@ export interface QuotaRow {
 export function computePublishQuota(
   accounts: OwnAccount[],
   summary: Pick<PublishSummary, "publishedLast24hByAccount">,
+  /** Hesap yayınlanabilir mi (varsayılan: resmi bağlantı); sayfa `isPublishableAccount` kuralını (Zernio anahtarı dahil) verir. */
+  isPublishable: (account: OwnAccount) => boolean = (account) => account.connection === "connected",
 ): QuotaRow[] {
   return accounts
-    .filter((account) => account.connection === "connected")
+    .filter(isPublishable)
     .map((account) => ({
       accountId: account.id,
       handle: account.handle,

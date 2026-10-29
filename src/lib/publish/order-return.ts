@@ -9,7 +9,7 @@ import { dirname, join } from "node:path";
 
 import type { CreatePublishJobInput } from "@/lib/data/queries";
 import { ComplianceFailedError, RepositoryError } from "@/lib/data/repository";
-import { withAiDisclosure } from "@/lib/publish/ai-disclosure-line";
+import { isAiGeneratedOrder, withAiDisclosure } from "@/lib/publish/ai-disclosure-line";
 import { OrderMediaError, toOrderMediaPath } from "@/lib/publish/order-media";
 import { istanbulStampToUtc } from "@/lib/publish/order-time";
 import { AI_DISCLOSURE_PROBLEM_PLAIN, orderDraftNotice, orderReadyNotice, SCHEDULE_PAST_NOTE_PLAIN, type PublishNoticeDraft } from "@/lib/plain-language-order";
@@ -17,6 +17,11 @@ import { readTicket } from "@/lib/studio-order/ticket-file";
 
 export interface OrderReturnStore {
   hasJobForOrder(orderId: string): Promise<boolean>;
+  /**
+   * SPN-36: bu sipariş kimliği, revizeyle yerini yitirmiş ESKİ bir video sürümüne mi ait? Eski sürümün dosyası dönse bile yayın onayına açılmaz
+   * (yalnız güncel sürüm açılır). Verilmezse (eski bağlama / testler) her sürüm güncel sayılır.
+   */
+  isSupersededOrder?(orderId: string): Promise<boolean>;
   /** Çalışma alanının yayına açık kendi hesabı; yoksa undefined. */
   findAccountId(): Promise<string | undefined>;
   /** Fikir varsa açıklama taslağı (boş olabilir); fikir yoksa undefined. */
@@ -78,6 +83,10 @@ export async function returnOrders(input: OrderReturnInput): Promise<OrderReturn
     }
     if (ticket.hesap !== input.studioSlug || !ticket.onay) continue;
     if (input.onlyOrderId !== undefined && ticket.siparis_id !== input.onlyOrderId) continue;
+    if (await input.store.isSupersededOrder?.(ticket.siparis_id)) {
+      if (ticket.durum === "uretildi") result.alreadyHandled += 1; // eski sürüm: satır açılmaz, panel fişine dokunulmaz
+      continue;
+    }
     if (ticket.durum === "hata") {
       await input.store.markPanelOrder?.({ orderId: ticket.siparis_id, status: "hata", errorNote: ticket.hata_notu ?? "Stüdyo videoyu üretemedi." });
       continue;
@@ -119,12 +128,13 @@ export async function returnOrders(input: OrderReturnInput): Promise<OrderReturn
     }
     const at = istanbulStampToUtc(ticket.istenen_saat);
     const past = at === undefined || at.getTime() <= input.now.getTime();
+    const aiGenerated = isAiGeneratedOrder(ticket.tur);
     const base: CreatePublishJobInput = {
       socialAccountId: accountId,
-      caption: withAiDisclosure(caption),
+      caption: aiGenerated ? withAiDisclosure(caption) : caption,
       mediaPath,
       orderId,
-      aiGenerated: true,
+      aiGenerated,
       ...(!past && at ? { scheduledFor: at.toISOString() } : {}),
       ...(ticket.fikir_id && UUID.test(ticket.fikir_id) ? { ideaId: ticket.fikir_id } : {}),
     };

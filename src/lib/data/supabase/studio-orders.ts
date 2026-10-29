@@ -4,24 +4,29 @@
  * yapılır, yarışta DB hatası aynı koda çevrilir (`23505` → `already_exists`, `23503` → `not_found`). Fişte yalnız `taslak` iken `tur` ve
  * not değişir; yazım `status = 'taslak'` koşuluyla yapılır (okuma ile yazma arasında stüdyo durumu ilerlettiyse 0 satır → `invalid_state`).
  */
+import { z } from "zod";
+
 import { advanceStudioOrderProblem, applyAdvance, parseAdvanceStudioOrder, parseCreateStudioOrder, parseStudioOrderQuery, parseUpdateStudioOrder, type AdvanceStudioOrderInput, type CreateStudioOrderInput, type StudioOrderQuery, type UpdateStudioOrderInput } from "@/lib/data/studio-order-input";
+import { REVISION_PROBLEM_MESSAGE } from "@/lib/data/order-revision-messages";
+import { orderRevisionsSchema, parseRevisionNote } from "@/lib/data/order-revision-schema";
 import { RepositoryError } from "@/lib/data/repository";
 import type { SupabaseContext } from "@/lib/data/supabase/context";
 import { isUuid, onlyUuids, unwrap } from "@/lib/data/supabase/errors";
 import { iso, opt } from "@/lib/data/supabase/mappers/common";
 import { requireWorkspace } from "@/lib/data/supabase/workspace";
-import type { StudioOrder } from "@/lib/domain/studio-order";
+import { orderRevisionProblem, type StudioOrder } from "@/lib/domain/studio-order";
 import type { Json, Tables } from "@/lib/supabase/database.types";
 import { ORDER_STATUSES, ticketSchema, type OrderStatus, type Ticket } from "@/lib/studio-order/schema";
 
-const COLUMNS = "id, workspace_id, idea_id, week_start, slot, ticket, note, status, created_at, updated_at" as const;
-type Row = Pick<Tables<"studio_orders">, "id" | "workspace_id" | "idea_id" | "week_start" | "slot" | "ticket" | "note" | "status" | "created_at" | "updated_at">;
+const COLUMNS = "id, workspace_id, idea_id, week_start, slot, ticket, note, status, revision, revisions, created_at, updated_at" as const;
+type Row = Pick<Tables<"studio_orders">, "id" | "workspace_id" | "idea_id" | "week_start" | "slot" | "ticket" | "note" | "status" | "revision" | "revisions" | "created_at" | "updated_at">;
 
 /** Satır → `StudioOrder`. Bozuk jsonb ya da durum şema ile DB'nin ayrıştığını gösterir: sessizce gizlenmez. */
 function toStudioOrder(row: Row): StudioOrder {
   const ticket = ticketSchema.safeParse(row.ticket);
   const status = ORDER_STATUSES.find((s) => s === row.status);
-  if (!ticket.success || status === undefined) throw new Error(`studio_orders satırı eşlenemedi: ${row.id}`);
+  const revisions = z.safeParse(orderRevisionsSchema, row.revisions);
+  if (!ticket.success || status === undefined || !revisions.success) throw new Error(`studio_orders satırı eşlenemedi: ${row.id}`);
   return {
     id: row.id,
     workspaceId: row.workspace_id,
@@ -31,6 +36,8 @@ function toStudioOrder(row: Row): StudioOrder {
     ticket: ticket.data,
     note: row.note,
     status,
+    revision: row.revision,
+    revisions: revisions.data,
     createdAt: iso(row.created_at),
     updatedAt: iso(row.updated_at),
   };
@@ -137,4 +144,22 @@ export async function advanceStudioOrder(ctx: SupabaseContext, wsId: string, id:
   const again = await getStudioOrder(ctx, wsId, id);
   if (again?.status === value.status) return again;
   throw new RepositoryError("invalid_state", "Fişin durumu bu arada değişti.");
+}
+
+/**
+ * SPN-36: video revizesi. Önkontrol yalnız anlaşılır hata içindir; asıl kural `request_order_revision` RPC'sinde (tek işlem: yayın satırı iptal,
+ * geçmişe kayıt, sürüm + 1, fiş taslak) ve `studio_orders_revision_guard` tetikleyicisindedir (RPC'yi atlayan yazım da reddedilir).
+ */
+export async function requestOrderRevision(ctx: SupabaseContext, wsId: string, orderId: string, note: string, now: Date): Promise<StudioOrder> {
+  await requireWorkspace(ctx, wsId);
+  const text = parseRevisionNote(note);
+  const current = await getStudioOrder(ctx, wsId, orderId);
+  if (current === undefined) throw new RepositoryError("not_found", "Fiş bulunamadı.");
+  const pending = unwrap(await ctx.db.from("publish_jobs").select("status").eq("workspace_id", wsId).eq("order_id", current.ticket.siparis_id).in("status", ["awaiting_approval", "draft"]).limit(1));
+  const problem = orderRevisionProblem(current, pending[0]?.status);
+  if (problem !== undefined) throw new RepositoryError("invalid_state", REVISION_PROBLEM_MESSAGE[problem]);
+  unwrap(await ctx.db.rpc("request_order_revision", { p_ws: wsId, p_order: orderId, p_note: text, p_at: now.toISOString() }));
+  const updated = await getStudioOrder(ctx, wsId, orderId);
+  if (updated === undefined) throw new RepositoryError("not_found", "Fiş bulunamadı.");
+  return updated;
 }

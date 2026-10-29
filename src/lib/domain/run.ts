@@ -207,6 +207,13 @@ export interface Workspace {
   /** Hedef izlenen rakip sayısı (0–10; varsayılan 3). */
   rivalTarget?: number;
   /**
+   * Otomatik işler (`/otomatik`; migration 0037): kapalıysa halka o işi kendiliğinden açmaz. Alan yoksa (eski kayıt / örnek veri)
+   * `automationFlagsOf` varsayılanı verir: plan açık, ölçüm açık, üretim kapalı.
+   */
+  autoWeeklyPlan?: boolean;
+  autoMeasure?: boolean;
+  autoProduce?: boolean;
+  /**
    * Yayın uyum bölgesi: açıklama denetimi hangi ülkenin kurallarına göre yapılır (`lib/compliance`). Varsayılan "TR"
    * (`DEFAULT_COMPLIANCE_REGION`). Onaya gönderme ve onay bu bölgeye göre engellenir.
    */

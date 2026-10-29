@@ -20,6 +20,27 @@ describe("kopya sürümü: sekmeler", () => {
   });
 });
 
+describe("müşteri görünümü (kulis kapalı)", () => {
+  it("hiçbir ana maddenin sekmesi yok; Videolar tek hedefle Yayın'a gider", () => {
+    for (const primary of NAV_PRIMARY) expect(visibleSections(primary, false)).toEqual([]);
+    expect(NAV_COPY.map((item) => [item.label, item.href])).toEqual([
+      ["Bugün", ROUTES.overview],
+      ["Plan", ROUTES.thisWeek],
+      ["Videolar", ROUTES.publish],
+      ["Sonuçlar", ROUTES.results],
+    ]);
+    expect(NAV_COPY.flatMap((item) => item.children ?? [])).toEqual([]);
+  });
+
+  it("primaryCurrent: Videolar etkinliği /yayin'da page, /icerikler'de true; yönetici görünümünde tersi", () => {
+    const videos = NAV_PRIMARY.find((p) => p.id === "videos")!;
+    expect(primaryCurrent(videos, ROUTES.publish, false)).toBe("page");
+    expect(primaryCurrent(videos, ROUTES.content, false)).toBe("true");
+    expect(primaryCurrent(videos, ROUTES.content, true)).toBe("page");
+    expect(primaryCurrent(videos, ROUTES.publish, true)).toBe("true");
+  });
+});
+
 describe("gezinme haritası", () => {
   it("4 ana madde: Bugün · Plan · Videolar · Sonuçlar (hepsi bağlantı)", () => {
     expect(NAV_PRIMARY.map((p) => [p.label, p.href])).toEqual([
@@ -70,7 +91,7 @@ describe("gezinme haritası", () => {
     expect(backstage?.operatorOnly).toBe(true);
     expect(backstage?.items.map((item) => item.href)).toEqual([ROUTES.jobs, ROUTES.discover, ROUTES.collections]);
     const customerHrefs = visibleMenuGroups(false).flatMap((group) => group.items.map((item) => item.href));
-    expect(customerHrefs).toEqual([ROUTES.notifications, ROUTES.settings]);
+    expect(customerHrefs).toEqual([ROUTES.automation, ROUTES.settings, ROUTES.notifications]);
     // Menü satırları ikonludur (sekmeler ikonsuz).
     for (const group of NAV_MENU_GROUPS) for (const item of group.items) expect(item.icon).toBeDefined();
   });

@@ -50,7 +50,7 @@ export function Topbar({
           </Link>
           <AccountSwitcher current={account} accounts={switchableAccounts} canAddAccount={canAddAccount} />
         </div>
-        <PrimaryNav />
+        <PrimaryNav backstage={operatorMode} />
         <div className="flex shrink-0 items-center justify-end gap-0.5 md:gap-1.5">
           {isMockData ? (
             <Badge variant="secondary" className="mr-1 hidden lg:inline-flex" title="Veriler örnek (mock) kaynaktan geliyor">

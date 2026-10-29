@@ -147,6 +147,7 @@ export function createSupabaseRepository(options: SupabaseRepositoryOptions): Pa
     listStudioOrders: (wsId, query) => studioOrders.listStudioOrders(ctx, wsId, query),
     updateStudioOrder: (wsId, id, patch, now) => studioOrders.updateStudioOrder(ctx, wsId, id, patch, now),
     advanceStudioOrder: (wsId, id, patch, now) => studioOrders.advanceStudioOrder(ctx, wsId, id, patch, now),
+    requestOrderRevision: (wsId, orderId, note, now) => studioOrders.requestOrderRevision(ctx, wsId, orderId, note, now),
 
     // Başlangıç akışı
     getOnboardingState: (wsId) => onboarding.getOnboardingState(ctx, wsId),

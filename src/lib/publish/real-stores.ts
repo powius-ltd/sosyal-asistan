@@ -13,6 +13,7 @@ import { handledOrderIds, isOrderPublishRow, ORDER_PUBLISH_STATUSES, pickOrderAc
 import type { OrderReturnStore } from "@/lib/publish/order-return";
 import { workspaceHasZernioKey } from "@/lib/publish/publishable";
 import type { OrderPublishRow, PublishFailure, PublishStore } from "@/lib/publish/run-publish";
+import { isSupersededOrderId } from "@/lib/studio-order/revision-id";
 
 export function createOrderReturnStore(ctx: IntelContext): OrderReturnStore {
   return {
@@ -20,6 +21,9 @@ export function createOrderReturnStore(ctx: IntelContext): OrderReturnStore {
       const { data, error } = await ctx.client.from("publish_jobs").select("order_id, status, created_at").eq("workspace_id", ctx.workspaceId).eq("order_id", orderId);
       if (error) throw new Error(`Yayın satırı okunamadı: ${error.message}`);
       return handledOrderIds(data ?? []).has(orderId);
+    },
+    async isSupersededOrder(orderId) {
+      return (await ctx.repo.listStudioOrders(ctx.workspaceId)).some((o) => isSupersededOrderId(o, orderId));
     },
     async findAccountId() {
       const keyed = workspaceHasZernioKey(ctx.workspaceSlug);

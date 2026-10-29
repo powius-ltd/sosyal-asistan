@@ -31,6 +31,8 @@ export const ROUTES = {
   ideas: "/fikirler",
   publish: "/yayin",
   settings: "/ayarlar",
+  /** Otomatik: zamanlı yayın / üretim ayarı (profil menüsü → Hesap; müşteriye açık). */
+  automation: "/otomatik",
   /** İşler: panelden başlatılan işler (haftalık tur, toplama, ölçüm …), ilerleme ve geçmiş (profil menüsü → Kulis; yalnız yönetici modunda). */
   jobs: "/isler",
   /** Başlangıç akışı: hesap ekle → hesaba bakış → tür / konu → rakipler → ilk plan (adım veriden türetilir; `domain/onboarding.ts`). */

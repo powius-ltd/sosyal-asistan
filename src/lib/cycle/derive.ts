@@ -104,10 +104,27 @@ function verdictOf(id: CycleStepId, facts: CycleFacts, now: Date, earlierDone: R
   }
 }
 
+/** Otomatik iş anahtarının kapattığı adımlar: topla → incele → etiket → plan (haftalık plan), ölçüm. */
+const AUTO_OFF_REASON: Partial<Record<CycleStepId, { flag: "autoWeeklyPlan" | "autoMeasure"; reason: string }>> = {
+  collect: { flag: "autoWeeklyPlan", reason: "Otomatik haftalık plan kapalı; toplama kendiliğinden açılmaz." },
+  analyze: { flag: "autoWeeklyPlan", reason: "Otomatik haftalık plan kapalı; inceleme kendiliğinden açılmaz." },
+  label: { flag: "autoWeeklyPlan", reason: "Otomatik haftalık plan kapalı; etiketleme kendiliğinden açılmaz." },
+  plan: { flag: "autoWeeklyPlan", reason: "Otomatik haftalık plan kapalı; plan kendiliğinden hazırlanmaz." },
+  measure: { flag: "autoMeasure", reason: "Otomatik günlük ölçüm kapalı; ölçüm kendiliğinden açılmaz." },
+};
+
+/** Anahtar kapalıyken yapılacak (`due` / `needs_approval`) adım `blocked` olur ve iş türü düşer; `done` / `blocked` adıma dokunmaz. */
+function applyAutomation(id: CycleStepId, verdict: Verdict, facts: CycleFacts): Verdict {
+  const rule = AUTO_OFF_REASON[id];
+  if (rule === undefined || facts[rule.flag] !== false) return verdict;
+  if (verdict.status !== "due" && verdict.status !== "needs_approval") return verdict;
+  return { status: "blocked", reason: rule.reason };
+}
+
 export function deriveCycle(facts: CycleFacts, now: Date): CycleState {
   const done = new Set<CycleStepId>();
   const steps: CycleStep[] = CYCLE_STEP_IDS.map((id) => {
-    const verdict = verdictOf(id, facts, now, done);
+    const verdict = applyAutomation(id, verdictOf(id, facts, now, done), facts);
     if (verdict.status === "done") done.add(id);
     const lastJob = lastJobOf(id, facts.jobs);
     const running = lastJob !== undefined && (lastJob.status === "queued" || lastJob.status === "running");

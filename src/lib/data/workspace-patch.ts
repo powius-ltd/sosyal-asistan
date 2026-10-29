@@ -36,6 +36,10 @@ export const workspacePatchSchema = z.object({
   collectEveryDays: settingField("Toplama sıklığı", AGENT_SETTING_LIMITS.collectEveryDays),
   collectVideoLimit: settingField("Video sayısı", AGENT_SETTING_LIMITS.collectVideoLimit),
   rivalTarget: settingField("Hedef rakip sayısı", AGENT_SETTING_LIMITS.rivalTarget),
+  /** Otomatik işler (`/otomatik`): açık/kapalı; undefined = değiştirme. */
+  autoWeeklyPlan: z.boolean({ error: "Haftalık plan ayarı açık ya da kapalı olmalı." }).optional(),
+  autoMeasure: z.boolean({ error: "Günlük ölçüm ayarı açık ya da kapalı olmalı." }).optional(),
+  autoProduce: z.boolean({ error: "Otomatik üretim ayarı açık ya da kapalı olmalı." }).optional(),
   nicheBrief: z
     .string({ error: "Niş tanımı metin olmalı." })
     .trim()

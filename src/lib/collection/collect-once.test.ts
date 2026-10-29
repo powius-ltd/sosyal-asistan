@@ -88,7 +88,7 @@ function harness(overrides: { unitPrice?: number; profileRows?: Record<string, u
 
 beforeEach(() => {
   vi.mocked(loadTargets).mockReset();
-  vi.mocked(loadTargets).mockResolvedValue({ targets: TARGETS, skipped: [] });
+  vi.mocked(loadTargets).mockResolvedValue({ targets: TARGETS, skipped: [], ownViaZernio: [] });
 });
 
 describe("harcama tavanı ön kontrolü", () => {
@@ -126,10 +126,19 @@ describe("harcama tavanı ön kontrolü", () => {
   });
 
   it("hedef yoksa koşu yok", async () => {
-    vi.mocked(loadTargets).mockResolvedValue({ targets: [], skipped: [] });
+    vi.mocked(loadTargets).mockResolvedValue({ targets: [], skipped: [], ownViaZernio: [] });
     const h = harness();
     const summary = await collectOnce({ workspaceId: WS, now: NOW }, h.deps);
     expect(summary.outcome).toBe("no_targets");
+    expect(h.start).not.toHaveBeenCalled();
+  });
+
+  it("kendi hesap Zernio'dan okunuyorsa Apify'a gitmez ve notta adıyla söylenir (ölçümde hedef kalmaz)", async () => {
+    vi.mocked(loadTargets).mockResolvedValue({ targets: [], skipped: [], ownViaZernio: ["@ornek"] });
+    const h = harness();
+    const summary = await collectOnce({ workspaceId: WS, now: NOW, ownOnly: true }, h.deps);
+    expect(summary.outcome).toBe("no_targets");
+    expect(summary.notes.join(" ")).toMatch(/Zernio'dan okunuyor.*@ornek/);
     expect(h.start).not.toHaveBeenCalled();
   });
 });
@@ -214,7 +223,7 @@ describe("ölçüm koşusu seçenekleri ve döngü işleri", () => {
   const AFTER = { resolved: 1, suggested: 0, suggestionNotifications: 0, dueCount: 2, dueNotifications: 2, notes: [] };
 
   it("ownOnly hedef okumaya, newerThan reel girdisine, purpose koşu isteğine geçer", async () => {
-    vi.mocked(loadTargets).mockResolvedValue({ targets: [TARGETS[0]], skipped: [] });
+    vi.mocked(loadTargets).mockResolvedValue({ targets: [TARGETS[0]], skipped: [], ownViaZernio: [] });
     const h = harness();
     await collectOnce({ workspaceId: WS, now: NOW, ownOnly: true, newerThan: "2026-09-20T00:00:00Z", purpose: "measurement", limit: 4, reconcileWaitMs: 0 }, h.deps);
 

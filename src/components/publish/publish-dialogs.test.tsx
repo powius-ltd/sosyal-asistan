@@ -197,7 +197,7 @@ describe("CreatePublishDialog", () => {
     const user = userEvent.setup();
     renderDialog([]);
     await user.click(screen.getByRole("button", { name: /Yeni yayın/ }));
-    expect(await screen.findByText(/resmi bağlantıyla bağlı bir hesap gerekir/)).toBeInTheDocument();
+    expect(await screen.findByText(/Instagram yayını anahtarını gir/)).toBeInTheDocument();
     expect(screen.queryByRole("button", { name: "Onaya gönder" })).not.toBeInTheDocument();
   });
 });

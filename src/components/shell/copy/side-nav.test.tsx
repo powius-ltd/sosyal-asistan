@@ -25,16 +25,16 @@ beforeEach(() => {
 });
 
 describe("SideNav (müşteri kopyası)", () => {
-  it("beş ana madde + Bildirimler + Ayarlar, rotalar ROUTES'tan; hesap künyesi düz metin", () => {
+  it("dört ana madde + Otomatik + Ayarlar + Bildirimler, rotalar ROUTES'tan; hesap künyesi düz metin", () => {
     renderNav();
     expect(linksOf()).toEqual([
       ["Bugün", ROUTES.overview],
-      ["Bu hafta", ROUTES.thisWeek],
-      ["Fikirler", ROUTES.ideas],
-      ["Videolarım", ROUTES.content],
+      ["Plan", ROUTES.thisWeek],
+      ["Videolar", ROUTES.publish],
       ["Sonuçlar", ROUTES.results],
-      ["Bildirimler", ROUTES.notifications],
+      ["Otomatik", ROUTES.automation],
       ["Ayarlar", ROUTES.settings],
+      ["Bildirimler", ROUTES.notifications],
     ]);
     expect(screen.getByTestId("side-nav-account")).toHaveTextContent("@ornek");
     expect(within(nav()).queryByRole("combobox")).toBeNull();
@@ -43,40 +43,28 @@ describe("SideNav (müşteri kopyası)", () => {
   it("Yayın, Karşılaştırma, Reklamlar, Kulis, hesap seçici, tema ve Demirkazık yok", () => {
     pathname.current = ROUTES.results;
     const { container } = renderNav();
-    for (const text of ["Yayın", "Karşılaştırma", "Reklamlar", "Kulis", "İşler", "Keşfet", "Demirkazık"]) {
+    for (const text of ["Fikirler", "Karşılaştırma", "Reklamlar", "Kulis", "İşler", "Keşfet", "Demirkazık"]) {
       expect(screen.queryByText(text)).toBeNull();
     }
     expect(container.querySelector('[data-slot="mascot"]')).toBeNull();
     expect(screen.queryByRole("button", { name: /tema/i })).toBeNull();
   });
 
-  it("Sonuçlar alt bağlantıları yalnız Sonuçlar bölgesinde görünür", () => {
-    const view = renderNav();
-    expect(screen.queryByTestId("side-nav-children")).toBeNull();
-    view.unmount();
+  it("alt bağlantı yok: Sonuçlar bölgesinde bile iç sayfa listesi çizilmez; yalnız Sonuçlar etkin", () => {
     pathname.current = ROUTES.outliers;
     renderNav();
-    const children = screen.getByTestId("side-nav-children");
-    expect(within(children).getAllByRole("link").map((link) => [link.textContent, link.getAttribute("href")])).toEqual([
-      ["Tutanlar", ROUTES.outliers],
-      ["Rakipler", ROUTES.competitors],
-      ["Neden tuttu", ROUTES.anatomy],
-      ["Açılış kütüphanesi", ROUTES.hooks],
-    ]);
-    expect(currentOf()).toEqual([
-      ["Sonuçlar", "true"],
-      ["Tutanlar", "page"],
-    ]);
+    expect(screen.queryByTestId("side-nav-children")).toBeNull();
+    expect(currentOf()).toEqual([["Sonuçlar", "true"]]);
   });
 
-  it("etkin madde aria-current alır (Bu hafta / Fikirler ayrı; Bildirimler)", () => {
-    pathname.current = ROUTES.ideas;
+  it("etkin madde aria-current alır (Plan; Videolar = Yayın; Bildirimler)", () => {
+    pathname.current = ROUTES.publish;
     const view = renderNav();
-    expect(currentOf()).toEqual([["Fikirler", "page"]]);
+    expect(currentOf()).toEqual([["Videolar", "page"]]);
     view.unmount();
     pathname.current = ROUTES.thisWeek;
     const second = renderNav();
-    expect(currentOf()).toEqual([["Bu hafta", "page"]]);
+    expect(currentOf()).toEqual([["Plan", "page"]]);
     second.unmount();
     pathname.current = ROUTES.notifications;
     renderNav();

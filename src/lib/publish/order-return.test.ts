@@ -5,7 +5,6 @@ import { afterEach, beforeEach, describe, expect, it } from "vitest";
 
 import type { CreatePublishJobInput } from "@/lib/data/queries";
 import { ComplianceFailedError, RepositoryError } from "@/lib/data/repository";
-import { AI_DISCLOSURE_LINE } from "@/lib/publish/ai-disclosure-line";
 import { handledOrderIds, isActiveOrderStatus, isHandledOrderStatus } from "@/lib/publish/order-rows";
 import { returnOrders, type OrderReturnStore } from "@/lib/publish/order-return";
 
@@ -69,7 +68,7 @@ describe("order_return", () => {
     const first = await run(store);
     expect(first.opened).toEqual(["s1"]);
     expect(jobs).toHaveLength(1);
-    expect(jobs[0]).toMatchObject({ status: "awaiting_approval", orderId: "s1", mediaPath: "siparis:ornek-studyo/2026-10-19/s1/final.mp4", aiGenerated: true, scheduledFor: "2026-10-22T18:00:00.000Z" });
+    expect(jobs[0]).toMatchObject({ status: "awaiting_approval", orderId: "s1", mediaPath: "siparis:ornek-studyo/2026-10-19/s1/final.mp4", aiGenerated: false, caption: "Açıklama #yz", scheduledFor: "2026-10-22T18:00:00.000Z" });
     expect(notices).toHaveLength(1);
     const second = await run(store);
     expect(second.opened).toEqual([]);
@@ -132,11 +131,13 @@ describe("order_return", () => {
     expect(jobs).toHaveLength(0);
   });
 
-  it("stüdyo açıklamasında YZ beyanı yoksa sona eklenir (video onay kartına düşer)", async () => {
-    addOrder("b1", {}, "Para kuralların kimin?");
+  it("hiçbir stüdyo türüne YZ beyanı eklenmez (UGC gerçek kişi, animasyon kod)", async () => {
+    addOrder("b1", { tur: "ugc" }, "Para kuralların kimin?");
+    addOrder("b2", { tur: "animasyon" }, "Kod ile çizildi");
     const { store, jobs } = fakeStore();
-    expect((await run(store)).opened).toEqual(["b1"]);
-    expect(jobs[0]?.caption).toBe(`Para kuralların kimin?\n\n${AI_DISCLOSURE_LINE}`);
+    expect((await run(store)).opened.sort()).toEqual(["b1", "b2"]);
+    expect(jobs.find((j) => j.orderId === "b1")).toMatchObject({ caption: "Para kuralların kimin?", aiGenerated: false });
+    expect(jobs.find((j) => j.orderId === "b2")).toMatchObject({ caption: "Kod ile çizildi", aiGenerated: false });
   });
 
   it("uyum fail → draft + nedenini söyleyen bildirim", async () => {

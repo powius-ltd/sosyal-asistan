@@ -5,6 +5,7 @@ import { UnmeasuredList } from "@/components/common/unmeasured-list";
 import { UnmeasuredSummary } from "@/components/settings/unmeasured-summary";
 import { AlertSettingsSection } from "@/components/settings/alert-settings-section";
 import { ComplianceRegionField } from "@/components/settings/compliance-region-field";
+import { ApiKeysCard } from "@/components/settings/api-keys-card";
 import { ConnectionCards } from "@/components/settings/connection-cards";
 import { AgentSettingsCard } from "@/components/settings/agent-settings-card";
 import { AccountTypeField } from "@/components/settings/account-type-field";
@@ -21,6 +22,7 @@ import { CreateWorkspaceForm } from "@/components/workspace/create-workspace-for
 import { FirstStepsCard } from "@/components/workspace/first-steps-card";
 import { WorkspaceList } from "@/components/workspace/workspace-list";
 import { getPanelContext } from "@/lib/data";
+import { loadKeyRows } from "@/lib/local-keys/load";
 import { DEFAULT_ACCOUNT_TYPE } from "@/lib/domain/account-type";
 import { DEFAULT_COMPLIANCE_REGION } from "@/lib/domain/compliance";
 import { DEFAULT_TIMEZONE } from "@/lib/format";
@@ -40,7 +42,7 @@ export default async function SettingsPage() {
   // Yönetici bilgisi (Apify maliyeti, anahtar durumu, koşu tablosu, tavanlar, komutlar) müşteriye görünmez: yalnız operatör modunda
   // okunur ve çizilir. Müşteri görünümünde ilgili okumalar hiç yapılmaz.
   const operator = isOperatorMode();
-  const [workspace, connections, cost, recentRuns, unmeasured, alertSettings, competitors, operatorWorkspaces] = await Promise.all([
+  const [workspace, connections, cost, recentRuns, unmeasured, alertSettings, competitors, operatorWorkspaces, keyRows] = await Promise.all([
     repo.getWorkspace(wsId),
     repo.getConnections(wsId),
     operator ? repo.getCostSummary(wsId) : undefined,
@@ -50,6 +52,8 @@ export default async function SettingsPage() {
     repo.listCompetitors(wsId),
     // `undefined` = çalışma alanı geçişi/oluşturma kapalı (Vercel, mock veri): ilgili kutular çizilmez.
     listOperatorWorkspaces(),
+    // `undefined` = yerel anahtar girişi kapalı (Vercel ya da yönetici modu değil): kart çizilmez.
+    loadKeyRows(),
   ]);
   const currentWorkspace = operatorWorkspaces?.find((item) => item.id === wsId);
   const platformOptions = PLATFORMS.filter(hasPlatformModule).map((value) => ({ value, label: PLATFORM_LABEL[value] }));
@@ -75,6 +79,8 @@ export default async function SettingsPage() {
         ) : null}
 
         <ConnectionCards accounts={connections.accounts} timeZone={timeZone} operator={operator} />
+
+        <ApiKeysCard rows={keyRows} />
 
         {operator && cost ? (
           <div className="grid gap-6 lg:grid-cols-2">

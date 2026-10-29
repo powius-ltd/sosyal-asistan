@@ -5,7 +5,7 @@ import { LIFT_TOKEN_RULE, NO_STRAY_NUMBERS_RULE, PLAIN_LANGUAGE_RULE } from "@/l
 
 describe("Sohbet istemi: düz dil ve sayı belirteci", () => {
   it("sürüm v7; ortak düz dil kuralı, çarpan belirteci kuralı ve belirteç dışı sayı yasağı Analist'inkiyle aynı sabitlerden gelir", () => {
-    expect(CHAT_PROMPT_VERSION).toBe("chat-v8");
+    expect(CHAT_PROMPT_VERSION).toBe("chat-v9");
     for (const type of ["business", "creator", "mixed"] as const) {
       const prompt = buildChatSystemPrompt(type);
       expect(prompt).toContain(PLAIN_LANGUAGE_RULE);

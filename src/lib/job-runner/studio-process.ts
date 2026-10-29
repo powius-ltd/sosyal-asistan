@@ -10,6 +10,7 @@
  * (onay yok / taslak değil / başka üretim sürüyor: fişe dokunulmaz).
  */
 import "server-only";
+import { studioVoiceKeyName } from "@/lib/studio-order/voice-key";
 
 import { runSubprocess, type SubprocessRunner } from "@/lib/llm/subprocess";
 
@@ -20,10 +21,7 @@ export const STUDIO_RUN_TIMEOUT_MS = 50 * 60 * 1000;
 /** Günlüğe alınan stüdyo çıktısının son kısmı (karakter). */
 const TAIL_CHARS = 1200;
 
-/** Hesabın ses anahtarının ortam değişkeni adı: stüdyo slug'ı büyük harf, tire alt çizgi (`ornek-studyo` → `ELEVENLABS_API_KEY_ORNEK_STUDYO`). */
-export function studioVoiceKeyName(studioSlug: string): string {
-  return `ELEVENLABS_API_KEY_${studioSlug.toUpperCase().replace(/[^A-Z0-9]/g, "_")}`;
-}
+export { studioVoiceKeyName };
 
 export interface StudioRunInput {
   studioSlug: string;

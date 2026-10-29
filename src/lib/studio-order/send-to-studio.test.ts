@@ -41,15 +41,15 @@ async function orderOf(repo: PanelRepository, extra: Record<string, unknown> = {
 
 describe("orderSendProblem", () => {
   const base = { status: "taslak", ticket: { tur: "broll", mod: "senaryo" } } as unknown as Parameters<typeof orderSendProblem>[0];
-  const ornek-studyo = { studioSlug: "ornek-studyo", mode: "senaryo" } as const;
-  it("senaryo + broll + stüdyo hesabı gönderilebilir", () => expect(orderSendProblem(base, ornek-studyo)).toBeUndefined());
+  const studio = { studioSlug: "ornek-studyo", mode: "senaryo" } as const;
+  it("senaryo + broll + stüdyo hesabı gönderilebilir", () => expect(orderSendProblem(base, studio)).toBeUndefined());
   it("anlatım, ugc, konu kipi, tanımsız hesap ve taslak olmayan fiş reddedilir", () => {
-    expect(orderSendProblem({ status: "taslak", ticket: { tur: "anlatim", mod: "senaryo" } } as never, ornek-studyo)).toBe("kind_narration");
-    expect(orderSendProblem({ status: "taslak", ticket: { tur: "ugc", mod: "senaryo" } } as never, ornek-studyo)).toBe("kind_ugc");
-    expect(orderSendProblem({ status: "taslak", ticket: { tur: "broll", mod: "konu" } } as never, ornek-studyo)).toBe("mode_topic");
+    expect(orderSendProblem({ status: "taslak", ticket: { tur: "anlatim", mod: "senaryo" } } as never, studio)).toBe("kind_narration");
+    expect(orderSendProblem({ status: "taslak", ticket: { tur: "ugc", mod: "senaryo" } } as never, studio)).toBe("kind_ugc");
+    expect(orderSendProblem({ status: "taslak", ticket: { tur: "broll", mod: "konu" } } as never, studio)).toBe("mode_topic");
     expect(orderSendProblem(base, undefined)).toBe("no_studio_account");
-    expect(orderSendProblem({ ...base, status: "uretildi" } as never, ornek-studyo)).toBe("not_draft");
-    expect(orderSendProblem({ ...base, status: "hata" } as never, ornek-studyo)).toBe("not_draft");
+    expect(orderSendProblem({ ...base, status: "uretildi" } as never, studio)).toBe("not_draft");
+    expect(orderSendProblem({ ...base, status: "hata" } as never, studio)).toBe("not_draft");
   });
 });
 

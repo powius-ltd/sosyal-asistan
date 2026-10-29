@@ -41,6 +41,7 @@ import { manualIdeasContract } from "@/lib/data/contract/manual-ideas";
 import { notificationsContract } from "@/lib/data/contract/notifications";
 import { onboardingContract } from "@/lib/data/contract/onboarding";
 import { opsContract } from "@/lib/data/contract/ops";
+import { orderRevisionContract } from "@/lib/data/contract/order-revision";
 import { studioOrdersContract } from "@/lib/data/contract/studio-orders";
 import { topicHookMatrixContract } from "@/lib/data/contract/topic-hook-matrix";
 import { outcomesContract } from "@/lib/data/contract/outcomes";
@@ -88,5 +89,6 @@ export function runRepositoryContract(name: string, create: () => PanelRepositor
     workspaceAccountTypeContract(ctx);
     onboardingContract(ctx);
     studioOrdersContract(ctx);
+    orderRevisionContract(ctx);
   });
 }
